@@ -25,8 +25,30 @@ Where `<TARGET>` is one of:
 - aarch64-windows-gnu
 - x86_64-linux-gnu
 - aarch64-linux-gnu
+- x86_64-linux-musl
+- aarch64-linux-musl
 
 After some time (it takes aroung 1~2 hours in Github CI) a directory named `out` will show up in the current directory containing our native dependencies.
+
+### TODO (Order of importance)
+
+- Fortify linux-musl shared libs:
+    > https://git.2f30.org/fortify-headers/file/README.html
+- Add stack check/protector to linux-musl shared libs
+- Add stack check to windows dlls whenever zig adds support to it:
+    > https://github.com/ziglang/zig/blob/b3462b7cec9931cd3747f10714954eb8efe00c04/src/target.zig#L326-L329
+- Add stack check/protector to linux arm64 glibc shared libs whenever zig fix the bug preventing it from working:
+    > https://github.com/ziglang/zig/issues/17430#issuecomment-1752592338
+- Add support for pthread in windows builds:
+    > https://github.com/GerHobbelt/pthread-win32
+- Add libplacebo and vulkan support for apple builds through MoltenVK:
+    > https://github.com/KhronosGroup/MoltenVK
+- Investigate why mediafoundation fails to link to ffmpeg's libav* libs for windows builds
+- Add Metal shader support for ffmpeg in apple builds:
+    > https://github.com/darlinghq/darling/issues/326
+- Investigate why LTO fails at linking ffmpeg's libav* libs for windows builds
+- Investigate why LTO fails when linking any static lib in apple builds:
+    > https://github.com/tpoechtrager/osxcross/issues/366
 
 ### Acknowledgments
 
