@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "timonwong.shellcheck",
+    "codezombiech.gitignore",
+    "foxundermoon.shell-format",
+    "EditorConfig.EditorConfig",
+    "ms-azuretools.vscode-docker",
+    "github.vscode-github-actions",
+    "mads-hartmann.bash-ide-vscode",
+    "jeff-hykin.better-shellscript-syntax"
+  ],
+}

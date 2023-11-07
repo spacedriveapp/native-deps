@@ -1,0 +1,6 @@
+{
+  "shellformat.flag": "-bn -ci",
+  "[dockerfile]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+  }
+}
