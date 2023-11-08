@@ -437,7 +437,7 @@ RUN --mount=type=cache,target=/root/.cache `
 	--mount=type=bind,source=stages/99-ffmpeg.sh,target=/srv/stage.sh `
 	/srv/build.sh
 
-FROM layer-50 AS layer-99
+FROM layer-00 AS layer-99
 
 COPY --from=layer-99-heif "${OUT}/." "$OUT"
 COPY --from=layer-99-heif "${PREFIX}/srv/." "${OUT}/srv"
@@ -460,17 +460,19 @@ RUN find "${OUT}"  \( -name '*.def' -o -name '*.dll.a' \) -delete
 # Move .lib files to the lib folder (Windows target only)
 RUN find "${OUT}/bin" -name '*.lib' -exec install -Dt ../lib/ -m a-rwx,u+rw,g+r,o+r {} +
 
-# Symlink .lib to .dll.a (Windows target only)
+# Copy .lib to .dll.a (Windows target only)
 RUN find "$OUT/lib" -name '*.lib' -exec `
-	sh -euxc 'for _file in "$@"; do ln -sf "$(basename "$_file")" "$(dirname "$_file")/lib$(basename "$_file" .lib).dll.a"; done' sh {} +
-
-# Ensure all .so files have the correct rpaths (Linux target only)
-RUN find "$OUT" -type f \( -name '*.so' -o -name '*.so.*' \) -exec patchelf --set-rpath '$ORIGIN' {} \;
+	sh -euxc 'for _file in "$@"; do cp "$_file" "$(dirname "$_file")/lib$(basename "$_file" .lib).dll.a"; done' sh {} +
 
 # Strip debug symbols and ensure any .so, .dll, .dylib has the execution flag set
+# Strip must run before patchelf
+# https://github.com/NixOS/patchelf/issues/507
 RUN --mount=type=cache,target=/root/.cache `
 	echo 'strip -S "$@" && chmod +x "$@"' >/srv/stage.sh `
 	&& find "$OUT" -type f \( -name '*.so' -o -name '*.so.*' -o -name '*.dll' -o -name '*.dylib' \) -exec /srv/build.sh {} +
+
+# Ensure all .so files have the correct rpaths (Linux target only)
+RUN find "$OUT" -type f \( -name '*.so' -o -name '*.so.*' \) -exec patchelf --set-rpath '$ORIGIN' {} \;
 
 # Remove non executable files from bin folder
 RUN find "${OUT}/bin" -type f -not -executable -delete

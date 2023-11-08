@@ -42,12 +42,12 @@ case "$TARGET" in
     ;;
 esac
 
-CFLAGS="-I${PREFIX}/include -pipe -Wall -Werror=format-security"
+CFLAGS="-I${PREFIX}/include -pipe -Wall -Werror=format-security -D_FORTIFY_SOURCE=2"
 LDFLAGS="-L${PREFIX}/lib -pipe"
 case "$TARGET" in
   *linux*)
     FFLAGS="-fno-semantic-interposition"
-    CFLAGS="${CFLAGS} -D_FORTIFY_SOURCE=2 -D_GLIBCXX_ASSERTIONS"
+    CFLAGS="${CFLAGS} -D_GLIBCXX_ASSERTIONS"
     LDFLAGS="${LDFLAGS} -Wl,-z,relro,-z,now,-z,defs"
 
     case "$TARGET" in
@@ -95,7 +95,7 @@ case "$TARGET" in
     # Zig doesn't support stack probing on Windows
     # https://github.com/ziglang/zig/blob/b3462b7cec9931cd3747f10714954eb8efe00c04/src/target.zig#L326-L329
     FFLAGS="${FFLAGS} -fno-stack-check"
-    CFLAGS="${CFLAGS} -D_FORTIFY_SOURCE=2 -D_GLIBCXX_ASSERTIONS"
+    CFLAGS="${CFLAGS} -D_GLIBCXX_ASSERTIONS"
     ;;
 esac
 export CFLAGS="${CFLAGS} ${FFLAGS}"

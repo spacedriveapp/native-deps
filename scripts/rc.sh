@@ -9,7 +9,7 @@ fi
 
 case "${TARGET:?TARGET envvar is required to be defined}" in
   *windows-gnu)
-    set -- /I "${SYSROOT:?SYSROOT envvar is required to be defined}/lib/libc/include/any-windows-any" "$@"
+    set -- /D __GNUC__ /I "${SYSROOT:?SYSROOT envvar is required to be defined}/lib/libc/include/any-windows-any" "$@"
     ;;
 esac
 

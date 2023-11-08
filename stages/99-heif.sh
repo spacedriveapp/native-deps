@@ -70,5 +70,5 @@ esac
 ninja install
 
 if [ -f "heif.lib" ]; then
-  cp -at "$OUT/lib/" heif.lib
+  cp -at "${OUT}/lib/" heif.lib
 fi

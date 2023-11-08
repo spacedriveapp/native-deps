@@ -226,8 +226,8 @@ make install
 case "$TARGET" in
   *windows*)
     # Move dll.a to lib
-    find "$OUT/lib" -type f -name '*.dll.a' -exec sh -c \
-      'for dlla in "$@"; do lib="$(dirname "$dlla")/$(basename "$dlla" .dll.a).lib" && if ! [ -f "$lib" ]; then mv "$dlla" "$lib"; fi; done' \
+    find "${OUT}/lib" -type f -name '*.dll.a' -exec sh -euc \
+      'for dlla in "$@"; do lib="$(basename "$dlla" .dll.a).lib" && lib="${lib#"lib"}" && if ! [ -f "$lib" ]; then mv "$dlla" "$(dirname "$dlla")/${lib}"; fi; done' \
       sh {} +
     ;;
 esac
