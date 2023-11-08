@@ -2,7 +2,6 @@ name: Build native deps
 on:
   push:
     paths:
-      - 'VERSION'
       - 'stages/**'
       - 'patches/**'
       - 'scripts/**'
@@ -13,7 +12,6 @@ on:
       - main
   pull_request:
     paths:
-      - 'VERSION'
       - 'stages/**'
       - 'patches/**'
       - 'scripts/**'
@@ -77,7 +75,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: native-deps-${{ matrix.settings.target }}-src
-          path: native-deps-${{ matrix.settings.target }}.tar.xz
+          path: native-deps-${{ matrix.settings.target }}-src.tar.xz
           if-no-files-found: warn
 
   release:
