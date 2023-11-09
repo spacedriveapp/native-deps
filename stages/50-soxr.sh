@@ -25,7 +25,7 @@ cmake \
   -DBUILD_TESTS=Off \
   -DINSTALL_DOCS=Off \
   -DBUILD_EXAMPLES=Off \
-  -WITH_LSR_BINDINGS=Off \
+  -WITH_LSR_BINDINGS=On \
   ..
 
 ninja -j"$(nproc)"

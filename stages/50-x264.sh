@@ -4,10 +4,18 @@ echo "Download x264..."
 mkdir -p x264
 
 # Using master due to aarch64 improvements
-curl_tar 'https://code.videolan.org/videolan/x264/-/archive/d46938de/x264.tar.bz2' x264 1
+curl_tar 'https://code.videolan.org/videolan/x264/-/archive/a354f11/x264.tar.bz2' x264 1
+
+# Some minor fixes to x264's pkg-config
+for patch in \
+  https://github.com/msys2/MINGW-packages/raw/f4bd368/mingw-w64-x264/0001-beautify-pc.all.patch \
+  https://github.com/msys2/MINGW-packages/raw/f4bd368/mingw-w64-x264/0003-pkgconfig-add-Cflags-private.patch; do
+  curl -LSs "$patch" | patch -F5 -lp1 -d x264 -t
+done
 
 case "$TARGET" in
   *darwin*)
+    # Forcing alignment change is not supported by the apple linker
     sed -i "/^if cc_check '' '' '' '__attribute__((force_align_arg_pointer))' ; then/,/^fi/d;" x264/configure
     ;;
 esac

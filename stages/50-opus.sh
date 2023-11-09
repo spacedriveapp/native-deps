@@ -6,7 +6,7 @@ mkdir -p opus
 curl_tar 'https://github.com/xiph/opus/releases/download/v1.4/opus-1.4.tar.gz' opus 1
 
 # Required patch to fix meson for arm builds
-curl -LSs "https://github.com/xiph/opus/commit/20c032d27c59d65b19b8ffbb2608e5282fe817eb.patch" \
+curl -LSs 'https://github.com/xiph/opus/commit/20c032d.patch' \
 | patch -F5 -lp1 -d opus -t
 
 # Remove unused components
@@ -23,6 +23,7 @@ meson \
   -Dintrinsics=enabled \
   -Ddocs=disabled \
   -Dtests=disabled \
+  -Dcustom-modes=true \
   -Dextra-programs=disabled \
   ..
 

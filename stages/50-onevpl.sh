@@ -12,6 +12,10 @@ mkdir -p oneVPL
 
 curl_tar 'https://github.com/oneapi-src/oneVPL/archive/refs/tags/v2023.3.1.tar.gz' oneVPL 1
 
+for patch in "$PREFIX"/patches/*; do
+  patch -F5 -lp1 -d oneVPL -t < "$patch"
+done
+
 sed -i '/add_subdirectory(examples)/d' oneVPL/CMakeLists.txt
 
 # Remove unused components

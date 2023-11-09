@@ -24,8 +24,7 @@ echo "Download tapi ..."
 
 mkdir -p "tapi"
 
-curl_tar 'https://github.com/tpoechtrager/apple-libtapi/archive/43a0c04bcd1f805f55a128744f24e4eed051e681.tar.gz' \
-  'tapi' 1
+curl_tar 'https://github.com/tpoechtrager/apple-libtapi/archive/43a0c04.tar.gz' 'tapi' 1
 
 cd tapi
 

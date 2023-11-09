@@ -141,27 +141,39 @@ index 8e2c292..49ad1c6 100644
        foreach (CPU_LINE ${CPU_LINES})
          string (CONCAT CPU_SOURCE "${CPU_LINE}" "
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index bb01a0d..03b749d 100644
+index bb01a0d..b2f1712 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -88,7 +88,7 @@ if (BUILD_FRAMEWORK)
+@@ -86,11 +86,11 @@ set_target_properties (${PROJECT_NAME} PROPERTIES
+   PUBLIC_HEADER "${PROJECT_NAME}.h")
+ if (BUILD_FRAMEWORK)
    set_target_properties (${PROJECT_NAME} PROPERTIES FRAMEWORK TRUE)
- elseif (NOT WIN32)
-   set (TARGET_PCS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc)
+-elseif (NOT WIN32)
+-  set (TARGET_PCS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc)
 -  configure_file (${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.pc.in ${TARGET_PCS})
-+  configure_file (${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.pc.in ${TARGET_PCS} @ONLY)
-   install (FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig)
+-  install (FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig)
+ endif ()
++set (TARGET_PCS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc)
++configure_file (${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.pc.in ${TARGET_PCS} @ONLY)
++install (FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig)
++
+
+
+
+@@ -110,11 +110,10 @@ if (WITH_LSR_BINDINGS)
+     PUBLIC_HEADER "${LSR}.h")
+   if (BUILD_FRAMEWORK)
+     set_target_properties (${LSR} PROPERTIES FRAMEWORK TRUE)
+-  elseif (NOT WIN32)
++  endif ()
+   set (TARGET_PCS "${TARGET_PCS} ${CMAKE_CURRENT_BINARY_DIR}/${LSR}.pc")
+-    configure_file (${CMAKE_CURRENT_SOURCE_DIR}/${LSR}.pc.in ${CMAKE_CURRENT_BINARY_DIR}/${LSR}.pc)
++  configure_file (${CMAKE_CURRENT_SOURCE_DIR}/${LSR}.pc.in ${CMAKE_CURRENT_BINARY_DIR}/${LSR}.pc @ONLY)
+   install (FILES ${CMAKE_CURRENT_BINARY_DIR}/${LSR}.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig)
+-  endif ()
  endif ()
 
-@@ -112,7 +112,7 @@ if (WITH_LSR_BINDINGS)
-     set_target_properties (${LSR} PROPERTIES FRAMEWORK TRUE)
-   elseif (NOT WIN32)
-     set (TARGET_PCS "${TARGET_PCS} ${CMAKE_CURRENT_BINARY_DIR}/${LSR}.pc")
--    configure_file (${CMAKE_CURRENT_SOURCE_DIR}/${LSR}.pc.in ${CMAKE_CURRENT_BINARY_DIR}/${LSR}.pc)
-+    configure_file (${CMAKE_CURRENT_SOURCE_DIR}/${LSR}.pc.in ${CMAKE_CURRENT_BINARY_DIR}/${LSR}.pc @ONLY)
-     install (FILES ${CMAKE_CURRENT_BINARY_DIR}/${LSR}.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig)
-   endif ()
- endif ()
+
 diff --git a/src/cr-core.c b/src/cr-core.c
 index 159a5d9..44b175b 100644
 --- a/src/cr-core.c
@@ -171,7 +183,7 @@ index 159a5d9..44b175b 100644
  #endif
 
 -#if defined __arm__
-+#if defined (__arm__) || defined (__aarch64__)
++#if defined (__arm__) || defined(__aarch64__)
    #define DEFINED_ARM 1
  #else
    #define DEFINED_ARM 0
@@ -184,7 +196,7 @@ index 7edae86..b804fff 100644
    _mm_store_ss(a, vAdd(t, _mm_shuffle_ps(t,t,1)));}
 
 -#elif defined __arm__
-+#elif defined (__arm__) || defined (__aarch64__)
++#elif defined (__arm__) || defined(__aarch64__)
 
  #include <arm_neon.h>
 
@@ -197,7 +209,7 @@ index c920f06..1641fc4 100644
    float ar, ai, br, bi;
 
 -#ifdef __arm__
-+#if defined(__arm__) || defined (__aarch64__)
++#if defined(__arm__) || defined(__aarch64__)
    __builtin_prefetch(va);
    __builtin_prefetch(vb);
    __builtin_prefetch(va+2);
@@ -210,7 +222,7 @@ index 46c841e..8c775a9 100644
    ARM NEON support macros
  */
 -#elif !defined(PFFFT_SIMD_DISABLE) && defined(__arm__)
-+#elif !defined(PFFFT_SIMD_DISABLE) && (defined(__arm__) || defined (__aarch64__))
++#elif !defined(PFFFT_SIMD_DISABLE) && (defined(__arm__) || defined(__aarch64__))
  #  include <arm_neon.h>
  typedef float32x4_t v4sf;
  #  define SIMD_SZ 4
@@ -219,7 +231,7 @@ index 46c841e..8c775a9 100644
    v4sf * RESTRICT vab = (v4sf*)ab;
 
 -#ifdef __arm__
-+#if defined(__arm__) || defined (__aarch64__)
++#if defined(__arm__) || defined(__aarch64__)
    __builtin_prefetch(va);
    __builtin_prefetch(vb);
    __builtin_prefetch(vab);

@@ -93,9 +93,10 @@ case "$TARGET" in
     ;;
   *windows*)
     # Zig doesn't support stack probing on Windows
-    # https://github.com/ziglang/zig/blob/b3462b7cec9931cd3747f10714954eb8efe00c04/src/target.zig#L326-L329
+    # https://github.com/ziglang/zig/blob/b3462b7/src/target.zig#L326-L329
     FFLAGS="${FFLAGS} -fno-stack-check"
-    CFLAGS="${CFLAGS} -D_GLIBCXX_ASSERTIONS"
+    # https://github.com/strukturag/libheif/issues/357
+    CFLAGS="${CFLAGS} -D_GLIBCXX_ASSERTIONS -D__MINGW64__"
     ;;
 esac
 export CFLAGS="${CFLAGS} ${FFLAGS}"

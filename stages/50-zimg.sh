@@ -7,6 +7,7 @@ curl_tar 'https://github.com/sekrit-twc/zimg/archive/refs/tags/release-3.0.5.tar
 
 case "$TARGET" in
   *windows*)
+    # Fix compilation on case sensitive file systems
     sed -ie 's/#include <Windows.h>/#include <windows.h>/' zimg/src/zimg/common/arm/cpuinfo_arm.cpp
     ;;
 esac

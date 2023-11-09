@@ -23,8 +23,7 @@ echo "Download xar ..."
 
 mkdir -p "xar/build"
 
-curl_tar 'https://github.com/tpoechtrager/xar/archive/7eeb4be9f981f5678e392eb7f14510f15123a6e1.tar.gz' \
-  'xar' 1
+curl_tar 'https://github.com/tpoechtrager/xar/archive/7eeb4be.tar.gz' 'xar' 1
 
 cd xar/xar
 

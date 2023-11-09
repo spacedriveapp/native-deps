@@ -30,8 +30,7 @@ echo "Download cctools ..."
 
 mkdir -p "cctools"
 
-curl_tar 'https://github.com/tpoechtrager/cctools-port/archive/437ced391dbf14dce86f977ca050a750d5682f39.tar.gz' \
-  'cctools' 1
+curl_tar 'https://github.com/tpoechtrager/cctools-port/archive/437ced3.tar.gz' 'cctools' 1
 
 sed -i "/^if readelf -p .comment \$LIBDIR\/libLTO.so | grep clang &>\/dev\/null; then/,/^fi/d;" cctools/tools/fix_liblto.sh
 sed -ie 's/wget/curl -LSsOJ/' cctools/tools/fix_liblto.sh

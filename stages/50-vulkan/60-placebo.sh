@@ -14,11 +14,11 @@ curl_tar 'https://github.com/haasn/libplacebo/archive/refs/tags/v5.264.1.tar.gz'
 
 # Some required patches for fixing log for windows
 for patch in \
-  https://github.com/haasn/libplacebo/commit/c02a8a2f49b462c4715add17855cc4575d1d2ac7.patch \
-  https://github.com/haasn/libplacebo/commit/7f9eb409dc679ee5bf096dbdfd84a5ccfee38b7a.patch \
-  https://github.com/haasn/libplacebo/commit/cd7a371a0dcbb0d0cc8795d5c4788d1873332523.patch \
-  https://github.com/haasn/libplacebo/commit/dc6e5a5e3deaa5355a91338c9497371f318da308.patch \
-  https://github.com/haasn/libplacebo/commit/97d008b6d39a05b619e5b61fac05f4f2ef122ede.patch; do
+  'https://github.com/haasn/libplacebo/commit/c02a8a2.patch' \
+  'https://github.com/haasn/libplacebo/commit/7f9eb40.patch' \
+  'https://github.com/haasn/libplacebo/commit/cd7a371.patch' \
+  'https://github.com/haasn/libplacebo/commit/dc6e5a5.patch' \
+  'https://github.com/haasn/libplacebo/commit/97d008b.patch'; do
   curl -LSs "$patch" | patch -F5 -lp1 -d placebo -t
 done
 

@@ -4,7 +4,7 @@ echo "Download vpx..."
 mkdir -p vpx
 
 # v1.13.1
-curl_tar 'https://gitlab.freedesktop.org/gstreamer/meson-ports/libvpx/-/archive/b2bd418b/libvpx.tar.gz' vpx 1
+curl_tar 'https://gitlab.freedesktop.org/gstreamer/meson-ports/libvpx/-/archive/b2bd418/libvpx.tar.gz' vpx 1
 
 sed -i "/xcrun_exe = find_program('xcrun', required: true)/d" vpx/meson.build
 

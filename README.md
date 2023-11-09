@@ -36,11 +36,13 @@ After some time (it takes aroung 1~2 hours in Github CI) a directory named `out`
     > https://git.2f30.org/fortify-headers/file/README.html
 - Add stack check/protector to linux-musl shared libs
 - Add stack check to windows dlls whenever zig adds support to it:
-    > https://github.com/ziglang/zig/blob/b3462b7cec9931cd3747f10714954eb8efe00c04/src/target.zig#L326-L329
+    > https://github.com/ziglang/zig/blob/b3462b7/src/target.zig#L326-L329
 - Add stack check/protector to linux arm64 glibc shared libs whenever zig fix the bug preventing it from working:
     > https://github.com/ziglang/zig/issues/17430#issuecomment-1752592338
 - Add support for pthread in windows builds:
     > https://github.com/GerHobbelt/pthread-win32
+    > https://sourceforge.net/p/mingw-w64/mingw-w64/ci/master/tree/mingw-w64-libraries/winpthreads/
+    > https://github.com/msys2/MINGW-packages/blob/f4bd368/mingw-w64-winpthreads-git/PKGBUILD
 - Add libplacebo and vulkan support for apple builds through MoltenVK:
     > https://github.com/KhronosGroup/MoltenVK
 - Investigate why mediafoundation fails to link to ffmpeg's libav* libs for windows builds

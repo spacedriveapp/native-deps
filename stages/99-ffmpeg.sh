@@ -60,6 +60,7 @@ case "$TARGET" in
       --disable-lto
       --disable-metal
       --disable-vulkan
+      --disable-w32threads
       --disable-libshaderc
       --disable-libplacebo
       --disable-mediafoundation
@@ -73,6 +74,7 @@ case "$TARGET" in
   *linux*)
     env_specific_arg+=(
       --disable-coreimage
+      --disable-w32threads
       --disable-videotoolbox
       --disable-avfoundation
       --disable-audiotoolbox
@@ -85,7 +87,6 @@ case "$TARGET" in
     )
     ;;
   *windows*)
-    # TODO: Add support for pthreads on Windows (zig doesn't ship pthreads-w32 from mingw64)
     # TODO: Add support for mediafoundation on Windows (zig doesn't seem to have the necessary bindings to it yet)
     # FIX-ME: LTO isn't working on Windows rn
     env_specific_arg+=(
@@ -97,6 +98,7 @@ case "$TARGET" in
       --disable-audiotoolbox
       --disable-mediafoundation
       --enable-vulkan
+      --enable-w32threads
       --enable-libshaderc
       --enable-libplacebo
     )
@@ -177,7 +179,6 @@ if ! ./configure \
   --disable-libxcb-shape \
   --disable-libv4l2 \
   --disable-v4l2-m2m \
-  --disable-w32threads \
   --disable-xmm-clobber-test \
   --disable-neon-clobber-test \
   --enable-asm \

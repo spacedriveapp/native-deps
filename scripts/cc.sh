@@ -84,6 +84,10 @@ while [ "$#" -gt 0 ]; do
     stdout=1
     shift 2
     continue
+  elif [ "$1" = '-g' ] || [ "$1" = '-gfull' ] || [ "$1" = '--debug' ]; then
+    true
+  elif (case "$1" in --debug=* | -gdwarf*) exit 0 ;; *) exit 1 ;; esac) then
+    true
   elif [ "$1" = '-' ]; then
     stdin=1
   elif [ "$1" = '-lgcc_s' ]; then
@@ -142,7 +146,7 @@ while [ "$#" -gt 0 ]; do
       else
         argv+=("$1")
 
-        # See https://github.com/apple-oss-distributions/libiconv/blob/a167071feb7a83a01b27ec8d238590c14eb6faff/xcodeconfig/libiconv.xcconfig
+        # See https://github.com/apple-oss-distributions/libiconv/blob/a167071/xcodeconfig/libiconv.xcconfig
         if [ "$1" = '-lcharset' ]; then
           should_add_libcharset=-1
         elif [ "$1" = '-liconv' ] && [ "$should_add_libcharset" -eq 0 ]; then

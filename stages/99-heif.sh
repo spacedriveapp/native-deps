@@ -3,7 +3,13 @@
 echo "Download heif..."
 mkdir -p heif
 
-curl_tar 'https://github.com/strukturag/libheif/releases/download/v1.17.1/libheif-1.17.1.tar.gz' heif 1
+curl_tar 'https://github.com/strukturag/libheif/releases/download/v1.17.3/libheif-1.17.3.tar.gz' heif 1
+
+case "$TARGET" in
+  *windows*)
+    sed -ie 's/__attribute__((__visibility__("default")))/__declspec(dllexport)/' heif/libheif/heif.h
+    ;;
+esac
 
 # Remove unused components
 rm -r heif/{go,fuzzing,tests,examples}

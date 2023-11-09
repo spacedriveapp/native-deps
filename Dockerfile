@@ -97,10 +97,6 @@ RUN --mount=type=cache,target=/root/.cache `
 # Download and install gas-preprocessor, used by our zig wrapper to handle GNU flavored assembly files
 ADD --chmod=0750 'https://github.com/libav/gas-preprocessor/raw/master/gas-preprocessor.pl' "${SYSROOT}/bin/gas-preprocessor.pl"
 
-# Download compat tool for converting windres args to rc (required by x264 and ffmpeg)
-ADD --chmod=0750 'https://raw.githubusercontent.com/FFmpeg/FFmpeg/master/compat/windows/mswindres' "${SYSROOT}/bin/windres"
-RUN sed -i 's/rc.exe/rc/' "${SYSROOT}/bin/windres"
-
 # Download compat tool for generating def files for windows
 ADD --chmod=0750 'https://github.com/FFmpeg/FFmpeg/raw/master/compat/windows/makedef' "${SYSROOT}/bin/makedef"
 
@@ -135,6 +131,7 @@ RUN for tool in `
 # Custom llvm rc wrapper script with some pre-configurations
 # Do not name this llvm-rc or rc.exe, to avoid cmake weird special behavior for those tool names
 COPY --chmod=0750 ./scripts/rc.sh "${SYSROOT}/bin/rc"
+COPY --chmod=0750 ./scripts/rc.sh "${SYSROOT}/bin/windres"
 
 # Polyfill macOS sw_vers command
 COPY --chmod=0750 ./scripts/sw_vers.sh "${SYSROOT}/bin/sw_vers"
@@ -327,6 +324,7 @@ FROM layer-45 AS layer-50-onevpl
 
 RUN --mount=type=cache,target=/root/.cache `
 	--mount=type=bind,source=stages/50-onevpl.sh,target=/srv/stage.sh `
+	--mount=type=bind,source=patches/50-onevpl,target="${PREFIX}/patches" `
 	/srv/build.sh
 
 FROM layer-45 AS layer-50-opus
