@@ -15,15 +15,15 @@ esac
 _name="$(basename "$0")"
 case "$_name" in
   rc)
-    # Work-around meson not recognising able to find llvm-rc
+    # Work-around meson not recognising llvm-rc
     if [ "$1" = '/?' ]; then
       echo 'LLVM Resource Converter'
     fi
 
-    set -- /D __GNUC__ /I "$_win_include" "$@"
+    set -- -target="${TARGET%%-*}-pc-windows-gnu" /D __GNUC__ /I "$_win_include" "$@"
     ;;
   windres)
-    set -- --define=__GNUC__ --include-dir="$_win_include" "$@"
+    set -- --target="${TARGET%%-*}-w64-mingw32" --define=__GNUC__ --include-dir="$_win_include" "$@"
     ;;
   *)
     echo "Script name must be rc or windres" >&2
