@@ -59,7 +59,6 @@ ln -s A "${OUT}/${_framework}/Versions/Current"
 ln -s Versions/Current/Headers "${OUT}/${_framework}/Headers"
 ln -s Versions/Current/Resources "${OUT}/${_framework}/Resources"
 ln -s Versions/Current/Libraries "${OUT}/${_framework}/Libraries"
-ln -s Versions/Current/Spacedrive "${OUT}/${_framework}/Spacedrive"
 
 # Symlink framework directories back to our original layout
 ln -s "${_framework}/Headers" "${OUT}/include"
