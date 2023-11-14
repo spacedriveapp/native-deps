@@ -466,7 +466,7 @@ RUN find "$OUT/lib" -name '*.lib' -exec `
 # Strip must run before patchelf
 # https://github.com/NixOS/patchelf/issues/507
 RUN --mount=type=cache,target=/root/.cache `
-	echo 'strip -S "$@" && chmod +x "$@"' >/srv/stage.sh `
+	echo 'strip --strip-unneeded "$@" && chmod +x "$@"' >/srv/stage.sh `
 	&& find "$OUT" -type f \( -name '*.so' -o -name '*.so.*' -o -name '*.dll' -o -name '*.dylib' \) -exec /srv/build.sh {} +
 
 # Ensure all .so files have the correct rpaths (Linux target only)
