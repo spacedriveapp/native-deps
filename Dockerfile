@@ -462,22 +462,17 @@ RUN find "${OUT}/bin" -name '*.lib' -exec install -Dt ../lib/ -m a-rwx,u+rw,g+r,
 RUN find "$OUT/lib" -name '*.lib' -exec `
 	sh -euxc 'for _file in "$@"; do cp "$_file" "$(dirname "$_file")/lib$(basename "$_file" .lib).dll.a"; done' sh {} +
 
-# Ensure .so, .dll and .dylib have the execution bit set
-RUN find "$OUT" -type f \( -name '*.so' -o -name '*.so.*' -o -name '*.dll' -o -name '*.dylib' \) -exec chmod +x {} +
-
-# Strip uneeded symbols from .so (Linux target only)
-# Strip must run before patchelf: https://github.com/NixOS/patchelf/issues/507
-RUN . /etc/environment `
-	&& find "$OUT" -type f \( -name '*.so' -o -name '*.so.*' \) -exec strip --strip-unneeded {} +
+# Strip debug symbols and ensure any .so, .dll, .dylib has the execution flag set
+# Strip must run before patchelf
+# https://github.com/NixOS/patchelf/issues/507
+RUN --mount=type=cache,target=/root/.cache `
+	echo 'strip --strip-unneeded "$@" && chmod +x "$@"' >/srv/stage.sh `
+	&& find "$OUT" -type f \( -name '*.so' -o -name '*.so.*' -o -name '*.dll' -o -name '*.dylib' \) -exec /srv/build.sh {} +
 
 # Ensure all .so files have the correct rpaths (Linux target only)
 RUN find "$OUT" -type f \( -name '*.so' -o -name '*.so.*' \) -exec patchelf --set-rpath '$ORIGIN' {} \;
 
-# Strip debug symbols from .dll and .dylib (macOS and Windows targets)
-RUN . /etc/environment `
-	&& find "$OUT" -type f \( -name '*.dll' -o -name '*.dylib' \) -exec strip -S {} +
-
-# Remove non executable files from the bin folder
+# Remove non executable files from bin folder
 RUN find "${OUT}/bin" -type f -not -executable -delete
 
 # Remove empty directories
