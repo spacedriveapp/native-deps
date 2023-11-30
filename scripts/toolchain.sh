@@ -90,6 +90,17 @@ set(CMAKE_SYSTEM_NAME ${SYSTEM_NAME^})
 set(CMAKE_SYSTEM_VERSION ${SYSTEM_VERSION})
 set(CMAKE_SYSTEM_PROCESSOR ${SYSTEM_PROCESSOR})
 
+$(
+  case "$TARGET" in
+    x86_64-darwin*)
+      echo 'set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "")'
+      ;;
+    aarch64-darwin*)
+      echo 'set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "")'
+      ;;
+  esac
+)
+
 $(if [ -n "${SDKROOT:-}" ]; then echo "set(CMAKE_SYSROOT ${SDKROOT})"; fi)
 
 set(CMAKE_CROSSCOMPILING TRUE)

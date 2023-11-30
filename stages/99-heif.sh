@@ -3,7 +3,7 @@
 echo "Download heif..."
 mkdir -p heif
 
-curl_tar 'https://github.com/strukturag/libheif/releases/download/v1.17.3/libheif-1.17.3.tar.gz' heif 1
+curl_tar 'https://github.com/strukturag/libheif/releases/download/v1.17.5/libheif-1.17.5.tar.gz' heif 1
 
 case "$TARGET" in
   *windows*)

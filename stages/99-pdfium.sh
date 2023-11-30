@@ -3,7 +3,7 @@
 echo "Download pdfium..."
 mkdir -p pdfium
 
-_tag='chromium/6110'
+_tag='chromium/6150'
 case "$TARGET" in
   x86_64-windows*)
     _name='win-x64'
@@ -38,12 +38,12 @@ curl_tar "https://github.com/bblanchon/pdfium-binaries/releases/download/${_tag}
 cd pdfium
 
 # Install
-mkdir -p "$OUT/include"
+mkdir -p "$OUT"/{bin,lib,include}
 case "$TARGET" in
   *windows*)
-    mv bin "$OUT/bin"
+    mv bin/* "${OUT}/bin"
     mv lib/pdfium.dll.lib lib/pdfium.lib
     ;;
 esac
-mv lib "$OUT/lib"
-mv include "$OUT/include/libpdfium"
+mv lib/* "${OUT}/lib/"
+mv include "${OUT}/include/libpdfium"

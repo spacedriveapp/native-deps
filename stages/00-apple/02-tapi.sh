@@ -24,9 +24,11 @@ echo "Download tapi ..."
 
 mkdir -p "tapi"
 
-curl_tar 'https://github.com/tpoechtrager/apple-libtapi/archive/43a0c04.tar.gz' 'tapi' 1
+curl_tar 'https://github.com/tpoechtrager/apple-libtapi/archive/b8c5ac4.tar.gz' 'tapi' 1
 
 cd tapi
+
+export NINJA=1
 
 ./build.sh
 ./install.sh

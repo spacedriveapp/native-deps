@@ -10,7 +10,7 @@ esac
 echo "Download vulkan..."
 mkdir -p vulkan-headers
 
-curl_tar 'https://github.com/KhronosGroup/Vulkan-Headers/archive/refs/tags/v1.3.269.tar.gz' vulkan-headers 1
+curl_tar 'https://github.com/KhronosGroup/Vulkan-Headers/archive/refs/tags/v1.3.268.tar.gz' vulkan-headers 1
 
 VERSION="$(
   sed -nr \

@@ -3,7 +3,7 @@
 echo "Download ffmpeg..."
 mkdir -p ffmpeg
 
-curl_tar 'https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n6.0.tar.gz' ffmpeg 1
+curl_tar 'https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n6.1.tar.gz' ffmpeg 1
 
 # Backup source
 bak_src 'ffmpeg'
@@ -57,7 +57,6 @@ case "$TARGET" in
       # TODO: Maybe try macOS own metal compiler under darling? https://github.com/darlinghq/darling/issues/326
       # TODO: Add support for vulkan (+ libplacebo) on macOS with MoltenVK
       --sysroot="${MACOS_SDKROOT:?Missing macOS SDK path}"
-      --disable-lto
       --disable-metal
       --disable-vulkan
       --disable-w32threads
@@ -90,7 +89,6 @@ case "$TARGET" in
     # TODO: Add support for mediafoundation on Windows (zig doesn't seem to have the necessary bindings to it yet)
     # FIX-ME: LTO isn't working on Windows rn
     env_specific_arg+=(
-      --disable-lto
       --disable-pthreads
       --disable-coreimage
       --disable-videotoolbox

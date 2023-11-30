@@ -30,11 +30,13 @@ echo "Download cctools ..."
 
 mkdir -p "cctools"
 
-curl_tar 'https://github.com/tpoechtrager/cctools-port/archive/437ced3.tar.gz' 'cctools' 1
+curl_tar 'https://github.com/tpoechtrager/cctools-port/archive/59f5fb8.tar.gz' 'cctools' 1
 
+# Patch check to force script to use clang
 sed -i "/^if readelf -p .comment \$LIBDIR\/libLTO.so | grep clang &>\/dev\/null; then/,/^fi/d;" cctools/tools/fix_liblto.sh
+# Replace wget with curl
 sed -ie 's/wget/curl -LSsOJ/' cctools/tools/fix_liblto.sh
-
+# Fix LTO
 env LLVM_CONFIG=llvm-config-16 cctools/tools/fix_liblto.sh
 
 cd cctools/cctools
@@ -44,9 +46,12 @@ cd cctools/cctools
   --target="$_target" \
   --with-libxar="$CCTOOLS" \
   --with-libtapi="$CCTOOLS" \
+  --with-libdispatch="$CCTOOLS" \
   --with-llvm-config=llvm-config-16 \
+  --with-libblocksruntime="$CCTOOLS" \
   --enable-xar-support \
-  --enable-lto-support
+  --enable-lto-support \
+  --enable-tapi-support
 
 make -j"$(nproc)"
 

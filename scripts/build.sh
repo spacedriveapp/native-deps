@@ -64,6 +64,7 @@ case "$TARGET" in
     # Apple tools and linker fails to LTO static libraries
     # https://github.com/tpoechtrager/osxcross/issues/366
     export LTO=0
+    export LD_LIBRARY_PATH="${CCTOOLS}/lib:/usr/local/lib:${LD_LIBRARY_PATH:-}"
 
     # Ugly workaround for apple linker not finding the macOS SDK's Framework directory
     ln -fs "${MACOS_SDKROOT}/System" '/System'
@@ -72,13 +73,11 @@ case "$TARGET" in
 
     case "$TARGET" in
       x86_64*)
-        export CMAKE_OSX_ARCHITECTURES='x86_64'
         export MACOSX_DEPLOYMENT_TARGET="10.15"
         export CMAKE_APPLE_SILICON_PROCESSOR='x86_64'
         LDFLAGS="${LDFLAGS} -Wl,-arch,x86_64"
         ;;
       aarch64*)
-        export CMAKE_OSX_ARCHITECTURES='aarch64'
         export MACOSX_DEPLOYMENT_TARGET="11.0"
         export CMAKE_APPLE_SILICON_PROCESSOR='aarch64'
         LDFLAGS="${LDFLAGS} -Wl,-arch,arm64"
