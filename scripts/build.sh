@@ -47,7 +47,6 @@ LDFLAGS="-L${PREFIX}/lib -pipe"
 case "$TARGET" in
   *linux*)
     FFLAGS="-fno-semantic-interposition"
-    CFLAGS="${CFLAGS} -D_GLIBCXX_ASSERTIONS"
     LDFLAGS="${LDFLAGS} -Wl,-z,relro,-z,now,-z,defs"
 
     case "$TARGET" in
@@ -57,6 +56,15 @@ case "$TARGET" in
       aarch64*)
         # https://github.com/ziglang/zig/issues/17430#issuecomment-1752592338
         FFLAGS="${FFLAGS} -fno-stack-protector -fno-stack-check"
+        ;;
+    esac
+
+    case "$TARGET" in
+      *gnu)
+        CFLAGS="${CFLAGS} -D_GLIBCXX_ASSERTIONS=1"
+        ;;
+      *musl)
+        CFLAGS="${CFLAGS} -D_LARGEFILE64_SOURCE=1"
         ;;
     esac
     ;;
