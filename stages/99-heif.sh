@@ -11,6 +11,8 @@ case "$TARGET" in
     ;;
 esac
 
+sed -i 's/find_package(FFMPEG COMPONENTS avcodec)/find_package(FFMPEG COMPONENTS avcodec avutil)/' heif/CMakeLists.txt
+
 # Remove unused components
 rm -r heif/{go,fuzzing,tests,examples}
 
@@ -44,7 +46,7 @@ env SHARED=On PREFIX="$OUT" cmake \
   -DWITH_AOM_ENCODER=Off \
   -DWITH_JPEG_DECODER=Off \
   -DWITH_JPEG_ENCODER=Off \
-  -DWITH_FFMPEG_DECODER=Off \
+  -DWITH_FFMPEG_DECODER=On \
   -DWITH_OpenJPEG_DECODER=Off \
   -DWITH_OpenJPEG_ENCODER=Off \
   -DENABLE_PLUGIN_LOADING=Off \
