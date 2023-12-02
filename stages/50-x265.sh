@@ -9,6 +9,13 @@ curl_tar 'https://bitbucket.org/multicoreware/x265_git/get/8ee01d4.tar.bz2' x265
 # Remove some superfluous files
 rm -rf x265/{doc,build}
 
+# Handbreak patches
+for patch in \
+  https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/x265/A03-sei-length-crash-fix.patch \
+  https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/x265/A05-memory-leaks.patch; do
+  curl -LSs "$patch" | patch -F5 -lp1 -d x265 -t
+done
+
 # Backup source
 bak_src 'x265'
 

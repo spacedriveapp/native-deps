@@ -5,6 +5,30 @@ mkdir -p ffmpeg
 
 curl_tar 'https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n6.1.tar.gz' ffmpeg 1
 
+# Handbreak patches
+for patch in \
+  https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/ffmpeg/A01-mov-read-name-track-tag-written-by-movenc.patch \
+  https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/ffmpeg/A02-movenc-write-3gpp-track-titl-tag.patch \
+  https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/ffmpeg/A03-mov-read-3gpp-udta-tags.patch \
+  https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/ffmpeg/A04-movenc-write-3gpp-track-names-tags-for-all-available.patch \
+  https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/ffmpeg/A05-dvdsubdec-fix-processing-of-partial-packets.patch \
+  https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/ffmpeg/A06-dvdsubdec-return-number-of-bytes-used.patch \
+  https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/ffmpeg/A07-dvdsubdec-use-pts-of-initial-packet.patch \
+  https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/ffmpeg/A08-ccaption_dec-fix-pts-in-real_time-mode.patch \
+  https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/ffmpeg/A09-matroskaenc-aac-extradata-updated.patch \
+  https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/ffmpeg/A10-amfenc-Add-support-for-pict_type-field.patch \
+  https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/ffmpeg/A11-amfenc-Fixes-the-color-information-in-the-ou.patch \
+  https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/ffmpeg/A12-amfenc-HDR-metadata.patch \
+  https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/ffmpeg/A13-libavcodec-amfenc-Fix-issue-with-missing-headers-in-.patch \
+  https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/ffmpeg/A14-avcodec-add-ambient-viewing-environment-packet-side-.patch \
+  https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/ffmpeg/A15-avformat-mov-add-support-for-amve-ambient-viewing-en.patch \
+  https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/ffmpeg/A16-videotoolbox-dec-h264-10bit.patch \
+  https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/ffmpeg/A17-libswscale-fix-yuv420p-to-p01xle-color-conversion-bu.patch \
+  https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/ffmpeg/A18-qsv-fix-decode-10bit-hdr.patch \
+  https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/ffmpeg/A19-ffbuild-common-use-gzip-n-flag-for-cuda.patch; do
+  curl -LSs "$patch" | patch -F5 -lp1 -d ffmpeg -t
+done
+
 # Backup source
 bak_src 'ffmpeg'
 
