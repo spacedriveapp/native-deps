@@ -58,3 +58,6 @@ make -j"$(nproc)"
 make install
 
 rm -r /srv/cctools
+
+# Create symlinks for llvm-otool because cctools use it when calling its own otool
+ln -fs "$(command -v llvm-otool-16)" /opt/cctools/bin/llvm-otool
