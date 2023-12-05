@@ -466,6 +466,8 @@ COPY --from=layer-99-protoc "${PREFIX}/licenses/." "${OUT}/licenses"
 COPY --from=layer-99-pdfium "${OUT}/." "$OUT"
 COPY --from=layer-99-pdfium "${PREFIX}/licenses/." "${OUT}/licenses"
 
+COPY --from=layer-99-yolo "${OUT}/." "$OUT"
+
 COPY --from=layer-99-onnx "${OUT}/." "$OUT"
 COPY --from=layer-99-onnx "${PREFIX}/srv/." "${OUT}/srv"
 COPY --from=layer-99-onnx "${PREFIX}/licenses/." "${OUT}/licenses"
