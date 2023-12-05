@@ -428,6 +428,12 @@ RUN --mount=type=cache,target=/root/.cache `
 	--mount=type=bind,source=stages/99-pdfium.sh,target=/srv/stage.sh `
 	/srv/build.sh
 
+FROM layer-00 AS layer-99-yolo
+
+RUN --mount=type=cache,target=/root/.cache `
+	--mount=type=bind,source=stages/99-yolov8.sh,target=/srv/stage.sh `
+	/srv/build.sh
+
 FROM layer-20 AS layer-99-onnx
 
 RUN --mount=type=cache,target=/root/.cache `
