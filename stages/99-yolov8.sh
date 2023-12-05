@@ -13,5 +13,5 @@ case "$TARGET" in
 esac
 
 mkdir -p "$OUT"/{models,licenses}
-curl -LSsO "${OUT}/models/yolov8s.onnx" "https://github.com/spacedriveapp/native-deps/releases/download/${_tag}/${_name}"
-curl -LSsO "https://raw.githubusercontent.com/ultralytics/assets/main/LICENSE" "${OUT}/licenses/yolov8s.LICENSE"
+curl -o "${OUT}/models/yolov8s.onnx" "https://github.com/spacedriveapp/native-deps/releases/download/${_tag}/${_name}"
+curl -o "${OUT}/licenses/yolov8s.LICENSE" 'https://raw.githubusercontent.com/ultralytics/assets/main/LICENSE'

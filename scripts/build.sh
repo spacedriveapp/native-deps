@@ -110,6 +110,10 @@ export CFLAGS="${CFLAGS} ${FFLAGS}"
 export LDFLAGS="${LDFLAGS} ${FFLAGS}"
 export CXXFLAGS="${CFLAGS}"
 
+curl () {
+  env curl --proto '=https' --tlsv1.2 --ciphers "${CIPHERSUITES:?Missing curl ciphersuite}" --silent --show-error --fail --location "$@"
+}
+
 bak_src() {
   if ! { [ "$#" -eq 1 ] && [ -d "$1" ]; }; then
     echo "bak_src: <SRC_DIR>" >&2
