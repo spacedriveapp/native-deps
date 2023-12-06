@@ -31,12 +31,11 @@ fi
 
 _url="$1"
 _cache="/root/.cache/_curl_tar/$(md5sum - <<<"$_url" | awk '{ print $1 }')"
-_ciphersuites="TLS_AES_128_GCM_SHA256:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_256_GCM_SHA384:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384"
 
 mkdir -p "$(dirname "$_cache")"
 
 if ! [ -s "$_cache" ]; then
-  curl --proto '=https' --tlsv1.2 --ciphers "$_ciphersuites" --silent --show-error --fail --location "$_url" >"$_cache"
+  curl --proto '=https' --tlsv1.2 --ciphers "${CIPHERSUITES:?Missing curl ciphersuite}" --silent --show-error --fail --location "$_url" >"$_cache"
 fi
 
 trap 'rm -rf "$_cache"' ERR

@@ -8,7 +8,7 @@ case "${TARGET:?TARGET envvar is required to be defined}" in
     # Set the glibc minimum version
     # This is the lowest we can go at the moment
     # https://github.com/ziglang/zig/issues/9412
-    TARGET="${TARGET}.2.18"
+    TARGET="${TARGET%%.*}.2.18"
     ;;
   x86_64-darwin-apple | x86_64-apple-darwin-macho)
     SDKROOT="$MACOS_SDKROOT"
@@ -64,6 +64,7 @@ sysroot=''
 assembler=0
 has_iphone=0
 preprocessor=0
+cpu_features=()
 assembler_file=0
 should_add_libcharset=0
 has_undefined_dynamic_lookup=0
@@ -77,7 +78,15 @@ while [ "$#" -gt 0 ]; do
     continue
   fi
 
-  if [ "$1" = '-o-' ] || [ "$1" = '-o=-' ]; then
+  if [ "$1" = '-Xlinker' ] || [ "$1" = '--for-linker' ]; then
+    l_args+=("${2:?Linker argument not passed}")
+    shift 2
+    continue
+  elif (case "$1" in --for-linker=*) exit 0 ;; *) exit 1 ;; esac) then
+    l_args+=("${1#*=}")
+    shift
+    continue
+  elif [ "$1" = '-o-' ] || [ "$1" = '-o=-' ]; then
     # -E redirect to stdout by default, -o - breaks it so we ignore it
     stdout=1
   elif [ "$1" = '-o' ] && [ "${2:-}" = '-' ]; then
@@ -120,7 +129,7 @@ while [ "$#" -gt 0 ]; do
     # https://github.com/llvm/llvm-project/issues/47432
     # https://github.com/llvm/llvm-project/issues/66912
     true
-  elif [ "$1" = '-xassembler' ] || [ "$1" = '--language=assembler' ]; then
+  elif [ "$1" = '-xassembler' ] || [ "$1" = '-Xassembler' ] || [ "$1" = '--language=assembler' ]; then
     # Zig behaves very oddly when passed the explicit assembler language option
     # https://github.com/ziglang/zig/issues/10915
     # https://github.com/ziglang/zig/pull/13544
@@ -130,7 +139,10 @@ while [ "$#" -gt 0 ]; do
     shift 2
     continue
   elif (case "$1" in -mcpu=* | -march=*) exit 0 ;; *) exit 1 ;; esac) then
-    # Ignore -mcpu and -march flags, we set them ourselves
+    # Save each feature to the cpu_features array
+    IFS='+' read -ra _features <<<"$1"
+    unset "_features[0]"
+    cpu_features+=("${_features[@]}")
     true
   else
     if (case "$TARGET" in *darwin*) exit 0 ;; *) exit 1 ;; esac) then
@@ -269,6 +281,9 @@ while [ "$#" -gt 0 ]; do
         l_args+=("$1")
         ;;
     esac
+  elif (case "$1" in --version-script=*) exit 0 ;; *) exit 1 ;; esac) then
+    # Zig only support --version-script with a separate argument
+    l_args+=(--version-script "${1#*=}")
   else
     l_args+=("$1")
   fi
@@ -282,7 +297,9 @@ if [ $stdout -eq 1 ] && ! [ $preprocessor -eq 1 ]; then
 fi
 
 # Work-around Zig not respecting -fno-lto when -flto is set
-if [ -n "$lto" ]; then
+if [ "${LTO:-1}" -eq 0 ]; then
+  argv+=('-fno-lto')
+elif [ -n "$lto" ]; then
   argv+=("$lto")
 fi
 
@@ -292,32 +309,56 @@ if [ $should_add_libcharset -eq 1 ]; then
 fi
 
 # Compiler specific flags
+features=""
+for feature in "${cpu_features[@]}"; do
+  case "$CMD" in
+    clang*) ;;
+    *)
+      if [ "$assembler" -eq 0 ] || [ "$preprocessor" -eq 1 ]; then
+        # Zig specific changes
+        case "$feature" in
+          fp16)
+            feature="fullfp16"
+            ;;
+        esac
+      fi
+      ;;
+  esac
+
+  features="${features}+${feature}"
+done
+
 case "${TARGET:-}" in
   x86_64*)
     case "${TARGET:-}" in
       *darwin*)
         # macOS 10.15 (Catalina) only supports Macs made with Ivy Bridge or later
-        c_argv+=(-march=ivybridge)
+        c_argv+=("-march=ivybridge${features}")
         ;;
       *)
-        c_argv+=(-march=x86_64_v2)
+        c_argv+=("-march=x86_64_v2${features}")
         ;;
     esac
     ;;
   arm64* | aarch64*)
-    case "${TARGET:-}" in
-      *darwin*)
-        c_argv+=(-mcpu=apple-m1)
-        ;;
-      *)
-        # Raspberry Pi 3
-        c_argv+=(-mcpu=cortex_a53)
-        ;;
-    esac
+    if [ "$assembler" -eq 1 ] && [ "$preprocessor" -eq 0 ]; then
+      # This is an workaround for zig not supporting some features when compiling arm assembler code
+      c_argv+=(-Xassembler "-march=armv8.2-a${features}")
+    else
+      case "${TARGET:-}" in
+        *darwin*)
+          c_argv+=("-mcpu=apple-m1${features}")
+          ;;
+        *)
+          # Raspberry Pi 3
+          c_argv+=("-mcpu=cortex_a53${features}")
+          ;;
+      esac
+    fi
     ;;
 esac
 
-# Like -O2 with extra optimizations to reduce code size
+# Like -O2, but with extra optimizations to reduce code size
 c_argv+=(-Os)
 
 # Resolve sysroot arguments per target

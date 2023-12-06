@@ -10,29 +10,20 @@ esac
 echo "Download placebo..."
 mkdir -p placebo
 
-curl_tar 'https://github.com/haasn/libplacebo/archive/refs/tags/v5.264.1.tar.gz' placebo 1
-
-# Some required patches for fixing log for windows
-for patch in \
-  'https://github.com/haasn/libplacebo/commit/c02a8a2.patch' \
-  'https://github.com/haasn/libplacebo/commit/7f9eb40.patch' \
-  'https://github.com/haasn/libplacebo/commit/cd7a371.patch' \
-  'https://github.com/haasn/libplacebo/commit/dc6e5a5.patch' \
-  'https://github.com/haasn/libplacebo/commit/97d008b.patch'; do
-  curl -LSs "$patch" | patch -F5 -lp1 -d placebo -t
-done
-
-# Fix spirv import
-sed -ie 's@spirv_cross_c.h@spirv_cross/spirv_cross_c.h@' placebo/src/d3d11/gpu.h
+curl_tar 'https://github.com/haasn/libplacebo/archive/refs/tags/v6.338.1.tar.gz' placebo 1
 
 # Thrid party deps
 curl_tar 'https://github.com/pallets/jinja/archive/refs/tags/3.1.2.tar.gz' placebo/3rdparty/jinja 1
 curl_tar 'https://github.com/pallets/markupsafe/archive/refs/tags/2.1.3.tar.gz' placebo/3rdparty/markupsafe 1
+curl_tar 'https://github.com/fastfloat/fast_float/archive/refs/tags/v5.3.0.tar.gz' placebo/3rdparty/fast_float 1
+
+sed -i "s|windows.compile_resources(libplacebo_rc, depends: version_h,|windows.compile_resources(libplacebo_rc, depends: version_h, args: '/c65001',|" placebo/src/meson.build
 
 # Remove some superfluous files
-rm -rf placebo/{.github,docs,demos}
-rm -rf placebo/3rdparty/jinja/{.github,artwork,docs,examples,requirements,scripts,tests}
-rm -rf placebo/3rdparty/markupsafe/{.github,bench,docs,requirements,tests}
+rm -rf placebo/{.*,docs,demos}
+rm -rf placebo/3rdparty/jinja/{.*,artwork,docs,examples,requirements,scripts,tests}
+rm -rf placebo/3rdparty/markupsafe/{.*,bench,docs,requirements,tests}
+rm -rf placebo/3rdparty/fast_float/{.*,ci,fuzz,script,tests}
 
 # Backup source
 bak_src 'placebo'

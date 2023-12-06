@@ -47,7 +47,6 @@ LDFLAGS="-L${PREFIX}/lib -pipe"
 case "$TARGET" in
   *linux*)
     FFLAGS="-fno-semantic-interposition"
-    CFLAGS="${CFLAGS} -D_GLIBCXX_ASSERTIONS"
     LDFLAGS="${LDFLAGS} -Wl,-z,relro,-z,now,-z,defs"
 
     case "$TARGET" in
@@ -59,11 +58,21 @@ case "$TARGET" in
         FFLAGS="${FFLAGS} -fno-stack-protector -fno-stack-check"
         ;;
     esac
+
+    case "$TARGET" in
+      *gnu)
+        CFLAGS="${CFLAGS} -D_GLIBCXX_ASSERTIONS=1"
+        ;;
+      *musl)
+        CFLAGS="${CFLAGS} -D_LARGEFILE64_SOURCE=1"
+        ;;
+    esac
     ;;
   *darwin*)
     # Apple tools and linker fails to LTO static libraries
     # https://github.com/tpoechtrager/osxcross/issues/366
     export LTO=0
+    export LD_LIBRARY_PATH="${CCTOOLS}/lib:/usr/local/lib:${LD_LIBRARY_PATH:-}"
 
     # Ugly workaround for apple linker not finding the macOS SDK's Framework directory
     ln -fs "${MACOS_SDKROOT}/System" '/System'
@@ -72,13 +81,11 @@ case "$TARGET" in
 
     case "$TARGET" in
       x86_64*)
-        export CMAKE_OSX_ARCHITECTURES='x86_64'
         export MACOSX_DEPLOYMENT_TARGET="10.15"
         export CMAKE_APPLE_SILICON_PROCESSOR='x86_64'
         LDFLAGS="${LDFLAGS} -Wl,-arch,x86_64"
         ;;
       aarch64*)
-        export CMAKE_OSX_ARCHITECTURES='aarch64'
         export MACOSX_DEPLOYMENT_TARGET="11.0"
         export CMAKE_APPLE_SILICON_PROCESSOR='aarch64'
         LDFLAGS="${LDFLAGS} -Wl,-arch,arm64"
@@ -102,6 +109,10 @@ esac
 export CFLAGS="${CFLAGS} ${FFLAGS}"
 export LDFLAGS="${LDFLAGS} ${FFLAGS}"
 export CXXFLAGS="${CFLAGS}"
+
+curl () {
+  env curl --proto '=https' --tlsv1.2 --ciphers "${CIPHERSUITES:?Missing curl ciphersuite}" --silent --show-error --fail --location "$@"
+}
 
 bak_src() {
   if ! { [ "$#" -eq 1 ] && [ -d "$1" ]; }; then

@@ -3,7 +3,7 @@
 ARG OUT="/opt/out"
 ARG TARGET="x86_64-linux-gnu"
 ARG ZIG_VERSION="0.11.0"
-ARG MESON_VERSION="1.2.3"
+ARG MESON_VERSION="1.3.0"
 ARG CMAKE_VERSION="3.27.0"
 ARG PATCHELF_VERSION="0.18.0"
 ARG MACOS_SDK_VERSION="14.0"
@@ -50,7 +50,8 @@ RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/
 	clang-16 `
 	pkg-config `
 	ninja-build `
-	libarchive-tools
+	libarchive-tools `
+	protobuf-compiler
 
 # Configure sysroot and prefix
 ARG OUT
@@ -58,6 +59,7 @@ ENV OUT="${OUT:?}"
 ENV PREFIX="/opt/prefix"
 ENV SYSROOT="/opt/sysroot"
 ENV CCTOOLS="/opt/cctools"
+ENV CIPHERSUITES="TLS_AES_128_GCM_SHA256:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_256_GCM_SHA384:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384"
 
 # Ensure sysroot and cctools are present on PATH
 ENV PATH="${CCTOOLS}/bin:${SYSROOT}/bin:$PATH"
@@ -154,8 +156,12 @@ RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/
 	/srv/02-tapi.sh
 
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt --mount=type=cache,target=/root/.cache `
-	--mount=type=bind,source=stages/00-apple/03-cctools.sh,target=/srv/03-cctools.sh `
-	/srv/03-cctools.sh
+	--mount=type=bind,source=stages/00-apple/03-dispatch.sh,target=/srv/03-dispatch.sh `
+	/srv/03-dispatch.sh
+
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt --mount=type=cache,target=/root/.cache `
+	--mount=type=bind,source=stages/00-apple/04-cctools.sh,target=/srv/04-cctools.sh `
+	/srv/04-cctools.sh
 
 # Ensure no one tries to call the native system linker
 RUN ln -s '/usr/bin/false' "${SYSROOT}/bin/ld"
@@ -409,12 +415,6 @@ COPY --from=layer-50-zimg "${PREFIX}/." "$PREFIX"
 
 #--
 
-FROM layer-45 AS layer-99-heif
-
-RUN --mount=type=cache,target=/root/.cache `
-	--mount=type=bind,source=stages/99-heif.sh,target=/srv/stage.sh `
-	/srv/build.sh
-
 FROM layer-00 AS layer-99-protoc
 
 ADD https://raw.githubusercontent.com/protocolbuffers/protobuf/v25.0/LICENSE '/srv/protoc/LICENSE'
@@ -429,10 +429,30 @@ RUN --mount=type=cache,target=/root/.cache `
 	--mount=type=bind,source=stages/99-pdfium.sh,target=/srv/stage.sh `
 	/srv/build.sh
 
+FROM layer-00 AS layer-99-yolo
+
+RUN --mount=type=cache,target=/root/.cache `
+	--mount=type=bind,source=stages/99-yolov8.sh,target=/srv/stage.sh `
+	/srv/build.sh
+
+FROM layer-20 AS layer-99-onnx
+
+RUN --mount=type=cache,target=/root/.cache `
+	--mount=type=bind,source=stages/99-onnx.sh,target=/srv/stage.sh `
+	/srv/build.sh
+
 FROM layer-50 AS layer-99-ffmpeg
 
 RUN --mount=type=cache,target=/root/.cache `
 	--mount=type=bind,source=stages/99-ffmpeg.sh,target=/srv/stage.sh `
+	/srv/build.sh
+
+FROM layer-45 AS layer-99-heif
+
+COPY --from=layer-99-ffmpeg "${OUT}/." "$PREFIX"
+
+RUN --mount=type=cache,target=/root/.cache `
+	--mount=type=bind,source=stages/99-heif.sh,target=/srv/stage.sh `
 	/srv/build.sh
 
 FROM layer-00 AS layer-99
@@ -447,6 +467,12 @@ COPY --from=layer-99-protoc "${PREFIX}/licenses/." "${OUT}/licenses"
 COPY --from=layer-99-pdfium "${OUT}/." "$OUT"
 COPY --from=layer-99-pdfium "${PREFIX}/licenses/." "${OUT}/licenses"
 
+COPY --from=layer-99-yolo "${OUT}/." "$OUT"
+
+COPY --from=layer-99-onnx "${OUT}/." "$OUT"
+COPY --from=layer-99-onnx "${PREFIX}/srv/." "${OUT}/srv"
+COPY --from=layer-99-onnx "${PREFIX}/licenses/." "${OUT}/licenses"
+
 COPY --from=layer-99-ffmpeg "${OUT}/." "$OUT"
 COPY --from=layer-99-ffmpeg "${PREFIX}/srv/." "${OUT}/srv"
 COPY --from=layer-99-ffmpeg "${PREFIX}/licenses/." "${OUT}/licenses"
@@ -456,7 +482,7 @@ RUN rm -rf "${OUT}/share" "${OUT}/lib/pkgconfig" "${OUT}/lib/cmake"
 RUN find "${OUT}"  \( -name '*.def' -o -name '*.dll.a' \) -delete
 
 # Move .lib files to the lib folder (Windows target only)
-RUN find "${OUT}/bin" -name '*.lib' -exec install -Dt ../lib/ -m a-rwx,u+rw,g+r,o+r {} +
+RUN if [ -d "${OUT}/bin" ]; then find "${OUT}/bin" -name '*.lib' -exec install -Dt ../lib/ -m a-rwx,u+rw,g+r,o+r {} + ; fi
 
 # Copy .lib to .dll.a (Windows target only)
 RUN find "$OUT/lib" -name '*.lib' -exec `
@@ -473,7 +499,7 @@ RUN --mount=type=cache,target=/root/.cache `
 RUN find "$OUT" -type f \( -name '*.so' -o -name '*.so.*' \) -exec patchelf --set-rpath '$ORIGIN' {} \;
 
 # Remove non executable files from bin folder
-RUN find "${OUT}/bin" -type f -not -executable -delete
+RUN if [ -d "${OUT}/bin" ]; then find "${OUT}/bin" -type f -not -executable -delete; fi
 
 # Remove empty directories
 RUN find "$OUT" -type d -delete 2>/dev/null || true

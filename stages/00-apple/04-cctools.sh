@@ -30,12 +30,7 @@ echo "Download cctools ..."
 
 mkdir -p "cctools"
 
-curl_tar 'https://github.com/tpoechtrager/cctools-port/archive/437ced3.tar.gz' 'cctools' 1
-
-sed -i "/^if readelf -p .comment \$LIBDIR\/libLTO.so | grep clang &>\/dev\/null; then/,/^fi/d;" cctools/tools/fix_liblto.sh
-sed -ie 's/wget/curl -LSsOJ/' cctools/tools/fix_liblto.sh
-
-env LLVM_CONFIG=llvm-config-16 cctools/tools/fix_liblto.sh
+curl_tar 'https://github.com/tpoechtrager/cctools-port/archive/59f5fb8.tar.gz' 'cctools' 1
 
 cd cctools/cctools
 
@@ -44,12 +39,18 @@ cd cctools/cctools
   --target="$_target" \
   --with-libxar="$CCTOOLS" \
   --with-libtapi="$CCTOOLS" \
+  --with-libdispatch="$CCTOOLS" \
   --with-llvm-config=llvm-config-16 \
+  --with-libblocksruntime="$CCTOOLS" \
   --enable-xar-support \
-  --enable-lto-support
+  --enable-lto-support \
+  --enable-tapi-support
 
 make -j"$(nproc)"
 
 make install
 
 rm -r /srv/cctools
+
+# Create symlinks for llvm-otool because cctools use it when calling its own otool
+ln -fs "$(command -v llvm-otool-16)" /opt/cctools/bin/llvm-otool

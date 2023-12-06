@@ -12,7 +12,7 @@ curl_tar 'https://deb.debian.org/debian/pool/main/l/lame/lame_3.100.orig.tar.gz'
 curl_tar 'https://github.com/mesonbuild/wrapdb/releases/download/lame_3.100-9/lame_3.100-9_patch.zip' lame 1
 
 # Fix warning on 64 bit machines. explicitly set variables as unsigned ints.
-curl -LSs 'https://sources.debian.org/data/main/l/lame/3.100-6/debian/patches/07-field-width-fix.patch' \
+curl 'https://sources.debian.org/data/main/l/lame/3.100-6/debian/patches/07-field-width-fix.patch' \
   | patch -F5 -lp1 -d lame -t
 
 # Remove some superfluous files

@@ -14,12 +14,12 @@ esac
 
 # Some required patches for fixing meson and windows cross-compile issues
 for patch in \
-  https://github.com/mm2/Little-CMS/commit/4e55c55.patch \
-  https://github.com/mm2/Little-CMS/commit/8ddc268.patch \
-  https://github.com/mm2/Little-CMS/commit/8769c0e.patch \
-  https://github.com/mm2/Little-CMS/commit/7984408.patch \
-  https://github.com/mm2/Little-CMS/commit/b35e271.patch; do
-  curl -LSs "$patch" | patch -F5 -lp1 -d lcms -t
+  'https://github.com/mm2/Little-CMS/commit/4e55c55.patch' \
+  'https://github.com/mm2/Little-CMS/commit/8ddc268.patch' \
+  'https://github.com/mm2/Little-CMS/commit/8769c0e.patch' \
+  'https://github.com/mm2/Little-CMS/commit/7984408.patch' \
+  'https://github.com/mm2/Little-CMS/commit/b35e271.patch'; do
+  curl "$patch" | patch -F5 -lp1 -d lcms -t
 done
 
 sed -i "/subdir('utils')/d" lcms/meson.build

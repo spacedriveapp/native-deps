@@ -3,13 +3,15 @@
 echo "Download heif..."
 mkdir -p heif
 
-curl_tar 'https://github.com/strukturag/libheif/releases/download/v1.17.3/libheif-1.17.3.tar.gz' heif 1
+curl_tar 'https://github.com/strukturag/libheif/releases/download/v1.17.5/libheif-1.17.5.tar.gz' heif 1
 
 case "$TARGET" in
   *windows*)
     sed -ie 's/__attribute__((__visibility__("default")))/__declspec(dllexport)/' heif/libheif/heif.h
     ;;
 esac
+
+sed -i 's/find_package(FFMPEG COMPONENTS avcodec)/find_package(FFMPEG COMPONENTS avcodec avutil)/' heif/CMakeLists.txt
 
 # Remove unused components
 rm -r heif/{go,fuzzing,tests,examples}
@@ -44,7 +46,7 @@ env SHARED=On PREFIX="$OUT" cmake \
   -DWITH_AOM_ENCODER=Off \
   -DWITH_JPEG_DECODER=Off \
   -DWITH_JPEG_ENCODER=Off \
-  -DWITH_FFMPEG_DECODER=Off \
+  -DWITH_FFMPEG_DECODER=On \
   -DWITH_OpenJPEG_DECODER=Off \
   -DWITH_OpenJPEG_ENCODER=Off \
   -DENABLE_PLUGIN_LOADING=Off \

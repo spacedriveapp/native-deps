@@ -11,7 +11,7 @@ esac
 echo "Download zlib..."
 mkdir -p zlib
 
-curl_tar 'https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.1.4.tar.gz' zlib 1
+curl_tar 'https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.1.5.tar.gz' zlib 1
 
 # Patch cmake to disable armv6 assembly, it thinks we support it, but we don't
 sed -i 's/HAVE_ARMV6_INLINE_ASM OR HAVE_ARMV6_INTRIN/HAVE_ARMV6_INLINE_ASM AND HAVE_ARMV6_INTRIN/' zlib/CMakeLists.txt
