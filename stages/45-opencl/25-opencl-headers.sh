@@ -4,7 +4,7 @@ echo "Download opencl headers..."
 
 mkdir -p opencl-headers
 
-curl_tar 'https://github.com/KhronosGroup/OpenCL-Headers/archive/refs/tags/v2023.04.17.tar.gz' opencl-headers 1
+curl_tar 'https://github.com/KhronosGroup/OpenCL-Headers/archive/refs/tags/v2023.12.14.tar.gz' opencl-headers 1
 
 # Remove some superfluous files
 rm -rf opencl-headers/{.github,tests}

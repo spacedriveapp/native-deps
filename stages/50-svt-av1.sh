@@ -3,7 +3,7 @@
 echo "Download svt-av1..."
 mkdir -p svt-av1
 
-curl_tar 'https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/v1.7.0/SVT-AV1-v1.7.0.tar.gz' svt-av1 1
+curl_tar 'https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/v1.8.0/SVT-AV1-v1.8.0.tar.gz' svt-av1 1
 
 case "$TARGET" in
   x86_64*)

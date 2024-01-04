@@ -3,7 +3,7 @@
 echo "Download lcms..."
 mkdir -p lcms
 
-curl_tar 'https://github.com/mm2/Little-CMS/releases/download/lcms2.15/lcms2-2.15.tar.gz' lcms 1
+curl_tar 'https://github.com/mm2/Little-CMS/releases/download/lcms2.16/lcms2-2.16.tar.gz' lcms 1
 
 case "$TARGET" in
   aarch64*)
@@ -12,17 +12,6 @@ case "$TARGET" in
     ;;
 esac
 
-# Some required patches for fixing meson and windows cross-compile issues
-for patch in \
-  'https://github.com/mm2/Little-CMS/commit/4e55c55.patch' \
-  'https://github.com/mm2/Little-CMS/commit/8ddc268.patch' \
-  'https://github.com/mm2/Little-CMS/commit/8769c0e.patch' \
-  'https://github.com/mm2/Little-CMS/commit/7984408.patch' \
-  'https://github.com/mm2/Little-CMS/commit/b35e271.patch'; do
-  curl "$patch" | patch -F5 -lp1 -d lcms -t
-done
-
-sed -i "/subdir('utils')/d" lcms/meson.build
 sed -i "/subdir('testbed')/d" lcms/meson.build
 sed -i "/subdir('testbed')/d" lcms/plugins/threaded/meson.build
 sed -i "/subdir('testbed')/d" lcms/plugins/fast_float/meson.build
