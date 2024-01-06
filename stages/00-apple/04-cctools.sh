@@ -30,7 +30,7 @@ echo "Download cctools ..."
 
 mkdir -p "cctools"
 
-curl_tar 'https://github.com/tpoechtrager/cctools-port/archive/59f5fb8.tar.gz' 'cctools' 1
+curl_tar 'https://github.com/tpoechtrager/cctools-port/archive/a98286d.tar.gz' 'cctools' 1
 
 cd cctools/cctools
 

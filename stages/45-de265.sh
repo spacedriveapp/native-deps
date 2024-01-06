@@ -3,7 +3,7 @@
 echo "Download de265..."
 mkdir -p de265
 
-curl_tar 'https://github.com/strukturag/libde265/archive/refs/tags/v1.0.14.tar.gz' de265 1
+curl_tar 'https://github.com/strukturag/libde265/archive/refs/tags/v1.0.15.tar.gz' de265 1
 
 case "$TARGET" in
   aarch64*)

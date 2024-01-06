@@ -3,7 +3,7 @@
 echo "Download svt-av1..."
 mkdir -p svt-av1
 
-curl_tar 'https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/v1.7.0/SVT-AV1-v1.7.0.tar.gz' svt-av1 1
+curl_tar 'https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/v1.8.0/SVT-AV1-v1.8.0.tar.gz' svt-av1 1
 
 case "$TARGET" in
   x86_64*)
@@ -11,8 +11,6 @@ case "$TARGET" in
     ;;
   aarch64*)
     ENABLE_NASM=Off
-    # Patch to enable NEON in aarch64
-    curl 'https://gitlab.com/AOMediaCodec/SVT-AV1/-/merge_requests/2135.patch' | patch -F5 -lp1 -d svt-av1 -t
     ;;
 esac
 
