@@ -33,6 +33,6 @@ find . -empty -type d -delete
 find lib -type f -name '*.so*' -exec patchelf --set-rpath "\$ORIGIN" {} \;
 
 # Remove musl and ld-musl, as that is always included by the OS
-rm lib/ld-musl-x86_64.so.1 lib/libc.musl-x86_64.so.1
+rm lib/ld-musl-*.so.1 lib/libc.musl-*.so.1
 # Copy gcompat and it's dependencies to the output directory
 mv "lib" "${OUT}/gcompat"
