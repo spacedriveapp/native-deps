@@ -32,8 +32,7 @@ find . -empty -type d -delete
 # Adjust rpath to use $ORIGIN
 find lib -type f -name '*.so*' -exec patchelf --set-rpath "\$ORIGIN" {} \;
 
-# Copy gcompat and it's dependencies to the output directory, resolving symlinks
-mkdir -p "${OUT}/gcompat"
-for lib in libgcompat.so.0 libobstack.so.1 libucontext.so.1 libucontext_posix.so.1; do
-  cp -L "lib/${lib}" "${OUT}/gcompat/"
-done
+# Remove musl and ld-musl, as that is always included by the OS
+rm lib/ld-musl-x86_64.so.1 lib/libc.musl-x86_64.so.1
+# Copy gcompat and it's dependencies to the output directory
+mv "lib" "${OUT}/gcompat"
