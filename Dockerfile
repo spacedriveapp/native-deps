@@ -414,16 +414,6 @@ COPY --from=layer-50-zimg "${PREFIX}/." "$PREFIX"
 
 #--
 
-FROM layer-00 AS layer-99-gcompat
-
-ADD https://git.adelielinux.org/adelie/gcompat/-/raw/1.1.0/LICENSE '/srv/gcompat/LICENSE.gcompat'
-ADD https://github.com/void-linux/musl-obstack/raw/v1.2.3/COPYING '/srv/gcompat/COPYING.obstack'
-ADD https://github.com/kaniini/libucontext/raw/v1.2/LICENSE '/srv/gcompat/LICENSE.ucontext'
-
-RUN --mount=type=cache,target=/root/.cache `
-	--mount=type=bind,source=stages/99-gcompat.sh,target=/srv/stage.sh `
-	/srv/build.sh
-
 FROM layer-00 AS layer-99-protoc
 
 ADD https://raw.githubusercontent.com/protocolbuffers/protobuf/v25.0/LICENSE '/srv/protoc/LICENSE'
@@ -466,9 +456,6 @@ RUN --mount=type=cache,target=/root/.cache `
 
 FROM layer-00 AS layer-99
 
-COPY --from=layer-99-gcompat "${OUT}/." "$OUT"
-COPY --from=layer-99-gcompat "${PREFIX}/licenses/." "${OUT}/licenses"
-
 COPY --from=layer-99-heif "${OUT}/." "$OUT"
 COPY --from=layer-99-heif "${PREFIX}/srv/." "${OUT}/srv"
 COPY --from=layer-99-heif "${PREFIX}/licenses/." "${OUT}/licenses"
@@ -505,7 +492,7 @@ RUN find "$OUT/lib" -name '*.lib' -exec `
 # https://github.com/NixOS/patchelf/issues/507
 RUN --mount=type=cache,target=/root/.cache `
 	echo 'strip -S "$@" && chmod +x "$@"' >/srv/stage.sh `
-	&& find "$OUT" -type f \( -name '*.so' -o -name '*.so.*' -o -name '*.dll' -o -name '*.dylib' \) -not -wholename "${OUT}/gcompat/*" -exec /srv/build.sh {} +
+	&& find "$OUT" -type f \( -name '*.so' -o -name '*.so.*' -o -name '*.dll' -o -name '*.dylib' \) -exec /srv/build.sh {} +
 
 # Ensure all .so files have the correct rpaths (Linux target only)
 RUN find "$OUT" -type f \( -name '*.so' -o -name '*.so.*' \) -exec patchelf --set-rpath '$ORIGIN' {} \;

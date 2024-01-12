@@ -3,7 +3,7 @@
 echo "Download pdfium..."
 mkdir -p pdfium
 
-_tag='25.1'
+_tag='25.2'
 case "$TARGET" in
   x86_64-windows*)
     _suffix='win64'
