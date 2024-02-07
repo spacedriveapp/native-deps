@@ -341,8 +341,9 @@ case "${TARGET:-}" in
     esac
     ;;
   arm64* | aarch64*)
-    if [ "$assembler" -eq 1 ] && [ "$preprocessor" -eq 0 ]; then
-      # This is an workaround for zig not supporting some features when compiling arm assembler code
+    if [ "$preprocessor" -eq 0 ] && { [ $assembler -eq 1 ] || [ $assembler_file -eq 1 ]; }; then
+      # This is an workaround for zig not supporting passing explict features when compiling assembler code
+      # https://github.com/ziglang/zig/issues/10411
       c_argv+=(-Xassembler "-march=armv8.2-a${features}")
     else
       case "${TARGET:-}" in
