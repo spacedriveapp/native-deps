@@ -3,7 +3,7 @@
 echo "Download onnx..."
 mkdir -p onnx
 
-_version='1.16.3'
+_version='1.17.0'
 
 case "$TARGET" in
   *windows*)
