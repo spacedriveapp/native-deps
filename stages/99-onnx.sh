@@ -36,7 +36,7 @@ curl_tar "https://github.com/microsoft/onnxruntime/archive/refs/tags/v${_version
 sed -i 's/defined(__ANDROID__)/defined(__ANDROID__) \&\& (defined(__APPLE__) || defined(__GLIBC__) || defined(PLATFORM_IS_BSD))/g' onnx/onnxruntime/core/platform/posix/stacktrace.cc
 
 # Remove unused components
-rm -r onnx/{.*,requirements*.txt,*swift,*.py,cgmanifests,dockerfiles,objectivec,ORT_icon_for_light_bg.png,rust,samples,java,docs,orttraining,js,csharp,winml,onnxruntime/{wasm,test,tool,python,core/flatbuffers/ort_flatbuffers_py,contrib_ops/{js,rocm,cuda}}}
+rm -r onnx/{.*,requirements*.txt,,*.py,cgmanifests,dockerfiles,objectivec,*.png,rust,samples,java,docs,orttraining,js,csharp,winml,onnxruntime/{wasm,test,tool,python,core/flatbuffers/ort_flatbuffers_py,contrib_ops/{js,rocm,cuda}}}
 
 # Backup source
 bak_src 'onnx'
