@@ -97,6 +97,9 @@ case "$TARGET" in
     args+=(
       -Donnxruntime_USE_COREML=On
     )
+
+    # Try to bypass ATOMIC_VAR_INIT deprecated usage in google_nsync
+    export CFLAGS="${CFLAGS} -Wno-deprecated-pragma"
     ;;
 esac
 
