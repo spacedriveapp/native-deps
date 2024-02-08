@@ -3,7 +3,10 @@
 echo "Download heif..."
 mkdir -p heif
 
-curl_tar 'https://github.com/strukturag/libheif/releases/download/v1.17.6/libheif-1.17.6.tar.gz' heif 1
+# renovate: datasource=github-releases depName=strukturag/libheif
+_tag='1.17.6'
+
+curl_tar "https://github.com/strukturag/libheif/releases/download/v${_tag}/libheif-${_tag}.tar.gz" heif 1
 
 case "$TARGET" in
   *windows*)

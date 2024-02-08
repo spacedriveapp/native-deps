@@ -3,12 +3,13 @@
 echo "Download onnx..."
 mkdir -p onnx
 
-_version='1.17.0'
+# renovate: datasource=github-releases depName=microsoft/onnxruntime
+_tag='1.17.0'
 
 case "$TARGET" in
   *windows*)
     # We just download the MS pre-compiled binaries which include the DirectML backend and are most likely better optimized than what we can build
-    curl_tar "https://www.nuget.org/api/v2/package/Microsoft.ML.OnnxRuntime.DirectML/${_version}" onnx 0
+    curl_tar "https://www.nuget.org/api/v2/package/Microsoft.ML.OnnxRuntime.DirectML/${_tag}" onnx 0
 
     mkdir -p "$OUT"/{bin,lib,include}
 
@@ -30,7 +31,7 @@ case "$TARGET" in
     ;;
 esac
 
-curl_tar "https://github.com/microsoft/onnxruntime/archive/refs/tags/v${_version}.tar.gz" onnx 1
+curl_tar "https://github.com/microsoft/onnxruntime/archive/refs/tags/v${_tag}.tar.gz" onnx 1
 
 # Patch to only include execinfo.h on supported environments
 sed -i 's/defined(__ANDROID__)/defined(__ANDROID__) \&\& (defined(__APPLE__) || defined(__GLIBC__) || defined(PLATFORM_IS_BSD))/g' onnx/onnxruntime/core/platform/posix/stacktrace.cc

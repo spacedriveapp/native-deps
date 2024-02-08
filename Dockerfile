@@ -2,10 +2,17 @@
 
 ARG OUT="/opt/out"
 ARG TARGET="x86_64-linux-gnu"
+ARG VERSION="0.0.0"
+
+# renovate: datasource=github-releases depName=ziglang/zig
 ARG ZIG_VERSION="0.11.0"
+# renovate: datasource=github-releases depName=mesonbuild/meson
 ARG MESON_VERSION="1.3.1"
+# renovate: datasource=github-releases depName=Kitware/CMake
 ARG CMAKE_VERSION="3.28.3"
+# renovate: datasource=github-releases depName=NixOS/patchelf
 ARG PATCHELF_VERSION="0.18.0"
+# renovate: datasource=github-releases depName=joseluisq/macosx-sdks
 ARG MACOS_SDK_VERSION="14.2"
 
 #--
@@ -505,6 +512,8 @@ RUN find "$OUT" -type d -delete 2>/dev/null || true
 RUN find "${OUT}" -type f -exec chmod u+rw,g+r,g-w,o+r,o-w {} +
 
 # Create macOS Frameworks from the built libs (Darwin target only)
+ARG VERSION
+ENV VERSION="${VERSION:?}"
 RUN --mount=type=cache,target=/root/.cache `
 	--mount=type=bind,source=scripts/create-framework.sh,target=/srv/stage.sh `
 	/srv/build.sh
