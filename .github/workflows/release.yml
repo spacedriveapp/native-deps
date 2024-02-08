@@ -43,10 +43,10 @@ jobs:
         shell: bash
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           install: true
           platforms: linux/amd64
@@ -63,14 +63,14 @@ jobs:
           tar -cJf "native-deps-${{ matrix.settings.target }}.tar.xz" -C out .
 
       - name: Publish native-deps
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: native-deps-${{ matrix.settings.target }}
           path: native-deps-${{ matrix.settings.target }}.tar.xz
           if-no-files-found: error
 
       - name: Publish built source
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: native-deps-${{ matrix.settings.target }}-src
           path: native-deps-${{ matrix.settings.target }}-src.tar.xz
@@ -85,7 +85,7 @@ jobs:
       contents: write
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
