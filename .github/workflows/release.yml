@@ -6,7 +6,6 @@ on:
       - 'patches/**'
       - 'scripts/**'
       - 'Dockerfile'
-      - '.gitignore'
       - '.github/workflows/release.yml'
     branches:
       - main
@@ -16,7 +15,6 @@ on:
       - 'patches/**'
       - 'scripts/**'
       - 'Dockerfile'
-      - '.gitignore'
       - '.github/workflows/release.yml'
   workflow_dispatch:
 
