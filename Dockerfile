@@ -513,7 +513,7 @@ RUN find "${OUT}" -type f -exec chmod u+rw,g+r,g-w,o+r,o-w {} +
 
 # Create macOS Frameworks from the built libs (Darwin target only)
 ARG VERSION
-ENV VERSION="${VERSION:?}"
+ENV VERSION="${VERSION:-0.0.0}"
 RUN --mount=type=cache,target=/root/.cache `
 	--mount=type=bind,source=scripts/create-framework.sh,target=/srv/stage.sh `
 	/srv/build.sh
