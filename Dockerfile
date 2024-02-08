@@ -3,8 +3,8 @@
 ARG OUT="/opt/out"
 ARG TARGET="x86_64-linux-gnu"
 ARG ZIG_VERSION="0.11.0"
-ARG MESON_VERSION="1.3.0"
-ARG CMAKE_VERSION="3.27.0"
+ARG MESON_VERSION="1.3.1"
+ARG CMAKE_VERSION="3.28.3"
 ARG PATCHELF_VERSION="0.18.0"
 ARG MACOS_SDK_VERSION="14.2"
 
@@ -13,8 +13,6 @@ ARG MACOS_SDK_VERSION="14.2"
 FROM debian:bookworm as build-base
 
 SHELL ["bash", "-euxo", "pipefail", "-c"]
-
-COPY ./VERSION /srv/VERSION
 
 # Configure apt to be docker friendly
 ADD https://gist.githubusercontent.com/HeavenVolkoff/ff7b77b9087f956b8df944772e93c071/raw `

@@ -10,10 +10,8 @@ case "$TARGET" in
     ;;
 esac
 
-_version="$(cat /srv/VERSION)"
-if [ -z "$_version" ]; then
-  echo "Missing VERSION file" >&2
-  exit 1
+if [ -z "${VERSION:-}" ]; then
+  VERSION="0.0.0"
 fi
 
 # Create Spacedrive.framework
@@ -79,7 +77,7 @@ cat <<EOF >"${OUT}/${_framework}/Versions/Current/Resources/Info.plist"
     <key>CFBundleExecutable</key>
     <string>Spacedrive</string>
     <key>CFBundleGetInfoString</key>
-    <string>Spacedrive Native Dependencies ${_version}</string>
+    <string>Spacedrive Native Dependencies ${VERSION}</string>
     <key>CFBundleIdentifier</key>
     <string>com.spacedrive</string>
     <key>CFBundleInfoDictionaryVersion</key>
@@ -89,11 +87,11 @@ cat <<EOF >"${OUT}/${_framework}/Versions/Current/Resources/Info.plist"
     <key>CFBundlePackageType</key>
     <string>FMWK</string>
     <key>CFBundleShortVersionString</key>
-    <string>${_version}</string>
+    <string>${VERSION}</string>
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleVersion</key>
-    <string>${_version}</string>
+    <string>${VERSION}</string>
     <key>NSHumanReadableCopyright</key>
 	  <string>Copyright (c) 2021-present Spacedrive Technology Inc.</string>
 </dict>
@@ -108,9 +106,9 @@ cat <<EOF >"${OUT}/${_framework}/Versions/Current/Resources/version.plist"
         <key>BuildVersion</key>
         <string>1</string>
         <key>CFBundleShortVersionString</key>
-        <string>${_version}</string>
+        <string>${VERSION}</string>
         <key>CFBundleVersion</key>
-        <string>${_version}</string>
+        <string>${VERSION}</string>
         <key>ProjectName</key>
         <string>Spacedrive</string>
         <key>SourceVersion</key>

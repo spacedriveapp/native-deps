@@ -3,7 +3,7 @@
 echo "Download lzma..."
 mkdir -p lzma
 
-curl_tar 'https://github.com/tukaani-project/xz/releases/download/v5.4.5/xz-5.4.5.tar.xz' lzma 1
+curl_tar 'https://github.com/tukaani-project/xz/releases/download/v5.4.6/xz-5.4.6.tar.xz' lzma 1
 
 case "$TARGET" in
   *darwin*)
