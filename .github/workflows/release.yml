@@ -57,7 +57,7 @@ jobs:
       - name: Build native-deps
         run: |
           set -euxo pipefail
-          docker build --no-cache --build-arg TARGET=${{ matrix.settings.target }} -o . .
+          docker build --no-cache --build-arg TARGET=${{ matrix.settings.target }} --build-arg VERSION="$(echo ${{ github.ref }} | sed -E 's/refs\/tags\/v?//g' | sed -E 's/[^0-9.]//g')" -o . .
           mv out/src.tar.xz ./native-deps-${{ matrix.settings.target }}-src.tar.xz
           export XZ_OPT='-T0 -7'
           tar -cJf "native-deps-${{ matrix.settings.target }}.tar.xz" -C out .

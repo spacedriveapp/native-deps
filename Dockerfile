@@ -14,8 +14,6 @@ FROM debian:bookworm as build-base
 
 SHELL ["bash", "-euxo", "pipefail", "-c"]
 
-COPY ./VERSION /srv/VERSION
-
 # Configure apt to be docker friendly
 ADD https://gist.githubusercontent.com/HeavenVolkoff/ff7b77b9087f956b8df944772e93c071/raw `
 	/etc/apt/apt.conf.d/99docker-apt-config
