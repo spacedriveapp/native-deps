@@ -1,6 +1,99 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
+    "config:base",
+
+    ":label(type/renovate)",
+
+    ":docker",
+    "docker:enableMajor",
+    "docker:pinDigests",
+
+    ":disableRateLimiting",
+    ":ignoreUnstable",
+    ":pinVersions",
+    ":separateMajorReleases",
+    ":automergePr",
+    ":automergeRequireAllStatusChecks",
+    ":automergeAll",
+    ":semanticCommits",
+
+    ":enableVulnerabilityAlerts",
+    ":enableVulnerabilityAlertsWithLabel(security)"
+  ],
+
+  "rebaseWhen": "conflicted",
+  "platformAutomerge": true,
+  "rebaseLabel": "renovate/rebase",
+  "stopUpdatingLabel": "renovate/stop-updating",
+
+  "major": { "labels": ["bump/major"] },
+  "minor": { "labels": ["bump/minor"] },
+  "patch": { "labels": ["bump/patch"] },
+  "pin": { "labels": ["bump/pin"] },
+  "digest": { "labels": ["bump/digest"] },
+
+  "regexManagers": [
+    {
+      "fileMatch": ["^stages/.*\\.sh$"],
+      "matchStrings": [
+        "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\n_tag='(?<currentValue>.*)'\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    },
+    {
+      "fileMatch": ["^Dockerfile$"],
+      "matchStrings": [
+        "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\n(ENV|ARG) .*?_VERSION=(?<currentValue>.*)\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    }
+  ],
+
+  "packageRules": [
+    {
+      "packageNames": ["ziglang/zig"],
+      "extractVersion": "^(?<version>.+)$"
+    },
+    {
+      "packageNames": ["mesonbuild/meson"],
+      "extractVersion": "^(?<version>.+)$"
+    },
+    {
+      "packageNames": ["Kitware/CMake"],
+      "extractVersion": "^v(?<version>.+)$"
+    },
+    {
+      "packageNames": ["NixOS/patchelf"],
+      "extractVersion": "^(?<version>.+)$"
+    },
+    {
+      "packageNames": ["joseluisq/macosx-sdks"],
+      "extractVersion": "^(?<version>.+)$"
+    },
+    {
+      "packageNames": ["strukturag/libde265"],
+      "extractVersion": "^v(?<version>.+)$"
+    },
+    {
+      "packageNames": ["strukturag/libde265"],
+      "extractVersion": "^v(?<version>.+)$"
+    },
+    {
+      "packageNames": ["strukturag/libheif"],
+      "extractVersion": "^v(?<version>.+)$"
+    },
+    {
+      "packageNames": ["protocolbuffers/protobuf"],
+      "extractVersion": "^v(?<version>.+)$"
+    },
+    {
+      "packageNames": ["microsoft/onnxruntime"],
+      "extractVersion": "^v(?<version>.+)$"
+    },
+    {
+      "packageNames": ["bblanchon/pdfium-binaries"],
+      "extractVersion": "^chromium/(?<version>.+)$"
+    }
   ]
 }
