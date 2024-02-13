@@ -1,9 +1,9 @@
 #!/usr/bin/env -S bash -euo pipefail
 
-echo "Download pdfium..."
-mkdir -p pdfium
+echo "Download protobuf..."
+mkdir -p protobuf
 
-# renovate: datasource=github-releases depName=protocolbuffers/protobuf
+# renovate: datasource=github-releases depName=protocolbuffers/protobuf versioning=semver-coerced
 _tag='25.2'
 case "$TARGET" in
   x86_64-windows*)

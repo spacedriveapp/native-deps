@@ -4,7 +4,7 @@ echo "Download pdfium..."
 mkdir -p pdfium
 
 # renovate: datasource=github-releases depName=bblanchon/pdfium-binaries versioning=semver-coerced
-_tag='chromium/6281'
+_tag='6281'
 case "$TARGET" in
   x86_64-windows*)
     _name='win-x64'
@@ -32,7 +32,7 @@ case "$TARGET" in
     ;;
 esac
 
-curl_tar "https://github.com/bblanchon/pdfium-binaries/releases/download/${_tag}/pdfium-${_name}.tgz" pdfium
+curl_tar "https://github.com/bblanchon/pdfium-binaries/releases/download/chromium/${_tag}/pdfium-${_name}.tgz" pdfium
 
 # No src to backup here because we are downloading pre-compiled binaries
 
