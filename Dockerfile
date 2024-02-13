@@ -7,7 +7,7 @@ ARG VERSION="0.0.0"
 # renovate: datasource=github-releases depName=ziglang/zig
 ARG ZIG_VERSION='0.11.0'
 # renovate: datasource=github-releases depName=mesonbuild/meson
-ARG MESON_VERSION='1.3.1'
+ARG MESON_VERSION='1.3.2'
 # renovate: datasource=github-releases depName=Kitware/CMake
 ARG CMAKE_VERSION='3.28.3'
 # renovate: datasource=github-releases depName=NixOS/patchelf
