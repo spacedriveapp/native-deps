@@ -10,7 +10,6 @@ esac
 echo "Download oneVPL..."
 mkdir -p oneVPL
 
-# renovate: datasource=github-releases depName=intel/libvpl
 _tag='2.10.1'
 
 curl_tar "https://github.com/intel/libvpl/archive/refs/tags/v${_tag}.tar.gz" oneVPL 1
