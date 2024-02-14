@@ -47,7 +47,8 @@
         "#\\s*renovate:\\s*depName=(?<depName>.*?)\\n_commit='(?<currentDigestShort>.*)'"
       ],
       "versioningTemplate": "git",
-      "datasourceTemplate": "git-refs"
+      "datasourceTemplate": "git-refs",
+      "currentValueTemplate": "{{#if (containsString datasource 'git-refs')}}{{else}}{{currentValue}}{{/if}}"
     },
     {
       "fileMatch": ["^Dockerfile$"],
