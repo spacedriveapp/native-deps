@@ -10,7 +10,10 @@ esac
 echo "Download oneVPL..."
 mkdir -p oneVPL
 
-curl_tar 'https://github.com/intel/libvpl/archive/refs/tags/v2.10.1.tar.gz' oneVPL 1
+# renovate: datasource=github-releases depName=intel/libvpl
+_tag='2.10.1'
+
+curl_tar "https://github.com/intel/libvpl/archive/refs/tags/v${_tag}.tar.gz" oneVPL 1
 
 sed -i '/add_subdirectory(examples)/d' oneVPL/CMakeLists.txt
 

@@ -23,7 +23,10 @@ echo "Download xar ..."
 
 mkdir -p "xar/build"
 
-curl_tar 'https://github.com/tpoechtrager/xar/archive/5fa4675.tar.gz' 'xar' 1
+# renovate: depName=git@github.com:tpoechtrager/xar.git
+_commit='5fa4675'
+
+curl_tar "https://github.com/tpoechtrager/xar/archive/${_commit}.tar.gz" 'xar' 1
 
 cd xar/xar
 

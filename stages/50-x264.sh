@@ -3,8 +3,11 @@
 echo "Download x264..."
 mkdir -p x264
 
+# renovate: depName=git@code.videolan.org:videolan/x264.git
+_commit='c1962404'
+
 # Using master due to aarch64 improvements
-curl_tar 'https://code.videolan.org/videolan/x264/-/archive/c1962404/x264.tar.bz2' x264 1
+curl_tar "https://code.videolan.org/videolan/x264/-/archive/${_commit}/x264.tar.bz2" x264 1
 
 # Some minor fixes to x264's pkg-config
 for patch in \

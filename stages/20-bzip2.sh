@@ -2,7 +2,7 @@
 
 case "$TARGET" in
   *darwin*)
-    # MacOS ships bzip2
+    # MacOS SDK ships bzip2
     export UNSUPPORTED=1
     exit 1
     ;;
@@ -11,7 +11,10 @@ esac
 echo "Download bzip2..."
 mkdir -p bzip2
 
-curl_tar 'https://gitlab.com/bzip2/bzip2/-/archive/66c46b8/bzip2.tar.gz' bzip2 1
+# renovate: depName=git@gitlab.com:bzip2/bzip2.git
+_commit='66c46b8'
+
+curl_tar "https://gitlab.com/bzip2/bzip2/-/archive/${_commit}/bzip2.tar.gz" bzip2 1
 
 sed -i '/add_subdirectory(man)/d' bzip2/CMakeLists.txt
 

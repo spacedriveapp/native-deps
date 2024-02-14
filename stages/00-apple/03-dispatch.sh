@@ -23,7 +23,10 @@ echo "Download dispatch ..."
 
 mkdir -p 'dispatch/build'
 
-curl_tar 'https://github.com/tpoechtrager/apple-libdispatch/archive/ee39300.tar.gz' 'dispatch' 1
+# renovate: depName=git@github.com:tpoechtrager/apple-libdispatch.git
+_commit='ee39300'
+
+curl_tar "https://github.com/tpoechtrager/apple-libdispatch/archive/${_commit}.tar.gz" 'dispatch' 1
 
 cd dispatch/build
 

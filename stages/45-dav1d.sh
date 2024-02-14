@@ -3,7 +3,10 @@
 echo "Download dav1d..."
 mkdir -p dav1d
 
-curl_tar 'https://github.com/videolan/dav1d/archive/refs/tags/1.3.0.tar.gz' dav1d 1
+# renovate: datasource=gitlab-releases depName=videolan/dav1d registryUrl=https://code.videolan.org
+_tag='1.3.0'
+
+curl_tar "https://code.videolan.org/videolan/dav1d/-/archive/${_tag}/dav1d-${_tag}.tar.bz2" dav1d 1
 
 sed -i "/subdir('doc')/d" dav1d/meson.build
 sed -i "/subdir('tools')/d" dav1d/meson.build

@@ -3,7 +3,10 @@
 echo "Download vorbis..."
 mkdir -p vorbis
 
-curl_tar 'https://github.com/xiph/vorbis/releases/download/v1.3.7/libvorbis-1.3.7.tar.gz' vorbis 1
+# renovate: datasource=github-releases depName=xiph/vorbis versioning=semver-coerced
+_tag='1.3.7'
+
+curl_tar "https://github.com/xiph/vorbis/releases/download/v${_tag}/libvorbis-${_tag}.tar.gz" vorbis 1
 
 # Remove some superfluous files
 rm -rf vorbis/{.github,symbian,install-sh,depcomp,macosx,Makefile.in,config.sub,aclocal.m4,config.guess,test,examples,vq,ltmain.sh,m4,configure,doc}

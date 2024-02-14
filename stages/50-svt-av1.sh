@@ -3,7 +3,10 @@
 echo "Download svt-av1..."
 mkdir -p svt-av1
 
-curl_tar 'https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/v1.8.0/SVT-AV1-v1.8.0.tar.gz' svt-av1 1
+# renovate: datasource=gitlab-releases depName=AOMediaCodec/SVT-AV1
+_tag='1.8.0'
+
+curl_tar "https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/v${_tag}/SVT-AV1-v${_tag}.tar.gz" svt-av1 1
 
 case "$TARGET" in
   x86_64*)

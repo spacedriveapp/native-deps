@@ -3,7 +3,10 @@
 echo "Download zimg..."
 mkdir -p zimg
 
-curl_tar 'https://github.com/sekrit-twc/zimg/archive/refs/tags/release-3.0.5.tar.gz' zimg 1
+# renovate: datasource=github-releases depName=sekrit-twc/zimg
+_tag='3.0.5'
+
+curl_tar "https://github.com/sekrit-twc/zimg/archive/refs/tags/release-${_tag}.tar.gz" zimg 1
 
 case "$TARGET" in
   *windows*)

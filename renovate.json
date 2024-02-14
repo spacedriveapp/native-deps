@@ -37,14 +37,22 @@
     {
       "fileMatch": ["^stages/.*\\.sh$"],
       "matchStrings": [
-        "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\n_tag='(?<currentValue>.*)'\\s"
+        "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( registryUrl=(?<registryUrl>.*?))?\\n_tag='(?<currentValue>.*)'\\s"
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     },
     {
+      "fileMatch": ["^stages/.*\\.sh$"],
+      "matchStrings": [
+        "#\\s*renovate:\\s*depName=(?<depName>.*?)\\n_commit='(?<currentDigestShort>.*)'"
+      ],
+      "versioningTemplate": "git",
+      "datasourceTemplate": "git-refs"
+    },
+    {
       "fileMatch": ["^Dockerfile$"],
       "matchStrings": [
-        "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\n(ENV|ARG) .*?_VERSION='(?<currentValue>.*)'\\s"
+        "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( registryUrl=(?<registryUrl>.*?))?\\n(ENV|ARG) .*?_VERSION='(?<currentValue>.*)'\\s"
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     }
@@ -52,44 +60,33 @@
 
   "packageRules": [
     {
-      "packageNames": ["ziglang/zig"],
-      "extractVersion": "^(?<version>.+)$"
-    },
-    {
-      "packageNames": ["mesonbuild/meson"],
-      "extractVersion": "^(?<version>.+)$"
-    },
-    {
-      "packageNames": ["Kitware/CMake"],
+      "packageNames": [
+        "Kitware/CMake",
+        "DLTcollab/sse2neon",
+        "tukaani-project/xz",
+        "xiph/ogg",
+        "strukturag/libde265",
+        "xiph/vorbis",
+        "Fintel/libvpl",
+        "xiph/opus",
+        "AOMediaCodec/SVT-AV1",
+        "strukturag/libheif",
+        "protocolbuffers/protobuf",
+        "microsoft/onnxruntime"
+      ],
       "extractVersion": "^v(?<version>.+)$"
     },
     {
-      "packageNames": ["NixOS/patchelf"],
-      "extractVersion": "^(?<version>.+)$"
+      "packageNames": ["mm2/Little-CMS"],
+      "extractVersion": "^lcms(?<version>.+)$"
     },
     {
-      "packageNames": ["joseluisq/macosx-sdks"],
-      "extractVersion": "^(?<version>.+)$"
+      "packageNames": ["FFmpeg/nv-codec-headers"],
+      "extractVersion": "^n(?<version>.+)$"
     },
     {
-      "packageNames": ["strukturag/libde265"],
-      "extractVersion": "^v(?<version>.+)$"
-    },
-    {
-      "packageNames": ["strukturag/libde265"],
-      "extractVersion": "^v(?<version>.+)$"
-    },
-    {
-      "packageNames": ["strukturag/libheif"],
-      "extractVersion": "^v(?<version>.+)$"
-    },
-    {
-      "packageNames": ["protocolbuffers/protobuf"],
-      "extractVersion": "^v(?<version>.+)$"
-    },
-    {
-      "packageNames": ["microsoft/onnxruntime"],
-      "extractVersion": "^v(?<version>.+)$"
+      "packageNames": ["sekrit-twc/zimg"],
+      "extractVersion": "^release-(?<version>.+)$"
     },
     {
       "packageNames": ["bblanchon/pdfium-binaries"],
