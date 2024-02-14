@@ -1,5 +1,12 @@
 #!/usr/bin/env -S bash -euo pipefail
 
+case "$TARGET" in
+  aarch64-*)
+    # Required for the aarch64 assembly to be compiled correctly
+    export CFLAGS="$CFLAGS -march=armv8.2-a+sve+sve2"
+    ;;
+esac
+
 echo "Download x264..."
 mkdir -p x264
 
