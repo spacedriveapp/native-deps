@@ -44,11 +44,10 @@
     {
       "fileMatch": ["^stages/.*\\.sh$"],
       "matchStrings": [
-        "#\\s*renovate:\\s*depName=(?<depName>.*?)\\n_commit='(?<currentDigestShort>.*)'"
+        "#\\s*renovate:\\s*depName=(?<depName>.*?)\\n_commit='(?<currentValue>)(?<currentDigest>.*?)'"
       ],
       "versioningTemplate": "git",
-      "datasourceTemplate": "git-refs",
-      "currentValueTemplate": "{{#if (containsString datasource 'git-refs')}}{{else}}{{currentValue}}{{/if}}"
+      "datasourceTemplate": "git-refs"
     },
     {
       "fileMatch": ["^Dockerfile$"],
