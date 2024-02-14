@@ -11,7 +11,7 @@ esac
 echo "Download bzip2..."
 mkdir -p bzip2
 
-# renovate: depName=git@gitlab.com:bzip2/bzip2.git
+# renovate: depName=https://gitlab.com/bzip2/bzip2.git
 _commit='66c46b8c9436613fd81bc5d03f63a61933a4dcc3'
 
 curl_tar "https://gitlab.com/bzip2/bzip2/-/archive/${_commit}/bzip2.tar.gz" bzip2 1
