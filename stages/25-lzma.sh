@@ -18,7 +18,7 @@ case "$TARGET" in
 esac
 
 # Remove some superfluous files
-rm -rf lzma/{.github,config.h.in,dos,Makefile.in,configure.ac,aclocal.m4,debug,lib,doxygen,windows,build-aux,m4,configure,tests,po,doc,po4a}
+rm -rf lzma/{.github,config.h.in,dos,Makefile.in,configure.ac,aclocal.m4,debug,lib,doxygen,windows,build-aux,m4,configure,tests,doc,po4a}
 
 # Backup source
 bak_src 'lzma'
