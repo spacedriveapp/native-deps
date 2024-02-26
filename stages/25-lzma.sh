@@ -40,10 +40,10 @@ ninja -j"$(nproc)" liblzma
 
 case "$TARGET" in
   *windows*)
-    touch xz.exe xzdec.exe
+    touch xz.exe xzdec.exe lzmadec.exe lzmainfo.exe
     ;;
   *)
-    touch xz xzdec
+    touch xz xzdec lzmadec lzmainfo
     ;;
 esac
 
