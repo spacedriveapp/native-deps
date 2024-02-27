@@ -18,7 +18,12 @@ case "$TARGET" in
 esac
 
 # Remove some superfluous files
-rm -rf lzma/{.github,config.h.in,dos,Makefile.in,configure.ac,aclocal.m4,debug,lib,doxygen,windows,build-aux,m4,configure,tests,doc,po4a}
+shopt -s extglob
+rm -rf lzma/{.github,config.h.in,dos,Makefile.in,configure.ac,aclocal.m4,debug,lib,doxygen,windows,build-aux,m4,configure,tests,po,doc/examples,doc/*.!(txt),po4a}
+
+# Ignore i18n compilation
+sed -i 's/if(ENABLE_NLS)/if(FALSE)/' lzma/CMakeLists.txt
+sed -i 's/if(GETTEXT_FOUND)/if(FALSE)/' lzma/CMakeLists.txt
 
 # Backup source
 bak_src 'lzma'
