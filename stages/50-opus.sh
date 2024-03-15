@@ -16,7 +16,7 @@ curl 'https://github.com/xiph/opus/commit/20c032d.patch' \
 rm -rf opus/{.github,CMakeLists.txt,config.sub,aclocal.m4,config.guess,cmake,doc,Makefile.in,tests,ltmain.sh,m4,configure}
 
 # Update version
-cat > "$SRCDIR/package_version" <<-EOF
+cat > "opus/package_version" <<-EOF
 	AUTO_UPDATE=no
 	PACKAGE_VERSION="$_tag"
 EOF
