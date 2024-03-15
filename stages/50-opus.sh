@@ -3,10 +3,10 @@
 echo "Download opus..."
 mkdir -p opus
 
-# renovate: datasource=github-releases depName=xiph/opus versioning=semver-coerced
+# renovate: datasource=github-tags depName=xiph/opus versioning=semver-coerced
 _tag='1.4'
 
-curl_tar "https://github.com/xiph/opus/releases/download/v${_tag}/opus-${_tag}.tar.gz" opus 1
+curl_tar "https://github.com/xiph/opus/archive/refs/tags/v${_tag}.tar.gz" opus 1
 
 # Required patch to fix meson for arm builds
 curl 'https://github.com/xiph/opus/commit/20c032d.patch' \
