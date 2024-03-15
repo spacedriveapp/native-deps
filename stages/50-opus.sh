@@ -4,7 +4,7 @@ echo "Download opus..."
 mkdir -p opus
 
 # renovate: datasource=github-tags depName=xiph/opus versioning=semver-coerced
-_tag='1.4'
+_tag='1.5.1'
 
 curl_tar "https://github.com/xiph/opus/archive/refs/tags/v${_tag}.tar.gz" opus 1
 
