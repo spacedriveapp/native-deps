@@ -18,6 +18,10 @@ rm -rf opus/{.github,CMakeLists.txt,config.sub,aclocal.m4,config.guess,cmake,doc
 # Backup source
 bak_src 'opus'
 
+cd opus
+
+./autogen.sh
+
 mkdir -p opus/build
 cd opus/build
 
