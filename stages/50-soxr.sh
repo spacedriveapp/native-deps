@@ -8,7 +8,7 @@ mkdir -p soxr
 curl_tar 'https://deb.debian.org/debian/pool/main/libs/libsoxr/libsoxr_0.1.3.orig.tar.xz' soxr 1
 
 for patch in "$PREFIX"/patches/*; do
-  patch -F5 -lp1 -d soxr -t < "$patch"
+  patch -F5 -lp1 -d soxr -t <"$patch"
 done
 
 # Remove some superfluous files

@@ -10,17 +10,16 @@ curl_tar "https://github.com/xiph/opus/archive/refs/tags/v${_tag}.tar.gz" opus 1
 
 # Required patch to fix meson for arm builds
 curl 'https://github.com/xiph/opus/commit/20c032d.patch' \
-| patch -F5 -lp1 -d opus -t
+  | patch -F5 -lp1 -d opus -t
+
+# Run autotools to configure the build system
+(cd opus && ./autogen.sh)
 
 # Remove unused components
 rm -rf opus/{.github,CMakeLists.txt,config.sub,aclocal.m4,config.guess,cmake,doc,Makefile.in,tests,ltmain.sh,m4,configure}
 
 # Backup source
 bak_src 'opus'
-
-cd opus
-
-./autogen.sh
 
 mkdir -p opus/build
 cd opus/build
@@ -37,6 +36,3 @@ meson \
 ninja -j"$(nproc)"
 
 ninja install
-
-
-

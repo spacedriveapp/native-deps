@@ -110,7 +110,7 @@ export CFLAGS="${CFLAGS} ${FFLAGS}"
 export LDFLAGS="${LDFLAGS} ${FFLAGS}"
 export CXXFLAGS="${CFLAGS}"
 
-curl () {
+curl() {
   env curl --proto '=https' --tlsv1.2 --ciphers "${CIPHERSUITES:?Missing curl ciphersuite}" --silent --show-error --fail --location "$@"
 }
 
