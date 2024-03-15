@@ -35,7 +35,7 @@ ninja -j"$(nproc)"
 
 ninja install
 
-cat << EOF >"${PREFIX}/lib/pkgconfig/lame.pc"
+cat <<EOF >"${PREFIX}/lib/pkgconfig/lame.pc"
 prefix=$PREFIX
 exec_prefix=\${prefix}
 libdir=\${exec_prefix}/lib
