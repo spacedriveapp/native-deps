@@ -24,15 +24,15 @@ meson \
   -Dtests=disabled \
   -Dcustom-modes=true \
   -Dextra-programs=disabled \
-  # Disable Run-time CPU detection on Windows ARM architecture
-  # because libopus could not detect CPU machine type properly
   "$(
+    # Disable Run-time CPU detection on Windows ARM architecture
+    # because libopus could not detect CPU machine type properly
     case "$TARGET" in
       aarch64-windows*)
         echo "-Drtcd=disabled"
         ;;
     esac
-  )"
+  )" \
   ..
 
 ninja -j"$(nproc)"
