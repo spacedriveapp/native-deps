@@ -4,16 +4,9 @@ echo "Download opus..."
 mkdir -p opus
 
 # renovate: datasource=github-tags depName=xiph/opus versioning=semver-coerced
-_tag='1.4'
+_tag='1.5.1'
 
-curl_tar "https://github.com/xiph/opus/archive/refs/tags/v${_tag}.tar.gz" opus 1
-
-# Required patch to fix meson for arm builds
-curl 'https://github.com/xiph/opus/commit/20c032d.patch' \
-  | patch -F5 -lp1 -d opus -t
-
-# Run autotools to configure the build system
-(cd opus && ./autogen.sh)
+curl_tar "https://ftp.osuosl.org/pub/xiph/releases/opus/opus-${_tag}.tar.gz" opus 1
 
 # Remove unused components
 rm -rf opus/{.github,CMakeLists.txt,config.sub,aclocal.m4,config.guess,cmake,doc,Makefile.in,tests,ltmain.sh,m4,configure}
@@ -31,6 +24,15 @@ meson \
   -Dtests=disabled \
   -Dcustom-modes=true \
   -Dextra-programs=disabled \
+  "$(
+    # Disable Run-time CPU detection on Windows ARM architecture
+    # because libopus could not detect CPU machine type properly
+    case "$TARGET" in
+      aarch64-windows*)
+        echo "-Drtcd=disabled"
+        ;;
+    esac
+  )" \
   ..
 
 ninja -j"$(nproc)"
