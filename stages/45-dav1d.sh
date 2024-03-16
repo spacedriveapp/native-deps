@@ -4,7 +4,7 @@ echo "Download dav1d..."
 mkdir -p dav1d
 
 # renovate: datasource=gitlab-releases depName=videolan/dav1d registryUrl=https://code.videolan.org
-_tag='1.4.0'
+_tag='1.4.1'
 
 curl_tar "https://code.videolan.org/videolan/dav1d/-/archive/${_tag}/dav1d-${_tag}.tar.bz2" dav1d 1
 
