@@ -63,7 +63,6 @@
       "packageNames": [
         "Kitware/CMake",
         "DLTcollab/sse2neon",
-        "tukaani-project/xz",
         "xiph/ogg",
         "strukturag/libde265",
         "xiph/vorbis",
