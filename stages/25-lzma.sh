@@ -6,7 +6,7 @@ mkdir -p lzma
 # _tag='5.4.6'
 
 # XZ upstream appears to be compromised, use Debian as a trusted repository for the source code
-curl_tar "http://deb.debian.org/debian/pool/main/x/xz-utils/xz-utils_5.6.1+really5.4.5.orig.tar.xz" lzma 1
+curl_tar "https://deb.debian.org/debian/pool/main/x/xz-utils/xz-utils_5.6.1+really5.4.5.orig.tar.xz" lzma 1
 
 case "$TARGET" in
   *darwin*)
