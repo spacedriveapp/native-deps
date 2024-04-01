@@ -4,7 +4,7 @@ echo "Download x265..."
 mkdir -p x265
 
 # renovate: depName=https://bitbucket.org/multicoreware/x265_git.git
-_commit='5a6d85d768699c36fe810c40be89db82033f6743'
+_commit='7f67d23c11b814a2410e0bc212d30aee197064e9'
 
 # Need to use master, because the latest release doesn't support optmized aarch64 and it is from 2021
 curl_tar "https://bitbucket.org/multicoreware/x265_git/get/${_commit}.tar.bz2" x265 1
