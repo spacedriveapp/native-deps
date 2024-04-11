@@ -9,7 +9,7 @@ ARG ZIG_VERSION='0.11.0'
 # renovate: datasource=github-releases depName=mesonbuild/meson
 ARG MESON_VERSION='1.4.0'
 # renovate: datasource=github-releases depName=Kitware/CMake
-ARG CMAKE_VERSION='3.29.1'
+ARG CMAKE_VERSION='3.29.2'
 # renovate: datasource=github-releases depName=NixOS/patchelf
 ARG PATCHELF_VERSION='0.18.0'
 # renovate: datasource=github-releases depName=joseluisq/macosx-sdks
