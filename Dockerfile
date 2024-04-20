@@ -5,7 +5,7 @@ ARG TARGET="x86_64-linux-gnu"
 ARG VERSION="0.0.0"
 
 # renovate: datasource=github-releases depName=ziglang/zig
-ARG ZIG_VERSION='0.11.0'
+ARG ZIG_VERSION='0.12.0'
 # renovate: datasource=github-releases depName=mesonbuild/meson
 ARG MESON_VERSION='1.4.0'
 # renovate: datasource=github-releases depName=Kitware/CMake
