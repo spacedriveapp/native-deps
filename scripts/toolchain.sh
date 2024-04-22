@@ -188,12 +188,3 @@ EOF
     ln -s "gcc_eh.pc.pc" "${PREFIX}/lib/pkgconfig/libgcc_eh.pc"
     ;;
 esac
-
-case "$TARGET" in
-  *windows-gnu)
-    # Work around LTO bugs when compiling C++ for windows targets
-    # https://github.com/ziglang/zig/issues/15958#issuecomment-1764915440
-    sed -i '/_free_locale))(_locale_t)/s/^/__attribute__((used)) /' "${SYSROOT}/lib/libc/mingw/misc/_free_locale.c"
-    sed -i '/_create_locale))(int, const char \*)/s/^/__attribute__((used)) /' "${SYSROOT}/lib/libc/mingw/misc/_create_locale.c"
-    ;;
-esac
