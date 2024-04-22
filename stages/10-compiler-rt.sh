@@ -9,7 +9,7 @@ case "$TARGET" in
 esac
 
 # LLVM install path
-LLVM_PATH="/usr/lib/llvm-16"
+LLVM_PATH="/usr/lib/llvm-17"
 
 # Remove wrapper from PATH, because we need to call the original cmake
 PATH="$(echo "${PATH}" | awk -v RS=: -v ORS=: '/\/wrapper^/ {next} {print}')"
@@ -19,9 +19,9 @@ echo "Download llvm compiler_rt..."
 
 mkdir -p "${LLVM_PATH}/compiler_rt/build"
 
-curl_tar 'https://github.com/llvm/llvm-project/releases/download/llvmorg-16.0.6/cmake-16.0.6.src.tar.xz' \
+curl_tar 'https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/cmake-17.0.6.src.tar.xz' \
   "${LLVM_PATH}/cmake" 1
-curl_tar 'https://github.com/llvm/llvm-project/releases/download/llvmorg-16.0.6/compiler-rt-16.0.6.src.tar.xz' \
+curl_tar 'https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/compiler-rt-17.0.6.src.tar.xz' \
   "${LLVM_PATH}/compiler_rt" 1
 
 # Link cmake files to where compiler_rt expect to find them
@@ -39,7 +39,7 @@ cmake \
   -DLLVM_CMAKE_DIR="${LLVM_PATH}/cmake" \
   -DDARWIN_osx_ARCHS="$(if [ "$_arch" == 'aarch64' ]; then echo 'arm64'; else echo "$_arch"; fi)" \
   -DLLVM_MAIN_SRC_DIR="$LLVM_PATH" \
-  -DCMAKE_INSTALL_PREFIX="${LLVM_PATH}/lib/clang/16" \
+  -DCMAKE_INSTALL_PREFIX="${LLVM_PATH}/lib/clang/17" \
   -DCMAKE_TOOLCHAIN_FILE='/srv/toolchain.cmake' \
   -DDARWIN_macosx_SYSROOT="${MACOS_SDKROOT:?Missing macOS SDK path}" \
   -DDARWIN_osx_BUILTIN_ARCHS="$(if [ "$_arch" == 'aarch64' ]; then echo 'arm64'; else echo "$_arch"; fi)" \
@@ -61,4 +61,4 @@ while IFS= read -r _lib; do
   if [ "$_arch" == 'aarch64' ]; then
     ln -s "${_lib_name}.a" "$(dirname "${_lib}")/${_lib_name}-arm64.a"
   fi
-done < <(find "${LLVM_PATH}/lib/clang/16/lib/darwin/" -name 'libclang_rt.*')
+done < <(find "${LLVM_PATH}/lib/clang/17/lib/darwin/" -name 'libclang_rt.*')
