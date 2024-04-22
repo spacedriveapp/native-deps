@@ -5,10 +5,8 @@ set -euo pipefail
 case "${TARGET:?TARGET envvar is required to be defined}" in
   x86_64-linux-musl | aarch64-linux-musl) ;;
   x86_64-linux-gnu* | aarch64-linux-gnu*)
-    # Set the glibc minimum version
-    # This is the lowest we can go at the moment
-    # https://github.com/ziglang/zig/issues/9412
-    TARGET="${TARGET%%.*}.2.18"
+    # Set the glibc minimum version, RHEL-7.9 and CentOS 7
+    TARGET="${TARGET%%.*}.2.17"
     ;;
   x86_64-darwin-apple | x86_64-apple-darwin-macho)
     SDKROOT="$MACOS_SDKROOT"
