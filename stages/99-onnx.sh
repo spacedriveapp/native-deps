@@ -115,7 +115,7 @@ case "$TARGET" in
 esac
 
 # Fix eigen deprecated-this-capture
-sed '/ei_add_cxx_compiler_flag("-Wno-long-long")/a \  ei_add_cxx_compiler_flag("-Wno-deprecated-this-capture")' _deps/eigen-src/CMakeLists.txt
+sed -i '/ei_add_cxx_compiler_flag("-Wno-long-long")/a \  ei_add_cxx_compiler_flag("-Wno-deprecated-this-capture")' _deps/eigen-src/CMakeLists.txt
 
 # Regenerate build files after cmake patches
 env PREFIX="$OUT" cmake "${args[@]}" ../cmake
