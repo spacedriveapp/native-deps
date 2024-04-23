@@ -95,7 +95,7 @@ case "$TARGET" in
     FFLAGS="${FFLAGS} -fstack-check"
 
     # https://github.com/tpoechtrager/osxcross/commit/3279f86
-    CFLAGS="${CFLAGS} -D__ENVIRONMENT_OS_VERSION_MIN_REQUIRED__=$(LC_ALL=C printf '%.2f' "11.0" | tr -d '.') -mmacos-version-min=${MACOSX_DEPLOYMENT_TARGET} -mmacosx-version-min=${MACOSX_DEPLOYMENT_TARGET}"
+    CFLAGS="${CFLAGS} -mmacos-version-min=${MACOSX_DEPLOYMENT_TARGET} -mmacosx-version-min=${MACOSX_DEPLOYMENT_TARGET}"
     LDFLAGS="-fuse-ld=$(command -v "${APPLE_TARGET:?}-ld") -L${SDKROOT}/usr/lib -L${SDKROOT}/usr/lib/system -F${SDKROOT}/System/Library/Frameworks ${LDFLAGS}"
     ;;
   *windows*)
