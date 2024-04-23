@@ -112,6 +112,9 @@ case "$TARGET" in
     sed -i 's/foreach (s IN ITEMS ${NSYNC_COMMON_SRC} ${NSYNC_OS_CPP_SRC})/foreach (s IN ITEMS ${NSYNC_COMMON_SRC} ${NSYNC_OS_CPP_SRC})\nget_filename_component(sle ${s} NAME_WLE)/g' _deps/google_nsync-src/CMakeLists.txt
     sed -i 's/cpp\/${s}/cpp\/${sle}.cc/g' _deps/google_nsync-src/CMakeLists.txt
 
+    # Fix eigen deprecated-this-capture
+    sed '/ei_add_cxx_compiler_flag("-Wno-long-long")/a \  ei_add_cxx_compiler_flag("-Wno-deprecated-this-capture")' _deps/eigen-src/CMakeLists.txt
+
     # Regenerate build files after cmake patches
     env PREFIX="$OUT" cmake "${args[@]}" ../cmake
     ;;
