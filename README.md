@@ -64,7 +64,7 @@ It uses Zig 0.11 as a C/C++ toolchain to build the Windows and Linux targets:
 
 It uses LLVM/Clang 16 with some tweaks from osxcross + Apple's cctools and linker to build the Darwin (macOS) targets:
 
-- https://github.com/llvm/llvm-project/tree/llvmorg-16.0.6
+- https://github.com/llvm/llvm-project/tree/llvmorg-17.0.6
 - https://github.com/tpoechtrager/osxcross
 - https://github.com/tpoechtrager/cctools-port
 

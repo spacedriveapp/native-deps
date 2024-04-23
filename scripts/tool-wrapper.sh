@@ -6,9 +6,9 @@ fallback_llvm() {
   if ! command -v "${_prefix}$(basename "$0")" 1>/dev/null 2>&1; then
     _prefix='llvm-'
     if [ "$0" = 'libtool' ]; then
-      _suffix='-darwin-16'
+      _suffix='-darwin-17'
     else
-      _suffix='-16'
+      _suffix='-17'
     fi
   fi
 }
@@ -26,7 +26,7 @@ case "${TARGET:?TARGET envvar is required to be defined}" in
         ;;
       *)
         _prefix='llvm-'
-        _suffix='-16'
+        _suffix='-17'
         ;;
     esac
     ;;

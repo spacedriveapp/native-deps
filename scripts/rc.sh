@@ -31,4 +31,4 @@ case "$_name" in
     ;;
 esac
 
-exec "/usr/bin/llvm-${_name}-16" "$@"
+exec "/usr/bin/llvm-${_name}-17" "$@"

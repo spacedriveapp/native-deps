@@ -29,7 +29,7 @@ case "$(basename "$0")" in
     case "$TARGET" in
       *darwin*)
         # Use clang instead of zig for darwin targets
-        CMD='clang-16'
+        CMD='clang-17'
         ;;
       *) CMD='zig cc' ;;
     esac
@@ -39,7 +39,7 @@ case "$(basename "$0")" in
     case "$TARGET" in
       *darwin*)
         # Use clang instead of zig for darwin targets
-        CMD='clang++-16'
+        CMD='clang++-17'
         ;;
       *) CMD='zig c++' ;;
     esac
