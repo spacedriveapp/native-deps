@@ -115,7 +115,11 @@ case "$TARGET" in
 esac
 
 # Fix eigen deprecated-this-capture
-sed -i '/ei_add_cxx_compiler_flag("-Wno-long-long")/a \  ei_add_cxx_compiler_flag("-Wno-deprecated-this-capture")' _deps/eigen-src/CMakeLists.txt
+sed -i 's/pool_->Schedule([=, &handleRange]() { handleRange(midIdx, lastIdx); });/pool_->Schedule([=, this, &handleRange]() { handleRange(midIdx, lastIdx); });/' _deps/eigen-src/unsupported/Eigen/CXX11/src/Tensor/TensorDeviceThreadPool.h
+sed -i 's/handleRange = [=, &handleRange, &barrier, &f](Index firstIdx,/handleRange = [=, this, &handleRange, &barrier, &f](Index firstIdx,/' _deps/eigen-src/unsupported/Eigen/CXX11/src/Tensor/TensorDeviceThreadPool.h
+sed -i 's/[=]() { kernel(m, n, k, use_thread_local); });/[=, this]() { kernel(m, n, k, use_thread_local); });/' _deps/eigen-src/unsupported/Eigen/CXX11/src/Tensor/TensorContractionThreadPool.h
+sed -i 's/[=]() { enqueue_packing_helper(mid, end, k, rhs); });/[=, this]() { enqueue_packing_helper(mid, end, k, rhs); });/' _deps/eigen-src/unsupported/Eigen/CXX11/src/Tensor/TensorContractionThreadPool.h
+sed -i 's/[=]() { enqueue_packing_helper(start, end, k, rhs); });/[=, this]() { enqueue_packing_helper(start, end, k, rhs); });/' _deps/eigen-src/unsupported/Eigen/CXX11/src/Tensor/TensorContractionThreadPool.h
 
 # Regenerate build files after cmake patches
 env PREFIX="$OUT" cmake "${args[@]}" ../cmake
