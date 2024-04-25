@@ -17,7 +17,7 @@ ARG MACOS_SDK_VERSION='14.2'
 
 #--
 
-FROM debian:bookworm@sha256:b37bc259c67238d814516548c17ad912f26c3eed48dd9bb54893eafec8739c89 AS build-base
+FROM debian:bookworm@sha256:1aadfee8d292f64b045adb830f8a58bfacc15789ae5f489a0fedcd517a862cb9 AS build-base
 
 SHELL ["bash", "-euxo", "pipefail", "-c"]
 
@@ -78,7 +78,7 @@ COPY --chmod=0750 ./scripts/curl_tar.sh "${SYSROOT}/bin/curl_tar"
 # Download and install zig toolchain
 ARG ZIG_VERSION
 RUN --mount=type=cache,target=/root/.cache `
-	curl_tar "https://ziglang.org/builds/zig-linux-$(uname -m)-${ZIG_VERSION:?}.tar.xz" "$SYSROOT" 1 `
+	curl_tar "https://ziglang.org/download/${ZIG_VERSION:?}/zig-linux-$(uname -m)-${ZIG_VERSION:?}.tar.xz" "$SYSROOT" 1 `
 	&& mv "${SYSROOT}/zig" "${SYSROOT}/bin/zig"
 
 # Download and install cmake
