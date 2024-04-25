@@ -78,7 +78,7 @@ COPY --chmod=0750 ./scripts/curl_tar.sh "${SYSROOT}/bin/curl_tar"
 # Download and install zig toolchain
 ARG ZIG_VERSION
 RUN --mount=type=cache,target=/root/.cache `
-	curl_tar "https://ziglang.org/builds/zig-linux-$(uname -m)-${ZIG_VERSION:?}.tar.xz" "$SYSROOT" 1 `
+	curl_tar "https://ziglang.org/download/${ZIG_VERSION:?}/zig-linux-$(uname -m)-${ZIG_VERSION:?}.tar.xz" "$SYSROOT" 1 `
 	&& mv "${SYSROOT}/zig" "${SYSROOT}/bin/zig"
 
 # Download and install cmake
