@@ -4,7 +4,7 @@ echo "Download pdfium..."
 mkdir -p pdfium
 
 # renovate: datasource=github-releases depName=bblanchon/pdfium-binaries versioning=semver-coerced
-_tag='6462'
+_tag='6476'
 case "$TARGET" in
   x86_64-windows*)
     _name='win-x64'
