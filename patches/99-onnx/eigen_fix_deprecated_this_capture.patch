@@ -1,3 +1,22 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index f40cf7738..bd6599c9f 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -147,10 +147,10 @@ if(NOT MSVC)
+ 
+   # clang outputs some warnings for unknown flags that are not caught by check_cxx_compiler_flag
+   # adding -Werror turns such warnings into errors
+-  check_cxx_compiler_flag("-Werror" COMPILER_SUPPORT_WERROR)
+-  if(COMPILER_SUPPORT_WERROR)
+-    set(CMAKE_REQUIRED_FLAGS "-Werror")
+-  endif()
++  #check_cxx_compiler_flag("-Werror" COMPILER_SUPPORT_WERROR)
++  #if(COMPILER_SUPPORT_WERROR)
++  #  set(CMAKE_REQUIRED_FLAGS "-Werror")
++  #endif()
+   ei_add_cxx_compiler_flag("-pedantic")
+   ei_add_cxx_compiler_flag("-Wall")
+   ei_add_cxx_compiler_flag("-Wextra")
 diff --git a/unsupported/Eigen/CXX11/src/Tensor/TensorContractionThreadPool.h b/unsupported/Eigen/CXX11/src/Tensor/TensorContractionThreadPool.h
 index 21be6ea42..7464ee56a 100644
 --- a/unsupported/Eigen/CXX11/src/Tensor/TensorContractionThreadPool.h
