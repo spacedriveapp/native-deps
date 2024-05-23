@@ -442,7 +442,6 @@ RUN --mount=type=cache,target=/root/.cache `
 FROM layer-20 AS layer-99-onnx
 
 RUN --mount=type=cache,target=/root/.cache `
-	--mount=type=bind,source=patches/99-onnx,target="${PREFIX}/patches" `
 	--mount=type=bind,source=stages/99-onnx.sh,target=/srv/stage.sh `
 	/srv/build.sh
 

@@ -112,13 +112,10 @@ case "$TARGET" in
     sed -i 's/foreach (s IN ITEMS ${NSYNC_COMMON_SRC} ${NSYNC_OS_CPP_SRC})/foreach (s IN ITEMS ${NSYNC_COMMON_SRC} ${NSYNC_OS_CPP_SRC})\nget_filename_component(sle ${s} NAME_WLE)/g' _deps/google_nsync-src/CMakeLists.txt
     sed -i 's/cpp\/${s}/cpp\/${sle}.cc/g' _deps/google_nsync-src/CMakeLists.txt
     ;;
+
+    # Regenerate build files after cmake patches
+    env PREFIX="$OUT" cmake "${args[@]}" ../cmake
 esac
-
-# Fix eigen deprecated-this-capture
-patch -F5 -lp1 -d _deps/eigen-src -t <"$PREFIX"/patches/eigen_fix_deprecated_this_capture.patch
-
-# Regenerate build files after cmake patches
-env PREFIX="$OUT" cmake "${args[@]}" ../cmake
 
 ninja -j"$(nproc)"
 
