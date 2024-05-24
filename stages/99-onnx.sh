@@ -111,10 +111,10 @@ case "$TARGET" in
     # Fix google_nsync trying to compile C code as C++, which zig does not support
     sed -i 's/foreach (s IN ITEMS ${NSYNC_COMMON_SRC} ${NSYNC_OS_CPP_SRC})/foreach (s IN ITEMS ${NSYNC_COMMON_SRC} ${NSYNC_OS_CPP_SRC})\nget_filename_component(sle ${s} NAME_WLE)/g' _deps/google_nsync-src/CMakeLists.txt
     sed -i 's/cpp\/${s}/cpp\/${sle}.cc/g' _deps/google_nsync-src/CMakeLists.txt
-    ;;
 
     # Regenerate build files after cmake patches
     env PREFIX="$OUT" cmake "${args[@]}" ../cmake
+    ;;
 esac
 
 ninja -j"$(nproc)"
