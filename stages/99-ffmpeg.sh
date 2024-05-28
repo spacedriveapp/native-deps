@@ -72,6 +72,8 @@ case "$TARGET" in
       --x86asmexe=false
       --enable-vfp
       --enable-neon
+      # Our baseline ARM platform for Linux and Windows is raspberry pi 3 which doesn't support i8mm
+      --disable-i8mm
     )
     ;;
 esac
@@ -137,15 +139,6 @@ case "$TARGET" in
     env_specific_arg+=(
       --enable-amf
       --enable-libvpl
-    )
-    ;;
-esac
-
-case "$TARGET" in
-  aarch64-linux* | aarch64-windows*)
-    # Our baseline ARM platform for Linux and Windows is raspberry pi 3 which doesn't support i8mm
-    env_specific_arg+=(
-      --disable-i8mm
     )
     ;;
 esac
