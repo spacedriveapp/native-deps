@@ -141,6 +141,15 @@ case "$TARGET" in
     ;;
 esac
 
+case "$TARGET" in
+  aarch64-linux* | aarch64-windows*)
+    # Our baseline ARM platform for Linux and Windows is raspberry pi 3 which doesn't support i8mm
+    env_specific_arg+=(
+      --disable-i8mm
+    )
+    ;;
+esac
+
 _arch="${TARGET%%-*}"
 case "$TARGET" in
   aarch64-darwin*)
