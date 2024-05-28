@@ -99,7 +99,8 @@ case "$TARGET" in
       -Donnxruntime_USE_COREML=On
     )
     # Allow deprecated usage of ATOMIC_VAR_INIT by https://github.com/google/nsync
-    export CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_DEPRECATION_WARNINGS"
+    # Allow deprecated usage of this capture by https://gitlab.com/libeigen/eigen
+    export CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_DEPRECATION_WARNINGS -Wno-deprecated-this-capture"
     ;;
 esac
 

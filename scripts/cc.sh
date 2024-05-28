@@ -5,10 +5,8 @@ set -euo pipefail
 case "${TARGET:?TARGET envvar is required to be defined}" in
   x86_64-linux-musl | aarch64-linux-musl) ;;
   x86_64-linux-gnu* | aarch64-linux-gnu*)
-    # Set the glibc minimum version
-    # This is the lowest we can go at the moment
-    # https://github.com/ziglang/zig/issues/9412
-    TARGET="${TARGET%%.*}.2.18"
+    # Set the glibc minimum version, RHEL-7.9 and CentOS 7
+    TARGET="${TARGET%%.*}.2.17"
     ;;
   x86_64-darwin-apple | x86_64-apple-darwin-macho)
     SDKROOT="$MACOS_SDKROOT"
@@ -31,7 +29,7 @@ case "$(basename "$0")" in
     case "$TARGET" in
       *darwin*)
         # Use clang instead of zig for darwin targets
-        CMD='clang-16'
+        CMD='clang-17'
         ;;
       *) CMD='zig cc' ;;
     esac
@@ -41,7 +39,7 @@ case "$(basename "$0")" in
     case "$TARGET" in
       *darwin*)
         # Use clang instead of zig for darwin targets
-        CMD='clang++-16'
+        CMD='clang++-17'
         ;;
       *) CMD='zig c++' ;;
     esac
@@ -145,29 +143,42 @@ while [ "$#" -gt 0 ]; do
     cpu_features+=("${_features[@]}")
     true
   else
-    if (case "$TARGET" in *darwin*) exit 0 ;; *) exit 1 ;; esac) then
-      if [ "$1" = '-arch=aarch64' ]; then
-        # macOS uses arm64 instead of aarch64
-        argv+=('-arch=arm64')
-      elif [ "$1" = '-arch' ] && [ "${2:-}" = 'aarch64' ]; then
-        argv+=('-arch' 'arm64')
-        shift 2
-        continue
-      elif (case "$1" in -DTARGET_OS_IPHONE*) exit 0 ;; *) exit 1 ;; esac) then
-        has_iphone=1
-      else
-        argv+=("$1")
+    case "$TARGET" in
+      *darwin*)
+        if [ "$1" = '-arch=aarch64' ]; then
+          # macOS uses arm64 instead of aarch64
+          argv+=('-arch=arm64')
+        elif [ "$1" = '-arch' ] && [ "${2:-}" = 'aarch64' ]; then
+          argv+=('-arch' 'arm64')
+          shift 2
+          continue
+        elif (case "$1" in -DTARGET_OS_IPHONE*) exit 0 ;; *) exit 1 ;; esac) then
+          has_iphone=1
+        else
+          argv+=("$1")
 
-        # See https://github.com/apple-oss-distributions/libiconv/blob/a167071/xcodeconfig/libiconv.xcconfig
-        if [ "$1" = '-lcharset' ]; then
-          should_add_libcharset=-1
-        elif [ "$1" = '-liconv' ] && [ "$should_add_libcharset" -eq 0 ]; then
-          should_add_libcharset=1
+          # See https://github.com/apple-oss-distributions/libiconv/blob/a167071/xcodeconfig/libiconv.xcconfig
+          if [ "$1" = '-lcharset' ]; then
+            should_add_libcharset=-1
+          elif [ "$1" = '-liconv' ] && [ "$should_add_libcharset" -eq 0 ]; then
+            should_add_libcharset=1
+          fi
         fi
-      fi
-    else
-      argv+=("$1")
-    fi
+        ;;
+      *windows*)
+        if (case "$1" in *.rlib | *libcompiler_builtins-*) exit 0 ;; *) exit 1 ;; esac) then
+          # compiler-builtins is duplicated with zig's compiler-rt
+          case "$CMD" in
+            clang*) argv+=("$1") ;;
+          esac
+        else
+          argv+=("$1")
+        fi
+        ;;
+      *)
+        argv+=("$1")
+        ;;
+    esac
   fi
 
   if [ "$1" = '-E' ]; then
@@ -222,6 +233,19 @@ while [ "$#" -gt 0 ]; do
         argv+=(-v)
         ;;
     esac
+  elif [ "$1" = '-Bdynamic' ]; then
+    case "$CMD" in
+      clang*)
+        l_args+=(-Bdynamic)
+        ;;
+      *)
+        # https://github.com/ziglang/zig/pull/16058
+        # zig changes the linker behavior, -Bdynamic won't search *.a for mingw, but this may be fixed in the later version
+        # here is a workaround to replace the linker switch with -search_paths_first, which will search for *.dll,*lib first,
+        # then fallback to *.a
+        l_args+=(-search_paths_first)
+        ;;
+    esac
   elif [ "$1" = '-dynamic' ]; then
     case "$CMD" in
       clang*)
@@ -254,12 +278,12 @@ while [ "$#" -gt 0 ]; do
         ;;
     esac
   elif [ "$1" = '-dylib' ] \
+    || [ "$1" = '--dynamicbase' ] \
     || [ "$1" = '--large-address-aware' ] \
-    || [ "$1" = '--no-undefined-version' ] \
     || [ "$1" = '--disable-auto-image-base' ]; then
-    # zig doesn't support -dylib, -dynamic, --no-undefined-version, --large-address-aware and --disable-auto-image-base
-    # https://github.com/ziglang/zig/issues/16855
-    # https://github.com/ziglang/zig/pull/17326
+    # zig doesn't support -dylib, --dynamicbase, --large-address-aware and --disable-auto-image-base
+    # https://github.com/rust-cross/cargo-zigbuild/blob/841df510dff8c585690e85354998bbcb6695460f/src/zig.rs#L187-L190
+    # https://github.com/ziglang/zig/issues/10336
     case "$CMD" in
       clang*)
         l_args+=("$1")

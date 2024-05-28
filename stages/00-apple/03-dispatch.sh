@@ -11,8 +11,8 @@ esac
 
 apt-get install systemtap-sdt-dev libbsd-dev linux-libc-dev
 
-export CC="clang-16"
-export CXX="clang++-16"
+export CC="clang-17"
+export CXX="clang++-17"
 export CFLAGS="-I${CCTOOLS}/include"
 export LDFLAGS="-L${CCTOOLS}/lib"
 export APPLE_TARGET='__BYPASS__'

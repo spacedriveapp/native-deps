@@ -45,7 +45,7 @@ if [ "$(uname -m)" = "${TARGET%%-*}" ] && (case "$TARGET" in *linux* | x86_64-wi
   # Unfortunatly that means we only suport cuda in the same architecture as the host system
   # https://github.com/ziglang/zig/pull/10704#issuecomment-1023616464
   env_specific_arg+=(
-    --nvcc="clang-16 -target ${TARGET}"
+    --nvcc="clang-17 -target ${TARGET}"
     --enable-cuda-llvm
     --enable-ffnvcodec
     --disable-cuda-nvcc
@@ -72,6 +72,8 @@ case "$TARGET" in
       --x86asmexe=false
       --enable-vfp
       --enable-neon
+      # Our baseline ARM platform for Linux and Windows is raspberry pi 3 which doesn't support i8mm
+      --disable-i8mm
     )
     ;;
 esac
@@ -171,7 +173,7 @@ if ! ./configure \
   --cxx=c++ \
   --strip=strip \
   --ranlib=ranlib \
-  --host-cc=clang-16 \
+  --host-cc=clang-17 \
   --windres="windres" \
   --pkg-config=pkg-config \
   --pkg-config-flags="--static" \

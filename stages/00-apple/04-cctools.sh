@@ -18,8 +18,8 @@ echo "APPLE_TARGET=$_target" >>/etc/environment
 
 apt-get install uuid-dev libedit-dev
 
-export CC="clang-16"
-export CXX="clang++-16"
+export CC="clang-17"
+export CXX="clang++-17"
 export CFLAGS="-I${CCTOOLS}/include"
 export LDFLAGS="-L${CCTOOLS}/lib"
 export APPLE_TARGET='__BYPASS__'
@@ -43,7 +43,7 @@ cd cctools/cctools
   --with-libxar="$CCTOOLS" \
   --with-libtapi="$CCTOOLS" \
   --with-libdispatch="$CCTOOLS" \
-  --with-llvm-config=llvm-config-16 \
+  --with-llvm-config=llvm-config-17 \
   --with-libblocksruntime="$CCTOOLS" \
   --enable-xar-support \
   --enable-lto-support \
@@ -56,4 +56,4 @@ make install
 rm -r /srv/cctools
 
 # Create symlinks for llvm-otool because cctools use it when calling its own otool
-ln -fs "$(command -v llvm-otool-16)" /opt/cctools/bin/llvm-otool
+ln -fs "$(command -v llvm-otool-17)" /opt/cctools/bin/llvm-otool

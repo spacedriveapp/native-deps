@@ -95,15 +95,15 @@ case "$TARGET" in
     FFLAGS="${FFLAGS} -fstack-check"
 
     # https://github.com/tpoechtrager/osxcross/commit/3279f86
-    CFLAGS="${CFLAGS} -D__ENVIRONMENT_OS_VERSION_MIN_REQUIRED__=$(LC_ALL=C printf '%.2f' "11.0" | tr -d '.') -mmacos-version-min=${MACOSX_DEPLOYMENT_TARGET} -mmacosx-version-min=${MACOSX_DEPLOYMENT_TARGET}"
+    CFLAGS="${CFLAGS} -mmacos-version-min=${MACOSX_DEPLOYMENT_TARGET} -mmacosx-version-min=${MACOSX_DEPLOYMENT_TARGET}"
     LDFLAGS="-fuse-ld=$(command -v "${APPLE_TARGET:?}-ld") -L${SDKROOT}/usr/lib -L${SDKROOT}/usr/lib/system -F${SDKROOT}/System/Library/Frameworks ${LDFLAGS}"
     ;;
   *windows*)
     # Zig doesn't support stack probing on Windows
-    # https://github.com/ziglang/zig/blob/b3462b7/src/target.zig#L326-L329
+    # https://github.com/ziglang/zig/blob/0.12.0/src/target.zig#L195-L198
     FFLAGS="${FFLAGS} -fno-stack-check"
     # https://github.com/strukturag/libheif/issues/357
-    CFLAGS="${CFLAGS} -D_GLIBCXX_ASSERTIONS -D__MINGW64__"
+    CFLAGS="${CFLAGS} -D_GLIBCXX_ASSERTIONS=1 -D__MINGW64__"
     ;;
 esac
 export CFLAGS="${CFLAGS} ${FFLAGS}"
