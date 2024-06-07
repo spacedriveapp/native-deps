@@ -6,7 +6,7 @@ ARG VERSION='0.0.0'
 ARG OS_IPHONE='0'
 
 # renovate: datasource=github-releases depName=ziglang/zig
-ARG ZIG_VERSION='0.12.1'
+ARG ZIG_VERSION='0.13.0'
 # renovate: datasource=github-releases depName=mesonbuild/meson
 ARG MESON_VERSION='1.5.1'
 # renovate: datasource=github-releases depName=Kitware/CMake
