@@ -17,7 +17,7 @@ ARG MACOS_SDK_VERSION='14.2'
 
 #--
 
-FROM debian:bookworm@sha256:fac2c0fd33e88dfd3bc88a872cfb78dcb167e74af6162d31724df69e482f886c AS build-base
+FROM debian:bookworm@sha256:a92ed51e0996d8e9de041ca05ce623d2c491444df6a535a566dabd5cb8336946 AS build-base
 
 SHELL ["bash", "-euxo", "pipefail", "-c"]
 
