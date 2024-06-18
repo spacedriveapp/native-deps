@@ -43,6 +43,7 @@ cmake \
 
 ninja -j"$(nproc)" liblzma
 
+mkdir -p lzma/doc/examples
 case "$TARGET" in
   *windows*)
     touch xz.exe xzdec.exe lzmadec.exe lzmainfo.exe
