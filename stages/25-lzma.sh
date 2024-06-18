@@ -3,10 +3,10 @@
 echo "Download lzma..."
 mkdir -p lzma
 
-# _tag='5.4.6'
+# renovate: datasource=github-releases depName=tukaani-project/xz
+_tag='5.6.2'
 
-# XZ upstream appears to be compromised, use Debian as a trusted repository for the source code
-curl_tar "https://deb.debian.org/debian/pool/main/x/xz-utils/xz-utils_5.6.1+really5.4.5.orig.tar.xz" lzma 1
+curl_tar "https://github.com/tukaani-project/xz/releases/download/v${_tag}/xz-${_tag}.tar.xz" lzma 1
 
 case "$TARGET" in
   *darwin*)
@@ -43,6 +43,7 @@ cmake \
 
 ninja -j"$(nproc)" liblzma
 
+mkdir -p ../doc/examples
 case "$TARGET" in
   *windows*)
     touch xz.exe xzdec.exe lzmadec.exe lzmainfo.exe
