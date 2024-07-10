@@ -4,7 +4,7 @@ echo "Download heif..."
 mkdir -p heif
 
 # renovate: datasource=github-releases depName=strukturag/libheif
-_tag='1.17.6'
+_tag='1.18.0'
 
 curl_tar "https://github.com/strukturag/libheif/releases/download/v${_tag}/libheif-${_tag}.tar.gz" heif 1
 
