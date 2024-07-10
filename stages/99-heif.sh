@@ -10,11 +10,9 @@ curl_tar "https://github.com/strukturag/libheif/releases/download/v${_tag}/libhe
 
 case "$TARGET" in
   *windows*)
-    sed -ie 's/__attribute__((__visibility__("default")))/__declspec(dllexport)/' heif/libheif/heif.h
+    sed -ie 's/__attribute__((__visibility__("default")))/__declspec(dllexport)/' heif/libheif/api/libheif/heif.h
     ;;
 esac
-
-sed -i 's/find_package(FFMPEG COMPONENTS avcodec)/find_package(FFMPEG COMPONENTS avcodec avutil)/' heif/CMakeLists.txt
 
 # Remove unused components
 rm -r heif/{go,fuzzing,tests,examples}
@@ -31,12 +29,13 @@ env SHARED=On PREFIX="$OUT" cmake \
   -DWITH_DAV1D=On \
   -DWITH_LIBDE265=On \
   -DWITH_LIBSHARPYUV=On \
+  -DWITH_FFMPEG_DECODER=On \
   -DWITH_UNCOMPRESSED_CODEC=On \
   -DWITH_REDUCED_VISIBILITY=On \
+  -DWITH_HEADER_COMPRESSION=On \
   -DCMAKE_C_VISIBILITY_PRESET=hidden \
   -DCMAKE_CXX_VISIBILITY_PRESET=hidden \
   -DENABLE_MULTITHREADING_SUPPORT=On \
-  -DWITH_DEFLATE_HEADER_COMPRESSION=On \
   -DCMAKE_VISIBILITY_INLINES_HIDDEN=On \
   -DWITH_X265=Off \
   -DWITH_RAV1E=Off \
@@ -45,11 +44,11 @@ env SHARED=On PREFIX="$OUT" cmake \
   -DWITH_FUZZERS=Off \
   -DWITH_EXAMPLES=Off \
   -DBUILD_TESTING=Off \
+  -DWITH_GDK_PIXBUF=Off \
   -DWITH_AOM_DECODER=Off \
   -DWITH_AOM_ENCODER=Off \
   -DWITH_JPEG_DECODER=Off \
   -DWITH_JPEG_ENCODER=Off \
-  -DWITH_FFMPEG_DECODER=On \
   -DWITH_OpenJPEG_DECODER=Off \
   -DWITH_OpenJPEG_ENCODER=Off \
   -DENABLE_PLUGIN_LOADING=Off \
