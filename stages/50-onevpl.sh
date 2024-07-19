@@ -10,7 +10,8 @@ esac
 echo "Download oneVPL..."
 mkdir -p oneVPL
 
-_tag='2.10.1'
+# FIX-ME: Renovate breaks due to intel using a year-based versioning scheme earlier
+_tag='2.12.0'
 
 curl_tar "https://github.com/intel/libvpl/archive/refs/tags/v${_tag}.tar.gz" oneVPL 1
 

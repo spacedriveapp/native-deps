@@ -3,31 +3,29 @@
 echo "Download ffmpeg..."
 mkdir -p ffmpeg
 
-curl_tar 'https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n6.1.1.tar.gz' ffmpeg 1
+curl_tar 'https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n7.0.1.tar.gz' ffmpeg 1
 
 # Handbreak patches
 for patch in \
-  'https://github.com/HandBrake/HandBrake/raw/5c81a46/contrib/ffmpeg/A01-mov-read-name-track-tag-written-by-movenc.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/5c81a46/contrib/ffmpeg/A02-movenc-write-3gpp-track-titl-tag.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/5c81a46/contrib/ffmpeg/A03-mov-read-3gpp-udta-tags.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/5c81a46/contrib/ffmpeg/A04-movenc-write-3gpp-track-names-tags-for-all-available.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/5c81a46/contrib/ffmpeg/A05-dvdsubdec-fix-processing-of-partial-packets.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/5c81a46/contrib/ffmpeg/A06-dvdsubdec-return-number-of-bytes-used.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/5c81a46/contrib/ffmpeg/A07-dvdsubdec-use-pts-of-initial-packet.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/5c81a46/contrib/ffmpeg/A08-ccaption_dec-fix-pts-in-real_time-mode.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/5c81a46/contrib/ffmpeg/A09-matroskaenc-aac-extradata-updated.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/5c81a46/contrib/ffmpeg/A10-amfenc-Add-support-for-pict_type-field.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/5c81a46/contrib/ffmpeg/A11-amfenc-Fixes-the-color-information-in-the-ou.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/5c81a46/contrib/ffmpeg/A12-amfenc-HDR-metadata.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/5c81a46/contrib/ffmpeg/A13-libavcodec-amfenc-Fix-issue-with-missing-headers-in-.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/5c81a46/contrib/ffmpeg/A14-avcodec-add-ambient-viewing-environment-packet-side-.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/5c81a46/contrib/ffmpeg/A15-avformat-mov-add-support-for-amve-ambient-viewing-en.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/5c81a46/contrib/ffmpeg/A16-videotoolbox-dec-h264.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/5c81a46/contrib/ffmpeg/A17-libswscale-fix-yuv420p-to-p01xle-color-conversion-bu.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/5c81a46/contrib/ffmpeg/A18-qsv-fix-decode-10bit-hdr.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/5c81a46/contrib/ffmpeg/A19-ffbuild-common-use-gzip-n-flag-for-cuda.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/5c81a46/contrib/ffmpeg/A20-vf_scale_preserve_range.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/5c81a46/contrib/ffmpeg/A21-dvdsubdec-do-not-discard-zero-sized-rects.patch'; do
+  'https://github.com/HandBrake/HandBrake/raw/0cc92fb/contrib/ffmpeg/A01-mov-read-name-track-tag-written-by-movenc.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/0cc92fb/contrib/ffmpeg/A02-movenc-write-3gpp-track-titl-tag.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/0cc92fb/contrib/ffmpeg/A03-mov-read-3gpp-udta-tags.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/0cc92fb/contrib/ffmpeg/A04-movenc-write-3gpp-track-names-tags-for-all-available.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/0cc92fb/contrib/ffmpeg/A05-dvdsubdec-fix-processing-of-partial-packets.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/0cc92fb/contrib/ffmpeg/A06-dvdsubdec-return-number-of-bytes-used.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/0cc92fb/contrib/ffmpeg/A07-dvdsubdec-use-pts-of-initial-packet.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/0cc92fb/contrib/ffmpeg/A08-dvdsubdec-do-not-discard-zero-sized-rects.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/0cc92fb/contrib/ffmpeg/A09-ccaption_dec-fix-pts-in-real_time-mode.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/0cc92fb/contrib/ffmpeg/A10-matroskaenc-aac-extradata-updated.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/0cc92fb/contrib/ffmpeg/A11-videotoolbox-disable-H.264-10-bit-on-Intel-macOS.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/0cc92fb/contrib/ffmpeg/A12-libswscale-fix-yuv420p-to-p01xle-color-conversion-bu.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/0cc92fb/contrib/ffmpeg/A13-qsv-fix-decode-10bit-hdr.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/0cc92fb/contrib/ffmpeg/A14-amfenc-Add-support-for-pict_type-field.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/0cc92fb/contrib/ffmpeg/A15-amfenc-Fixes-the-color-information-in-the-ou.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/0cc92fb/contrib/ffmpeg/A16-amfenc-HDR-metadata.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/0cc92fb/contrib/ffmpeg/A17-av1dec-dovi-rpu.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/0cc92fb/contrib/ffmpeg/A18-avformat-mov-add-support-audio-fallback-track-ref.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/0cc92fb/contrib/ffmpeg/A19-fix-qsv-on-gcc-14.patch'; do
   curl "$patch" | patch -F5 -lp1 -d ffmpeg -t
 done
 
@@ -72,8 +70,6 @@ case "$TARGET" in
       --x86asmexe=false
       --enable-vfp
       --enable-neon
-      # Our baseline ARM platform for Linux and Windows is raspberry pi 3 which doesn't support i8mm
-      --disable-i8mm
     )
     ;;
 esac
@@ -100,6 +96,7 @@ case "$TARGET" in
     ;;
   *linux*)
     env_specific_arg+=(
+      --disable-libdrm
       --disable-coreimage
       --disable-w32threads
       --disable-videotoolbox
