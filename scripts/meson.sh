@@ -10,4 +10,5 @@ exec /opt/sysroot/bin/meson setup \
   --default-library="${SHARED:-static}" \
   -Db_lto="$([ "${LTO:-1}" -eq 1 ] && echo true || echo false)" \
   -Db_staticpic=true \
+  -Db_pie=true \
   "$@"

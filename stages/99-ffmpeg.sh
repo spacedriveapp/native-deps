@@ -226,6 +226,7 @@ if ! ./configure \
   --enable-lzma \
   --enable-opencl \
   --enable-optimizations \
+  --enable-pic \
   --enable-postproc \
   --enable-shared \
   --enable-swscale \
