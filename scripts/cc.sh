@@ -359,7 +359,9 @@ for feature in "${cpu_features[@]}"; do
   features="${features}\n${feature}"
 done
 
-features="$(printf "$features" | awk '!NF || !seen[$0]++' | xargs printf '+%s')"
+if [ -n "$features" ]; then
+  features="$(printf "$features" | awk '!NF || !seen[$0]++' | xargs -r printf '+%s')"
+fi
 
 case "${TARGET:-}" in
   x86_64*)
