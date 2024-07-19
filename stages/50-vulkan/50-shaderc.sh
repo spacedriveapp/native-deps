@@ -12,18 +12,18 @@ mkdir -p shaderc/third_party/{glslang,spirv-headers,spirv-tools}
 
 # All the version for the main package and third-party deps must match what is here:
 # https://github.com/google/shaderc/blob/known-good/known_good.json
-curl_tar 'https://github.com/google/shaderc/archive/refs/tags/v2023.8.tar.gz' shaderc 1
+curl_tar 'https://github.com/google/shaderc/tarball/3ac03b8' shaderc 1
 
 sed -ie 's|#!/usr/bin/env python|#!/usr/bin/env python3|' shaderc/utils/update_build_version.py
 
 # Thrid party deps
-curl_tar 'https://github.com/KhronosGroup/glslang/archive/a91631b.tar.gz' shaderc/third_party/glslang 1
+curl_tar 'https://github.com/KhronosGroup/glslang/archive/fa9c3de.tar.gz' shaderc/third_party/glslang 1
 cp -a shaderc/third_party/glslang/LICENSE.txt shaderc/LICENSE.glslang
 
-curl_tar 'https://github.com/KhronosGroup/SPIRV-Headers/archive/1c6bb27.tar.gz' shaderc/third_party/spirv-headers 1
+curl_tar 'https://github.com/KhronosGroup/SPIRV-Headers/archive/2acb319.tar.gz' shaderc/third_party/spirv-headers 1
 cp -a shaderc/third_party/spirv-headers/LICENSE shaderc/LICENSE.spirv-headers
 
-curl_tar 'https://github.com/KhronosGroup/SPIRV-Tools/archive/f0cc85e.tar.gz' shaderc/third_party/spirv-tools 1
+curl_tar 'https://github.com/KhronosGroup/SPIRV-Tools/archive/0cfe9e7.tar.gz' shaderc/third_party/spirv-tools 1
 cp -a shaderc/third_party/spirv-tools/LICENSE shaderc/LICENSE.spirv-tools
 
 sed -i '/add_subdirectory(test)/d' shaderc/third_party/spirv-tools/CMakeLists.txt

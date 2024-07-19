@@ -334,6 +334,13 @@ fi
 
 # Compiler specific flags
 features=""
+case "${TARGET:-}" in
+  arm64* | aarch64*)
+    # Force enable i8mm for arm64, required by ffmpeg
+    features="i8mm"
+    ;;
+esac
+
 for feature in "${cpu_features[@]}"; do
   case "$CMD" in
     clang*) ;;
@@ -349,8 +356,10 @@ for feature in "${cpu_features[@]}"; do
       ;;
   esac
 
-  features="${features}+${feature}"
+  features="${features}\n${feature}"
 done
+
+features="$(printf "$features" | awk '!NF || !seen[$0]++' | xargs printf '+%s')"
 
 case "${TARGET:-}" in
   x86_64*)
