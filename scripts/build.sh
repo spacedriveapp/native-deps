@@ -42,7 +42,7 @@ case "$TARGET" in
     ;;
 esac
 
-CFLAGS="-I${PREFIX}/include -pipe -Wall -Werror=format-security -D_FORTIFY_SOURCE=2"
+CFLAGS="-I${PREFIX}/include -pipe -Wall -Werror=format-security -fPIC -D_FORTIFY_SOURCE=2"
 LDFLAGS="-L${PREFIX}/lib -pipe"
 case "$TARGET" in
   *linux*)

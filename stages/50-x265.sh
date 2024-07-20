@@ -3,11 +3,13 @@
 echo "Download x265..."
 mkdir -p x265
 
-# renovate: depName=https://bitbucket.org/multicoreware/x265_git.git
-_commit='8787e87020d77416f0ff0b7f3c97ac8b90332c31'
+# renovate: datasource=bitbucket-tags depName=multicoreware/x265_git versioning=semver-coerced
+_tag='3.6'
 
 # Need to use master, because the latest release doesn't support optmized aarch64 and it is from 2021
-curl_tar "https://bitbucket.org/multicoreware/x265_git/get/${_commit}.tar.bz2" x265 1
+curl_tar "https://bitbucket.org/multicoreware/x265_git/get/${_tag}.tar.gz" x265 1
+
+#  82ff02e  ad1a30a
 
 # Remove some superfluous files
 rm -rf x265/{doc,build}
@@ -17,6 +19,11 @@ for patch in \
   'https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/x265/A03-sei-length-crash-fix.patch' \
   'https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/x265/A05-memory-leaks.patch'; do
   curl "$patch" | patch -F5 -lp1 -d x265 -t
+done
+
+# Local patches
+for patch in "$PREFIX"/patches/*; do
+  patch -F5 -lp1 -d x265 -t <"$patch"
 done
 
 # Backup source

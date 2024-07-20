@@ -4,7 +4,7 @@ echo "Download soxr..."
 mkdir -p soxr
 
 # Original link: https://downloads.sourceforge.net/project/soxr/soxr-0.1.3-Source.tar.xz
-# But sourcefourge is very bad to download from, so we use the debian source instead
+# But sourceforge is very bad to download from, so we use the debian source instead
 curl_tar 'https://deb.debian.org/debian/pool/main/libs/libsoxr/libsoxr_0.1.3.orig.tar.xz' soxr 1
 
 for patch in "$PREFIX"/patches/*; do

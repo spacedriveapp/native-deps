@@ -10,8 +10,9 @@ fi
 echo "Download nvenv..."
 mkdir -p nvenv
 
-# renovate: datasource=github-releases depName=FFmpeg/nv-codec-headers versioning=semver-coerced
-_tag='12.1.14.0'
+# FIX-ME: https://github.com/renovatebot/renovate/issues/27510
+# renovate: datasource=github-releases depName=FFmpeg/nv-codec-headers versioning=loose
+_tag='12.2.72.0'
 
 curl_tar "https://github.com/FFmpeg/nv-codec-headers/releases/download/n${_tag}/nv-codec-headers-${_tag}.tar.gz" nvenv 1
 

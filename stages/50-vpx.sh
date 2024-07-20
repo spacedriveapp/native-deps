@@ -3,10 +3,12 @@
 echo "Download vpx..."
 mkdir -p vpx
 
-# v1.13.1
-curl_tar 'https://gitlab.freedesktop.org/gstreamer/meson-ports/libvpx/-/archive/b2bd418/libvpx.tar.gz' vpx 1
+# v1.14.1
+curl_tar 'https://gitlab.freedesktop.org/amyspark/libvpx/-/archive/0357f68/libvpx.tar.gz' vpx 1
 
+# Remove xcrun tool check, because compiling for macOS don't use it and it breaks crosscompiling
 sed -i "/xcrun_exe = find_program('xcrun', required: true)/d" vpx/meson.build
+sed -i "s|supports_armv8_etc = cc.compiles|supports_armv8_etc = c.compiles|" vpx/meson.build
 
 # Remove some superfluous files
 rm -rf vpx/{third_party/googletest,build_debug,test,tools,examples,examples.mk,configure,*.dox,.gitlab*}

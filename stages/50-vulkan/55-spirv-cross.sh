@@ -10,7 +10,7 @@ esac
 echo "Download spirv..."
 mkdir -p spirv
 
-curl_tar 'https://github.com/KhronosGroup/SPIRV-Cross/archive/refs/tags/vulkan-sdk-1.3.275.0.tar.gz' spirv 1
+curl_tar 'https://github.com/KhronosGroup/SPIRV-Cross/archive/refs/tags/vulkan-sdk-1.3.283.0.tar.gz' spirv 1
 
 VERSION="$(
   grep -Po 'set\(spirv-cross-abi-major\s+\K\d+' spirv/CMakeLists.txt
