@@ -6,10 +6,7 @@ mkdir -p x265
 # renovate: datasource=bitbucket-tags depName=multicoreware/x265_git versioning=semver-coerced
 _tag='3.6'
 
-# Need to use master, because the latest release doesn't support optmized aarch64 and it is from 2021
 curl_tar "https://bitbucket.org/multicoreware/x265_git/get/${_tag}.tar.gz" x265 1
-
-#  82ff02e  ad1a30a
 
 # Remove some superfluous files
 rm -rf x265/{doc,build}
