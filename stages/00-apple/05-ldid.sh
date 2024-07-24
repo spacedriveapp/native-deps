@@ -29,7 +29,7 @@ echo "Download ldid ..."
 mkdir -p "ldid"
 
 # renovate: depName=git@github.com:HeavenVolkoff/ldid.git
-_commit='483595e'
+_commit='483595e250d5f78287a13733c74212bd8bf7c8ae'
 
 curl_tar "https://github.com/HeavenVolkoff/ldid/archive/${_commit}.tar.gz" 'ldid' 1
 
