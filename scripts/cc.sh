@@ -60,7 +60,7 @@ l_args=()
 c_argv=('-target' "$TARGET")
 sysroot=''
 assembler=0
-has_iphone=0
+is_iphone=0
 preprocessor=0
 cpu_features=()
 assembler_file=0
@@ -153,7 +153,11 @@ while [ "$#" -gt 0 ]; do
           shift 2
           continue
         elif (case "$1" in -DTARGET_OS_IPHONE*) exit 0 ;; *) exit 1 ;; esac) then
-          has_iphone=1
+          if [ "$is_iphone" -lt 1 ]; then
+            is_iphone=1
+          fi
+        elif (case "$1" in -DTARGET_OS_SIMULATOR*) exit 0 ;; *) exit 1 ;; esac) then
+          is_iphone=2
         else
           argv+=("$1")
 
@@ -337,6 +341,7 @@ features=""
 case "${TARGET:-}" in
   arm64* | aarch64*)
     # Force enable i8mm for arm64, required by ffmpeg
+    # TODO: Check if A10 actually supports this
     features="i8mm"
     ;;
 esac
@@ -383,7 +388,11 @@ case "${TARGET:-}" in
     else
       case "${TARGET:-}" in
         *darwin*)
-          c_argv+=("-mcpu=apple-m1${features}")
+          if [ "$is_iphone" -eq 0 ]; then
+            c_argv+=("-mcpu=apple-m1${features}")
+          else
+            c_argv+=("-mcpu=apple-a10${features}")
+          fi
           ;;
         *)
           # Raspberry Pi 3
@@ -405,7 +414,15 @@ case "$TARGET" in
       sysroot="$(CDPATH='' cd -- "$SDKROOT" && pwd -P)"
     fi
 
-    if [ "$has_iphone" -eq 0 ]; then
+    # https://stackoverflow.com/a/49560690
+    c_argv+=('-DTARGET_OS_MAC=1')
+    if [ "$is_iphone" -eq 1 ]; then
+      # FIX-ME: Will need to expand this if we ever support tvOS/visionOS/watchOS
+      c_argv+=('-DTARGET_OS_IPHONE=1' 'TARGET_OS_IOS=1')
+    elif [ "$is_iphone" -eq 2 ]; then
+      # FIX-ME: Will need to expand this if we ever support tvOS/visionOS/watchOS simulators
+      c_argv+=('-DTARGET_OS_IPHONE=1' 'TARGET_OS_IOS=1' 'TARGET_OS_SIMULATOR=1')
+    else
       c_argv+=('-DTARGET_OS_IPHONE=0')
     fi
 
