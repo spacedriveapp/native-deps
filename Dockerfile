@@ -170,7 +170,7 @@ RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/
 
 RUN --mount=type=cache,target=/root/.cache `
 	--mount=type=bind,source=stages/00-apple/05-ldid.sh,target=/srv/05-ldid.sh `
-	/srv/05-ldid
+	/srv/05-ldid.sh
 
 # Ensure no one tries to call the native system linker
 RUN ln -s '/usr/bin/false' "${SYSROOT}/bin/ld"
