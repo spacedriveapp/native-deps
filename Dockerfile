@@ -156,7 +156,7 @@ RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/
 	--mount=type=bind,source=stages/00-apple/01-xar.sh,target=/srv/01-xar.sh `
 	/srv/01-xar.sh
 
-RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt --mount=type=cache,target=/root/.cache `
+RUN --mount=type=cache,target=/root/.cache `
 	--mount=type=bind,source=stages/00-apple/02-tapi.sh,target=/srv/02-tapi.sh `
 	/srv/02-tapi.sh
 
@@ -167,6 +167,10 @@ RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt --mount=type=cache,target=/root/.cache `
 	--mount=type=bind,source=stages/00-apple/04-cctools.sh,target=/srv/04-cctools.sh `
 	/srv/04-cctools.sh
+
+RUN --mount=type=cache,target=/root/.cache `
+	--mount=type=bind,source=stages/00-apple/05-ldid.sh,target=/srv/05-ldid.sh `
+	/srv/05-ldid.sh
 
 # Ensure no one tries to call the native system linker
 RUN ln -s '/usr/bin/false' "${SYSROOT}/bin/ld"
