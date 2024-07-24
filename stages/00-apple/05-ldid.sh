@@ -36,7 +36,8 @@ curl_tar "https://github.com/HeavenVolkoff/ldid/archive/${_commit}.tar.gz" 'ldid
 # renovate: datasource=github-releases depName=libimobiledevice/libplist
 _tag='2.6.0'
 
-curl_tar "https://github.com/strukturag/libde265/archive/refs/tags/v${_tag}.tar.gz" 'ldid/libplist' 1
+curl_tar "https://github.com/libimobiledevice/libplist/archive/refs/tags/${_tag}.tar.gz" 'ldid/libplist' 1
+echo "$_tag" > 'ldid/libplist/.tarball-version'
 
 cd ldid/libplist
 
