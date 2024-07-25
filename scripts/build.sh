@@ -74,6 +74,7 @@ case "$TARGET" in
     export LTO=0
     export LD_LIBRARY_PATH="${CCTOOLS}/lib:/usr/local/lib:${LD_LIBRARY_PATH:-}"
 
+    OS_IPHONE="${OS_IPHONE:-0}"
     if [ "$OS_IPHONE" -ge 1 ]; then
       export IPHONEOS_DEPLOYMENT_TARGET="14.0"
       # Ugly workaround for apple linker not finding the SDK's Framework directory
