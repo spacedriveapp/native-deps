@@ -27,6 +27,9 @@ SYSTEM_NAME="${SYSTEM_NAME%-*}"
 # Considering this we will just use the generic names, and patch any specific issues for those platforms
 SYSTEM_PROCESSOR="${TARGET%%-*}"
 
+# Wheter to build iOS versions instead of macOS
+OS_IPHONE="${OS_IPHONE:-0}"
+
 case "$SYSTEM_NAME" in
   windows)
     KERNEL="nt"
