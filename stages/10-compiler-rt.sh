@@ -31,24 +31,48 @@ cd "${LLVM_PATH}/compiler_rt/build"
 
 _arch="${TARGET%%-*}"
 
-# Install
-cmake \
-  -GNinja \
-  -Wno-dev \
-  -DLLVM_PATH="$LLVM_PATH" \
-  -DLLVM_CMAKE_DIR="${LLVM_PATH}/cmake" \
-  -DDARWIN_osx_ARCHS="$(if [ "$_arch" == 'aarch64' ]; then echo 'arm64'; else echo "$_arch"; fi)" \
-  -DLLVM_MAIN_SRC_DIR="$LLVM_PATH" \
-  -DCMAKE_INSTALL_PREFIX="${LLVM_PATH}/lib/clang/17" \
-  -DCMAKE_TOOLCHAIN_FILE='/srv/toolchain.cmake' \
-  -DDARWIN_macosx_SYSROOT="${MACOS_SDKROOT:?Missing macOS SDK path}" \
-  -DDARWIN_osx_BUILTIN_ARCHS="$(if [ "$_arch" == 'aarch64' ]; then echo 'arm64'; else echo "$_arch"; fi)" \
-  -DCOMPILER_RT_ENABLE_IOS=Off \
-  -DCOMPILER_RT_BUILD_XRAY=Off \
-  -DCOMPILER_RT_BUILD_SANITIZERS=Off \
-  -DDARWIN_macosx_OVERRIDE_SDK_VERSION="${MACOS_SDK_VERSION:?Missing macOS SDK version}" \
-  -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=Off \
-  ..
+cmake_config=(
+  -GNinja
+  -Wno-dev
+  -DLLVM_PATH="$LLVM_PATH"
+  -DLLVM_CMAKE_DIR="${LLVM_PATH}/cmake"
+  -DCOMPILER_RT_ENABLE_IOS=On
+  -DLLVM_MAIN_SRC_DIR="$LLVM_PATH"
+  -DCMAKE_INSTALL_PREFIX="${LLVM_PATH}/lib/clang/17"
+  -DCMAKE_TOOLCHAIN_FILE='/srv/toolchain.cmake'
+  -DCOMPILER_RT_ENABLE_IOS=Off
+  -DCOMPILER_RT_BUILD_XRAY=Off
+  -DCOMPILER_RT_BUILD_SANITIZERS=Off
+  -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=Off
+  -DDARWIN_macosx_SYSROOT="${MACOS_SDKROOT:?Missing macOS SDK path}"
+  -DDARWIN_macosx_OVERRIDE_SDK_VERSION="${MACOS_SDK_VERSION:?Missing macOS SDK version}"
+  -DDARWIN_iphonesimulator_SYSROOT="${IOS_SDKROOT:?Missing iOS SDK path}"
+  -DDARWIN_iphonesimulator_OVERRIDE_SDK_VERSION="${IOS_SDK_VERSION:?Missing iOS SDK version}"
+  -DDARWIN_iphoneos_SYSROOT="${IOS_SDKROOT:?Missing iOS SDK path}"
+  -DDARWIN_iphoneos_OVERRIDE_SDK_VERSION="${IOS_SDK_VERSION:?Missing iOS SDK version}"
+)
+
+if [ "$_arch" == 'aarch64' ]; then
+  cmake_config+=(
+    -DDARWIN_osx_ARCHS="arm64"
+    -DDARWIN_osx_BUILTIN_ARCHS="arm64"
+    -DDARWIN_ios_ARCHS="arm64"
+    -DDARWIN_ios_BUILTIN_ARCHS="arm64"
+    -DDARWIN_iossim_ARCHS="arm64"
+    -DDARWIN_iossim_BUILTIN_ARCHS="arm64"
+  )
+else
+  cmake_config+=(
+    -DDARWIN_osx_ARCHS="$_arch"
+    -DDARWIN_osx_BUILTIN_ARCHS="$_arch"
+    -DDARWIN_ios_ARCHS="$_arch"
+    -DDARWIN_ios_BUILTIN_ARCHS="$_arch"
+    -DDARWIN_iossim_ARCHS="$_arch"
+    -DDARWIN_iossim_BUILTIN_ARCHS="$_arch"
+  )
+fi
+
+cmake "${cmake_config[@]}" ..
 
 ninja -j"$(nproc)"
 

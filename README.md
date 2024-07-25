@@ -28,9 +28,11 @@ Where `<TARGET>` is one of:
 - x86_64-linux-musl
 - aarch64-linux-musl
 
+> To build for iOS choose one of the `darwin` targets and pass `--build-arg OS_IPHONE=<1|2>` as an argument, `1` means iOS and `2` means iOS Simulator. Only iOS simulator supports `x86_64`.
+
 After some time (it takes aroung 1~2 hours in Github CI) a directory named `out` will show up in the current directory containing our native dependencies.
 
-### TODO (Order of importance)
+## TODO (Order of importance)
 
 - Fortify linux-musl shared libs:
     > https://git.2f30.org/fortify-headers/file/README.html
@@ -52,24 +54,22 @@ After some time (it takes aroung 1~2 hours in Github CI) a directory named `out`
 - Investigate why LTO fails when linking any static lib in apple builds:
     > https://github.com/tpoechtrager/osxcross/issues/366
 
-### Acknowledgments
+## Acknowledgments
 
 This build system is losely base on:
 
 - https://github.com/BtbN/FFmpeg-Builds
 
-It uses Zig 0.11 as a C/C++ toolchain to build the Windows and Linux targets:
+It uses Zig 0.12 as a C/C++ toolchain to build the Windows and Linux targets:
 
 - https://github.com/ziglang/zig/tree/0.11.0
 
-It uses LLVM/Clang 16 with some tweaks from osxcross + Apple's cctools and linker to build the Darwin (macOS) targets:
+It uses LLVM/Clang 17 with some tweaks from osxcross + Apple's cctools and linker to build the Darwin (macOS, iOS) targets:
 
 - https://github.com/llvm/llvm-project/tree/llvmorg-17.0.6
 - https://github.com/tpoechtrager/osxcross
 - https://github.com/tpoechtrager/cctools-port
 
-The pre-packaged macOS SDK comes from: https://github.com/joseluisq/macosx-sdks
-
 > By building the Darwin target you are agreeing with the [Apple Public Source License (APSL)](https://opensource.apple.com/apsl/) and the [Xcode license terms](https://www.apple.com/legal/sla/docs/xcode.pdf)
 
-Thanks to all the developers involved in making the dependencies used in this project
+Thanks to all the developers involved in making the dependencies used by this project

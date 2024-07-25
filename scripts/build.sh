@@ -74,28 +74,46 @@ case "$TARGET" in
     export LTO=0
     export LD_LIBRARY_PATH="${CCTOOLS}/lib:/usr/local/lib:${LD_LIBRARY_PATH:-}"
 
-    # Ugly workaround for apple linker not finding the macOS SDK's Framework directory
-    ln -fs "${MACOS_SDKROOT}/System" '/System'
-
-    export SDKROOT="$MACOS_SDKROOT"
+    if [ "$OS_IPHONE" -ge 1 ]; then
+      export IPHONEOS_DEPLOYMENT_TARGET="14.0"
+      # Ugly workaround for apple linker not finding the SDK's Framework directory
+      ln -fs "${IOS_SDKROOT}/System" '/System'
+    else
+      # Ugly workaround for apple linker not finding the SDK's Framework directory
+      ln -fs "${MACOS_SDKROOT}/System" '/System'
+    fi
 
     case "$TARGET" in
       x86_64*)
-        export MACOSX_DEPLOYMENT_TARGET="10.15"
-        export CMAKE_APPLE_SILICON_PROCESSOR='x86_64'
+        if [ "$OS_IPHONE" -lt 1 ]; then
+          export MACOSX_DEPLOYMENT_TARGET="10.15"
+          export CMAKE_APPLE_SILICON_PROCESSOR='x86_64'
+        fi
         LDFLAGS="${LDFLAGS} -Wl,-arch,x86_64"
         ;;
       aarch64*)
-        export MACOSX_DEPLOYMENT_TARGET="11.0"
-        export CMAKE_APPLE_SILICON_PROCESSOR='aarch64'
+        if [ "$OS_IPHONE" -lt 1 ]; then
+          export MACOSX_DEPLOYMENT_TARGET="11.0"
+          export CMAKE_APPLE_SILICON_PROCESSOR='aarch64'
+        fi
         LDFLAGS="${LDFLAGS} -Wl,-arch,arm64"
         ;;
     esac
 
     FFLAGS="${FFLAGS} -fstack-check"
 
-    # https://github.com/tpoechtrager/osxcross/commit/3279f86
-    CFLAGS="${CFLAGS} -mmacos-version-min=${MACOSX_DEPLOYMENT_TARGET} -mmacosx-version-min=${MACOSX_DEPLOYMENT_TARGET}"
+    if [ "$OS_IPHONE" -eq 1 ]; then
+      export SDKROOT="$IOS_SDKROOT"
+      CFLAGS="${CFLAGS} -mios-version-min=${IPHONEOS_DEPLOYMENT_TARGET} -miphoneos-version-min=${IPHONEOS_DEPLOYMENT_TARGET}"
+    elif [ "$OS_IPHONE" -eq 2 ]; then
+      export SDKROOT="$IOS_SIMULATOR_SDKROOT"
+      CFLAGS="${CFLAGS} -mios-simulator-version-min=${IPHONEOS_DEPLOYMENT_TARGET} -miphonesimulator-version-min=${IPHONEOS_DEPLOYMENT_TARGET}"
+    else
+      export SDKROOT="$MACOS_SDKROOT"
+      # https://github.com/tpoechtrager/osxcross/commit/3279f86
+      CFLAGS="${CFLAGS} -mmacos-version-min=${MACOSX_DEPLOYMENT_TARGET} -mmacosx-version-min=${MACOSX_DEPLOYMENT_TARGET}"
+    fi
+
     LDFLAGS="-fuse-ld=$(command -v "${APPLE_TARGET:?}-ld") -L${SDKROOT}/usr/lib -L${SDKROOT}/usr/lib/system -F${SDKROOT}/System/Library/Frameworks ${LDFLAGS}"
     ;;
   *windows*)
