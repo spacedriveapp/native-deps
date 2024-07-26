@@ -81,7 +81,7 @@ ln -s ../10bit/libx265.a libx265_main10.a
 mv libx265.a libx265_main.a
 
 # Must use llvm ar due to mri-script
-llvm-ar-17 -M <<EOF
+llvm-ar-18 -M <<EOF
 CREATE libx265.a
 ADDLIB libx265_main.a
 ADDLIB libx265_main10.a
