@@ -24,8 +24,9 @@ curl_tar 'https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/
 curl_tar 'https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/compiler-rt-17.0.6.src.tar.xz' \
   "${LLVM_PATH}/compiler_rt" 1
 
-# Link cmake files to where compiler_rt expect to find them
-ln -s . "${LLVM_PATH}/cmake/modules"
+if [ -d "${LLVM_PATH}/cmake/Modules" ]; then
+  ln -s Modules "${LLVM_PATH}/cmake/modules"
+fi
 
 cd "${LLVM_PATH}/compiler_rt/build"
 
@@ -35,15 +36,15 @@ cmake_config=(
   -GNinja
   -Wno-dev
   -DLLVM_PATH="$LLVM_PATH"
-  -DLLVM_CMAKE_DIR="${LLVM_PATH}/cmake"
-  -DCOMPILER_RT_ENABLE_IOS=On
+  -DLLVM_CMAKE_DIR="${LLVM_PATH}/cmake/modules"
+  -DLLVM_CONFIG_PATH="${LLVM_PATH}/bin/llvm-config"
   -DLLVM_MAIN_SRC_DIR="$LLVM_PATH"
   -DCMAKE_INSTALL_PREFIX="${LLVM_PATH}/lib/clang/17"
   -DCMAKE_TOOLCHAIN_FILE='/srv/toolchain.cmake'
-  -DCOMPILER_RT_ENABLE_IOS=Off
+  -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=Off
+  -DCOMPILER_RT_ENABLE_IOS=On
   -DCOMPILER_RT_BUILD_XRAY=Off
   -DCOMPILER_RT_BUILD_SANITIZERS=Off
-  -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=Off
   -DDARWIN_macosx_CACHED_SYSROOT="${MACOS_SDKROOT:?Missing macOS SDK path}"
   -DDARWIN_macosx_OVERRIDE_SDK_VERSION="${MACOS_SDK_VERSION:?Missing macOS SDK version}"
   -DDARWIN_PREFER_PUBLIC_SDK=On
