@@ -48,6 +48,7 @@ RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/
 	curl `
 	make `
 	patch `
+	rsync `
 	libtool `
 	python3 `
 	gettext `

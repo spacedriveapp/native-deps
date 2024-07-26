@@ -25,7 +25,11 @@ curl_tar 'https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/
   "${LLVM_PATH}/compiler_rt" 1
 
 if [ -d "${LLVM_PATH}/cmake/Modules" ]; then
-  ln -s Modules "${LLVM_PATH}/cmake/modules"
+  if [ -d "${LLVM_PATH}/cmake/modules" ]; then
+    rsync -a --update --ignore-existing "${LLVM_PATH}/cmake/Modules/" "${LLVM_PATH}/cmake/modules/"
+  else
+    ln -s Modules "${LLVM_PATH}/cmake/modules"
+  fi
 fi
 
 cd "${LLVM_PATH}/compiler_rt/build"
