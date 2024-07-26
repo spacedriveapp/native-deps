@@ -24,7 +24,8 @@ curl_tar 'https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/
 curl_tar 'https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/compiler-rt-17.0.6.src.tar.xz' \
   "${LLVM_PATH}/compiler_rt" 1
 
-ln -s .. "${LLVM_PATH}/cmake/modules"
+# Link cmake files to where compiler_rt expect to find them
+ln -s . "${LLVM_PATH}/cmake/modules"
 if [ -d "${LLVM_PATH}/cmake/Modules" ]; then
   rsync -a --update --ignore-existing "${LLVM_PATH}/cmake/Modules/" "${LLVM_PATH}/cmake/modules/"
 fi
