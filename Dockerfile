@@ -130,6 +130,8 @@ ENV IOS_SIMULATOR_SDKROOT="/opt/iPhoneSimulator${IOS_SDK_VERSION}.sdk"
 # Export which target we are building for
 ARG TARGET
 ENV TARGET="${TARGET:?}"
+ARG OS_IPHONE
+ENV OS_IPHONE="${OS_IPHONE:?}"
 
 # Cache bust
 RUN echo "Building: ${TARGET}$(case "$TARGET" in *darwin*) echo " (macOS SDK: ${MACOS_SDK_VERSION}, iOS SDK: ${IOS_SDK_VERSION})" ;; esac)"

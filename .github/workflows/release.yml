@@ -28,6 +28,8 @@ jobs:
     strategy:
       matrix:
         settings:
+          - target: x86_64-iossim-apple
+          - target: aarch64-ios-apple
           - target: x86_64-darwin-apple
           - target: aarch64-darwin-apple
           - target: x86_64-windows-gnu
@@ -57,7 +59,18 @@ jobs:
       - name: Build native-deps
         run: |
           set -euxo pipefail
-          docker build --no-cache --build-arg TARGET=${{ matrix.settings.target }} --build-arg VERSION="$(echo ${{ github.ref }} | sed -E 's/refs\/tags\/v?//g' | sed -E 's/[^0-9.]//g')" -o . .
+
+          TARGET=${{ matrix.settings.target }}
+          OS_IPHONE=0
+          if [ "$TARGET" = 'x86_64-iossim-apple' ]; then
+            TARGET='x86_64-darwin-apple'
+            OS_IPHONE=2
+          elif [ "$TARGET" = 'aarch64-ios-apple' ]; then
+            TARGET='aarch64-darwin-apple'
+            OS_IPHONE=1
+          fi
+
+          docker build --no-cache --build-arg TARGET="$TARGET" --build-arg OS_IPHONE="$OS_IPHONE" --build-arg VERSION="$(echo ${{ github.ref }} | sed -E 's/refs\/tags\/v?//g' | sed -E 's/[^0-9.]//g')" -o . .
           mv out/src.tar.xz ./native-deps-${{ matrix.settings.target }}-src.tar.xz
           export XZ_OPT='-T0 -7'
           tar -cJf "native-deps-${{ matrix.settings.target }}.tar.xz" -C out .

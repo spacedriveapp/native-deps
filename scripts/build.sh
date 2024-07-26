@@ -77,6 +77,7 @@ case "$TARGET" in
     OS_IPHONE="${OS_IPHONE:-0}"
     if [ "$OS_IPHONE" -ge 1 ]; then
       export IPHONEOS_DEPLOYMENT_TARGET="14.0"
+      LDFLAGS="${LDFLAGS} -Wl,-adhoc_codesign"
     fi
 
     case "$TARGET" in
