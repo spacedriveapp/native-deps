@@ -44,11 +44,12 @@ cmake_config=(
   -DCOMPILER_RT_BUILD_XRAY=Off
   -DCOMPILER_RT_BUILD_SANITIZERS=Off
   -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=Off
-  -DDARWIN_macosx_SYSROOT="${MACOS_SDKROOT:?Missing macOS SDK path}"
+  -DDARWIN_macosx_CACHED_SYSROOT="${MACOS_SDKROOT:?Missing macOS SDK path}"
   -DDARWIN_macosx_OVERRIDE_SDK_VERSION="${MACOS_SDK_VERSION:?Missing macOS SDK version}"
-  -DDARWIN_iphonesimulator_SYSROOT="${IOS_SDKROOT:?Missing iOS SDK path}"
+  -DDARWIN_PREFER_PUBLIC_SDK=On
+  -DDARWIN_iphonesimulator_CACHED_SYSROOT="${IOS_SDKROOT:?Missing iOS SDK path}"
   -DDARWIN_iphonesimulator_OVERRIDE_SDK_VERSION="${IOS_SDK_VERSION:?Missing iOS SDK version}"
-  -DDARWIN_iphoneos_SYSROOT="${IOS_SDKROOT:?Missing iOS SDK path}"
+  -DDARWIN_iphoneos_CACHED_SYSROOT="${IOS_SDKROOT:?Missing iOS SDK path}"
   -DDARWIN_iphoneos_OVERRIDE_SDK_VERSION="${IOS_SDK_VERSION:?Missing iOS SDK version}"
 )
 

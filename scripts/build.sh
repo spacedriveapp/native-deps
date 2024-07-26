@@ -77,11 +77,6 @@ case "$TARGET" in
     OS_IPHONE="${OS_IPHONE:-0}"
     if [ "$OS_IPHONE" -ge 1 ]; then
       export IPHONEOS_DEPLOYMENT_TARGET="14.0"
-      # Ugly workaround for apple linker not finding the SDK's Framework directory
-      ln -fs "${IOS_SDKROOT}/System" '/System'
-    else
-      # Ugly workaround for apple linker not finding the SDK's Framework directory
-      ln -fs "${MACOS_SDKROOT}/System" '/System'
     fi
 
     case "$TARGET" in
@@ -104,16 +99,19 @@ case "$TARGET" in
     FFLAGS="${FFLAGS} -fstack-check"
 
     if [ "$OS_IPHONE" -eq 1 ]; then
-      export SDKROOT="$IOS_SDKROOT"
+      export SDKROOT="${IOS_SDKROOT:?Missing iOS SDK}"
       CFLAGS="${CFLAGS} -mios-version-min=${IPHONEOS_DEPLOYMENT_TARGET} -miphoneos-version-min=${IPHONEOS_DEPLOYMENT_TARGET}"
     elif [ "$OS_IPHONE" -eq 2 ]; then
-      export SDKROOT="$IOS_SIMULATOR_SDKROOT"
+      export SDKROOT="${IOS_SIMULATOR_SDKROOT:?Missing iOS simulator SDK}"
       CFLAGS="${CFLAGS} -mios-simulator-version-min=${IPHONEOS_DEPLOYMENT_TARGET} -miphonesimulator-version-min=${IPHONEOS_DEPLOYMENT_TARGET}"
     else
       export SDKROOT="$MACOS_SDKROOT"
       # https://github.com/tpoechtrager/osxcross/commit/3279f86
       CFLAGS="${CFLAGS} -mmacos-version-min=${MACOSX_DEPLOYMENT_TARGET} -mmacosx-version-min=${MACOSX_DEPLOYMENT_TARGET}"
     fi
+
+    # Ugly workaround for apple linker not finding the SDK's Framework directory
+    ln -fs "${SDKROOT}/System" '/System'
 
     LDFLAGS="-fuse-ld=$(command -v "${APPLE_TARGET:?}-ld") -L${SDKROOT}/usr/lib -L${SDKROOT}/usr/lib/system -F${SDKROOT}/System/Library/Frameworks ${LDFLAGS}"
     ;;

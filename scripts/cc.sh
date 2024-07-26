@@ -9,11 +9,11 @@ case "${TARGET:?TARGET envvar is required to be defined}" in
     TARGET="${TARGET%%.*}.2.17"
     ;;
   x86_64-darwin-apple | x86_64-apple-darwin-macho)
-    SDKROOT="$MACOS_SDKROOT"
+    SDKROOT="${MACOS_SDKROOT:?Missing macOS SDK}"
     TARGET="x86_64-apple-darwin-macho"
     ;;
   aarch64-darwin-apple | arm64-apple-darwin-macho)
-    SDKROOT="$MACOS_SDKROOT"
+    SDKROOT="${MACOS_SDKROOT:?Missing macOS SDK}"
     TARGET="arm64-apple-darwin-macho"
     ;;
   x86_64-windows-gnu | aarch64-windows-gnu) ;;
