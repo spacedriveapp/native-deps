@@ -24,12 +24,9 @@ curl_tar 'https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/
 curl_tar 'https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/compiler-rt-17.0.6.src.tar.xz' \
   "${LLVM_PATH}/compiler_rt" 1
 
+ln -s .. "${LLVM_PATH}/cmake/modules"
 if [ -d "${LLVM_PATH}/cmake/Modules" ]; then
-  if [ -d "${LLVM_PATH}/cmake/modules" ]; then
-    rsync -a --update --ignore-existing "${LLVM_PATH}/cmake/Modules/" "${LLVM_PATH}/cmake/modules/"
-  else
-    ln -s Modules "${LLVM_PATH}/cmake/modules"
-  fi
+  rsync -a --update --ignore-existing "${LLVM_PATH}/cmake/Modules/" "${LLVM_PATH}/cmake/modules/"
 fi
 
 cd "${LLVM_PATH}/compiler_rt/build"
@@ -43,6 +40,7 @@ cmake_config=(
   -DLLVM_CMAKE_DIR="${LLVM_PATH}/cmake/modules"
   -DLLVM_CONFIG_PATH="${LLVM_PATH}/bin/llvm-config"
   -DLLVM_MAIN_SRC_DIR="$LLVM_PATH"
+  -DCMAKE_LINKER="$(command -v "${APPLE_TARGET:?}-ld")"
   -DCMAKE_INSTALL_PREFIX="${LLVM_PATH}/lib/clang/17"
   -DCMAKE_TOOLCHAIN_FILE='/srv/toolchain.cmake'
   -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=Off
@@ -56,6 +54,7 @@ cmake_config=(
   -DDARWIN_iphonesimulator_OVERRIDE_SDK_VERSION="${IOS_SDK_VERSION:?Missing iOS SDK version}"
   -DDARWIN_iphoneos_CACHED_SYSROOT="${IOS_SDKROOT:?Missing iOS SDK path}"
   -DDARWIN_iphoneos_OVERRIDE_SDK_VERSION="${IOS_SDK_VERSION:?Missing iOS SDK version}"
+  -DDEFAULT_SANITIZER_MIN_OSX_VERSION="${MACOS_SDK_VERSION:?Missing macOS SDK version}"
 )
 
 if [ "$_arch" == 'aarch64' ]; then
