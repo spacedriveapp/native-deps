@@ -6,7 +6,9 @@ mkdir -p vpx
 # v1.14.1
 curl_tar 'https://gitlab.freedesktop.org/amyspark/libvpx/-/archive/8260fdd/libvpx.tar.gz' vpx 1
 
-# Remove xcrun tool check, because compiling for macOS don't use it and it breaks crosscompiling
+# Delete lines related to xcrun tool usage, it is irrelevant for us
+sed -i '1183,1189d' vpx/meson.build
+# Remove xcrun tool check, it is irrelevant for us
 sed -i "/xcrun_exe = find_program('xcrun', required: true)/d" vpx/meson.build
 
 # Remove some superfluous files
