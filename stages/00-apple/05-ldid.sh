@@ -2,6 +2,13 @@
 
 set -euo pipefail
 
+case "$TARGET" in
+  *darwin*) ;;
+  *)
+    exit 0
+    ;;
+esac
+
 export CC="clang-17"
 export CXX="clang++-17"
 export CFLAGS="-I${CCTOOLS}/include"
