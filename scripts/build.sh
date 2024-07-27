@@ -74,29 +74,58 @@ case "$TARGET" in
     export LTO=0
     export LD_LIBRARY_PATH="${CCTOOLS}/lib:/usr/local/lib:${LD_LIBRARY_PATH:-}"
 
-    # Ugly workaround for apple linker not finding the macOS SDK's Framework directory
-    ln -fs "${MACOS_SDKROOT}/System" '/System'
-
-    export SDKROOT="$MACOS_SDKROOT"
+    OS_IPHONE="${OS_IPHONE:-0}"
+    if [ "$OS_IPHONE" -ge 1 ]; then
+      export IPHONEOS_DEPLOYMENT_TARGET="14.0"
+      LDFLAGS="${LDFLAGS} -Wl,-adhoc_codesign"
+    fi
 
     case "$TARGET" in
       x86_64*)
-        export MACOSX_DEPLOYMENT_TARGET="10.15"
-        export CMAKE_APPLE_SILICON_PROCESSOR='x86_64'
+        if [ "$OS_IPHONE" -lt 1 ]; then
+          export MACOSX_DEPLOYMENT_TARGET="10.15"
+          export CMAKE_APPLE_SILICON_PROCESSOR='x86_64'
+        fi
         LDFLAGS="${LDFLAGS} -Wl,-arch,x86_64"
         ;;
       aarch64*)
-        export MACOSX_DEPLOYMENT_TARGET="11.0"
-        export CMAKE_APPLE_SILICON_PROCESSOR='aarch64'
+        if [ "$OS_IPHONE" -lt 1 ]; then
+          export MACOSX_DEPLOYMENT_TARGET="11.0"
+          export CMAKE_APPLE_SILICON_PROCESSOR='aarch64'
+        fi
         LDFLAGS="${LDFLAGS} -Wl,-arch,arm64"
         ;;
     esac
 
     FFLAGS="${FFLAGS} -fstack-check"
 
-    # https://github.com/tpoechtrager/osxcross/commit/3279f86
-    CFLAGS="${CFLAGS} -mmacos-version-min=${MACOSX_DEPLOYMENT_TARGET} -mmacosx-version-min=${MACOSX_DEPLOYMENT_TARGET}"
-    LDFLAGS="-fuse-ld=$(command -v "${APPLE_TARGET:?}-ld") -L${SDKROOT}/usr/lib -L${SDKROOT}/usr/lib/system -F${SDKROOT}/System/Library/Frameworks ${LDFLAGS}"
+    if [ "$OS_IPHONE" -eq 1 ]; then
+      export SDKROOT="${IOS_SDKROOT:?Missing iOS SDK}"
+      if [ "${CRT_HACK:-0}" -ne 1 ]; then
+        CFLAGS="${CFLAGS} -mios-version-min=${IPHONEOS_DEPLOYMENT_TARGET} -miphoneos-version-min=${IPHONEOS_DEPLOYMENT_TARGET}"
+      fi
+    elif [ "$OS_IPHONE" -eq 2 ]; then
+      export SDKROOT="${IOS_SIMULATOR_SDKROOT:?Missing iOS simulator SDK}"
+      if [ "${CRT_HACK:-0}" -ne 1 ]; then
+        CFLAGS="${CFLAGS} -mios-simulator-version-min=${IPHONEOS_DEPLOYMENT_TARGET} -miphonesimulator-version-min=${IPHONEOS_DEPLOYMENT_TARGET}"
+      fi
+    else
+      export SDKROOT="${MACOS_SDKROOT:?Missing macOS SDK}"
+      if [ "${CRT_HACK:-0}" -ne 1 ]; then
+        # https://github.com/tpoechtrager/osxcross/commit/3279f86
+        CFLAGS="${CFLAGS} -mmacos-version-min=${MACOSX_DEPLOYMENT_TARGET} -mmacosx-version-min=${MACOSX_DEPLOYMENT_TARGET}"
+        LDFLAGS="-L${SDKROOT}/usr/lib/system ${LDFLAGS}"
+      fi
+    fi
+
+    # Ugly workaround for apple linker not finding the SDK's Framework directory
+    ln -fs "${SDKROOT}/System" '/System'
+
+    if [ "${CRT_HACK:-0}" -ne 1 ]; then
+      LDFLAGS="-L${SDKROOT}/usr/lib -F${SDKROOT}/System/Library/Frameworks -F${SDKROOT}/System/Cryptexes/OS/System/Library/Frameworks ${LDFLAGS}"
+    fi
+
+    LDFLAGS="-fuse-ld=$(command -v "${APPLE_TARGET:?}-ld") ${LDFLAGS}"
     ;;
   *windows*)
     # Zig doesn't support stack probing on Windows

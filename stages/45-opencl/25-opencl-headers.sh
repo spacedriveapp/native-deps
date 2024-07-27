@@ -1,5 +1,11 @@
 #!/usr/bin/env -S bash -euo pipefail
 
+# OpenCL is only available on iOS through a private framework
+if [ "$OS_IPHONE" -ge 1 ]; then
+  export UNSUPPORTED=1
+  exit 1
+fi
+
 echo "Download opencl headers..."
 
 mkdir -p opencl-headers

@@ -27,6 +27,9 @@ SYSTEM_NAME="${SYSTEM_NAME%-*}"
 # Considering this we will just use the generic names, and patch any specific issues for those platforms
 SYSTEM_PROCESSOR="${TARGET%%-*}"
 
+# Wheter to build iOS versions instead of macOS
+OS_IPHONE="${OS_IPHONE:-0}"
+
 case "$SYSTEM_NAME" in
   windows)
     KERNEL="nt"
@@ -35,18 +38,31 @@ case "$SYSTEM_NAME" in
     ;;
   darwin)
     KERNEL="xnu"
-    SDKROOT="${MACOS_SDKROOT:?Missing macOS SDK}"
-    SUBSYSTEM="macos"
-    case "$SYSTEM_PROCESSOR" in
-      x86_64)
-        # macOS 10.15
-        SYSTEM_VERSION="19.0.0"
-        ;;
-      aarch64)
-        # macOS 11
-        SYSTEM_VERSION="20.1.0"
-        ;;
-    esac
+    # https://theapplewiki.com/wiki/Kernel
+    if [ "$OS_IPHONE" -eq 1 ]; then
+      SDKROOT="${IOS_SDKROOT:?Missing iOS SDK}"
+      SUBSYSTEM="ios"
+      # iOS 14
+      SYSTEM_VERSION="20.0.0"
+    elif [ "$OS_IPHONE" -eq 2 ]; then
+      SDKROOT="${IOS_SIMULATOR_SDKROOT:?Missing iOS simulator SDK}"
+      SUBSYSTEM="ios-simulator"
+      # iOS 14
+      SYSTEM_VERSION="20.0.0"
+    else
+      SDKROOT="${MACOS_SDKROOT:?Missing macOS SDK}"
+      SUBSYSTEM="macos"
+      case "$SYSTEM_PROCESSOR" in
+        x86_64)
+          # macOS 10.15
+          SYSTEM_VERSION="19.0.0"
+          ;;
+        aarch64)
+          # macOS 11
+          SYSTEM_VERSION="20.1.0"
+          ;;
+      esac
+    fi
     ;;
   linux)
     KERNEL="linux"
@@ -86,7 +102,13 @@ cpu_family = '${SYSTEM_PROCESSOR}'
 EOF
 
 cat <<EOF >/srv/toolchain.cmake
-set(CMAKE_SYSTEM_NAME ${SYSTEM_NAME^})
+$(
+  if [ "$SYSTEM_NAME" = 'darwin' ] && [ "$OS_IPHONE" -ge 1 ]; then
+    echo 'set(CMAKE_SYSTEM_NAME iOS)'
+  else
+    echo "set(CMAKE_SYSTEM_NAME ${SYSTEM_NAME^})"
+  fi
+)
 set(CMAKE_SYSTEM_VERSION ${SYSTEM_VERSION})
 set(CMAKE_SYSTEM_PROCESSOR ${SYSTEM_PROCESSOR})
 

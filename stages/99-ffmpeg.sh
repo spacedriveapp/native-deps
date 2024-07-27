@@ -76,11 +76,17 @@ esac
 
 case "$TARGET" in
   *darwin*)
+    if [ "$OS_IPHONE" -eq 1 ]; then
+      env_specific_arg+=(--sysroot="${IOS_SDKROOT:?Missing iOS SDK}")
+    elif [ "$OS_IPHONE" -eq 2 ]; then
+      env_specific_arg+=(--sysroot="${IOS_SIMULATOR_SDKROOT:?Missing iOS simulator SDK}")
+    else
+      env_specific_arg+=(--sysroot="${MACOS_SDKROOT:?Missing macOS SDK}")
+    fi
     env_specific_arg+=(
       # TODO: Metal suport is disabled because no open source compiler is available for it
       # TODO: Maybe try macOS own metal compiler under darling? https://github.com/darlinghq/darling/issues/326
       # TODO: Add support for vulkan (+ libplacebo) on macOS with MoltenVK
-      --sysroot="${MACOS_SDKROOT:?Missing macOS SDK path}"
       --disable-metal
       --disable-vulkan
       --disable-w32threads
@@ -224,7 +230,6 @@ if ! ./configure \
   --enable-libx265 \
   --enable-libzimg \
   --enable-lzma \
-  --enable-opencl \
   --enable-optimizations \
   --enable-pic \
   --enable-postproc \
@@ -232,6 +237,14 @@ if ! ./configure \
   --enable-swscale \
   --enable-version3 \
   --enable-zlib \
+  "$(
+    # OpenCL is only available on iOS through a private framework
+    if [ "$OS_IPHONE" -ge 1 ]; then
+      echo '--disable-opencl'
+    else
+      echo '--enable-opencl'
+    fi
+  )" \
   "${env_specific_arg[@]}"; then
   cat ffbuild/config.log >&2
   exit 1

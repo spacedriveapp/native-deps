@@ -25,10 +25,18 @@ case "$TARGET" in
     _name='linux-musl-arm64'
     ;;
   x86_64-darwin*)
-    _name='mac-x64'
+    if [ "$OS_IPHONE" -ge 1 ]; then
+      _name='ios-x64'
+    else
+      _name='mac-x64'
+    fi
     ;;
   aarch64-darwin*)
-    _name='mac-arm64'
+    if [ "$OS_IPHONE" -ge 1 ]; then
+      _name='ios-arm64'
+    else
+      _name='mac-arm64'
+    fi
     ;;
 esac
 

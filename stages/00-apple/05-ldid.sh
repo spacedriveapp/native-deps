@@ -3,18 +3,11 @@
 set -euo pipefail
 
 case "$TARGET" in
-  x86_64-darwin*)
-    _target='x86_64-apple-darwin19'
-    ;;
-  aarch64-darwin*)
-    _target='arm64-apple-darwin20'
-    ;;
+  *darwin*) ;;
   *)
     exit 0
     ;;
 esac
-
-echo "APPLE_TARGET=$_target" >>/etc/environment
 
 export CC="clang-17"
 export CXX="clang++-17"
@@ -37,7 +30,7 @@ curl_tar "https://github.com/HeavenVolkoff/ldid/archive/${_commit}.tar.gz" 'ldid
 _tag='2.6.0'
 
 curl_tar "https://github.com/libimobiledevice/libplist/archive/refs/tags/${_tag}.tar.gz" 'ldid/libplist' 1
-echo "$_tag" > 'ldid/libplist/.tarball-version'
+echo "$_tag" >'ldid/libplist/.tarball-version'
 
 cd ldid/libplist
 
@@ -45,7 +38,6 @@ cd ldid/libplist
 
 ./configure \
   --prefix="$CCTOOLS" \
-  --target="$_target" \
   --with-pic \
   --enable-static \
   --without-tests \

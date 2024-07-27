@@ -1,19 +1,20 @@
 # escape=`
 
-ARG OUT="/opt/out"
-ARG TARGET="x86_64-linux-gnu"
-ARG VERSION="0.0.0"
+ARG OUT='/opt/out'
+ARG TARGET='x86_64-linux-gnu'
+ARG VERSION='0.0.0'
+ARG OS_IPHONE='0'
 
 # renovate: datasource=github-releases depName=ziglang/zig
-ARG ZIG_VERSION='0.12.0'
+ARG ZIG_VERSION='0.12.1'
 # renovate: datasource=github-releases depName=mesonbuild/meson
 ARG MESON_VERSION='1.5.0'
 # renovate: datasource=github-releases depName=Kitware/CMake
 ARG CMAKE_VERSION='3.30.1'
 # renovate: datasource=github-releases depName=NixOS/patchelf
 ARG PATCHELF_VERSION='0.18.0'
-# renovate: datasource=github-releases depName=joseluisq/macosx-sdks
-ARG MACOS_SDK_VERSION='14.2'
+ARG MACOS_SDK_VERSION='14.0'
+ARG IOS_SDK_VERSION='17.0'
 
 #--
 
@@ -47,6 +48,7 @@ RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/
 	curl `
 	make `
 	patch `
+	rsync `
 	libtool `
 	python3 `
 	gettext `
@@ -120,13 +122,19 @@ FROM build-base AS base-layer
 ARG MACOS_SDK_VERSION
 ENV MACOS_SDK_VERSION="${MACOS_SDK_VERSION:?}"
 ENV MACOS_SDKROOT="/opt/MacOSX${MACOS_SDK_VERSION}.sdk"
+ARG IOS_SDK_VERSION
+ENV IOS_SDK_VERSION="${IOS_SDK_VERSION:?}"
+ENV IOS_SDKROOT="/opt/iPhoneOS${IOS_SDK_VERSION}.sdk"
+ENV IOS_SIMULATOR_SDKROOT="/opt/iPhoneSimulator${IOS_SDK_VERSION}.sdk"
 
 # Export which target we are building for
 ARG TARGET
 ENV TARGET="${TARGET:?}"
+ARG OS_IPHONE
+ENV OS_IPHONE="${OS_IPHONE:?}"
 
 # Cache bust
-RUN echo "Building: ${TARGET}$(case "$TARGET" in *darwin*) echo " (macOS SDK: ${MACOS_SDK_VERSION})" ;; esac)"
+RUN echo "Building: ${TARGET}$(case "$TARGET" in *darwin*) echo " (macOS SDK: ${MACOS_SDK_VERSION}, iOS SDK: ${IOS_SDK_VERSION})" ;; esac)"
 
 # Script wrapper for some common build tools. Auto choose between llvm, zig or apple specific versions
 COPY --chmod=0750 ./scripts/tool-wrapper.sh "${SYSROOT}/bin/tool-wrapper.sh"
@@ -203,7 +211,7 @@ FROM layer-00 AS layer-10-compiler-rt
 
 RUN --mount=type=cache,target=/root/.cache `
 	--mount=type=bind,source=stages/10-compiler-rt.sh,target=/srv/stage.sh `
-	/srv/build.sh
+	env CRT_HACK=1 /srv/build.sh
 
 FROM layer-00 AS layer-10
 

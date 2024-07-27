@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+OS_IPHONE=${OS_IPHONE:-0}
+
 case "${TARGET:?TARGET envvar is required to be defined}" in
   x86_64-linux-musl | aarch64-linux-musl) ;;
   x86_64-linux-gnu* | aarch64-linux-gnu*)
@@ -9,11 +11,23 @@ case "${TARGET:?TARGET envvar is required to be defined}" in
     TARGET="${TARGET%%.*}.2.17"
     ;;
   x86_64-darwin-apple | x86_64-apple-darwin-macho)
-    SDKROOT="$MACOS_SDKROOT"
+    if [ "$OS_IPHONE" -eq 1 ]; then
+      export SDKROOT="${IOS_SDKROOT:?Missing iOS SDK}"
+    elif [ "$OS_IPHONE" -eq 2 ]; then
+      export SDKROOT="${IOS_SIMULATOR_SDKROOT:?Missing iOS simulator SDK}"
+    else
+      export SDKROOT="${MACOS_SDKROOT:?Missing macOS SDK}"
+    fi
     TARGET="x86_64-apple-darwin-macho"
     ;;
   aarch64-darwin-apple | arm64-apple-darwin-macho)
-    SDKROOT="$MACOS_SDKROOT"
+    if [ "$OS_IPHONE" -eq 1 ]; then
+      export SDKROOT="${IOS_SDKROOT:?Missing iOS SDK}"
+    elif [ "$OS_IPHONE" -eq 2 ]; then
+      export SDKROOT="${IOS_SIMULATOR_SDKROOT:?Missing iOS simulator SDK}"
+    else
+      export SDKROOT="${MACOS_SDKROOT:?Missing macOS SDK}"
+    fi
     TARGET="arm64-apple-darwin-macho"
     ;;
   x86_64-windows-gnu | aarch64-windows-gnu) ;;
@@ -60,7 +74,7 @@ l_args=()
 c_argv=('-target' "$TARGET")
 sysroot=''
 assembler=0
-has_iphone=0
+os_iphone="${OS_IPHONE:-0}"
 preprocessor=0
 cpu_features=()
 assembler_file=0
@@ -153,7 +167,11 @@ while [ "$#" -gt 0 ]; do
           shift 2
           continue
         elif (case "$1" in -DTARGET_OS_IPHONE*) exit 0 ;; *) exit 1 ;; esac) then
-          has_iphone=1
+          if [ "$os_iphone" -lt 1 ]; then
+            os_iphone=1
+          fi
+        elif (case "$1" in -DTARGET_OS_SIMULATOR*) exit 0 ;; *) exit 1 ;; esac) then
+          os_iphone=2
         else
           argv+=("$1")
 
@@ -337,6 +355,7 @@ features=""
 case "${TARGET:-}" in
   arm64* | aarch64*)
     # Force enable i8mm for arm64, required by ffmpeg
+    # TODO: Check if A10 actually supports this
     features="i8mm"
     ;;
 esac
@@ -383,7 +402,11 @@ case "${TARGET:-}" in
     else
       case "${TARGET:-}" in
         *darwin*)
-          c_argv+=("-mcpu=apple-m1${features}")
+          if [ "$os_iphone" -eq 0 ]; then
+            c_argv+=("-mcpu=apple-m1${features}")
+          else
+            c_argv+=("-mcpu=apple-a10${features}")
+          fi
           ;;
         *)
           # Raspberry Pi 3
@@ -405,7 +428,15 @@ case "$TARGET" in
       sysroot="$(CDPATH='' cd -- "$SDKROOT" && pwd -P)"
     fi
 
-    if [ "$has_iphone" -eq 0 ]; then
+    # https://stackoverflow.com/a/49560690
+    c_argv+=('-DTARGET_OS_MAC=1')
+    if [ "$os_iphone" -eq 1 ]; then
+      # FIX-ME: Will need to expand this if we ever support tvOS/visionOS/watchOS
+      c_argv+=('-DTARGET_OS_IPHONE=1' '-DTARGET_OS_IOS=1')
+    elif [ "$os_iphone" -eq 2 ]; then
+      # FIX-ME: Will need to expand this if we ever support tvOS/visionOS/watchOS simulators
+      c_argv+=('-DTARGET_OS_IPHONE=1' '-DTARGET_OS_IOS=1' '-DTARGET_OS_SIMULATOR=1')
+    else
       c_argv+=('-DTARGET_OS_IPHONE=0')
     fi
 
