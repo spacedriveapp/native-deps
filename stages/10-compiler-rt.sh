@@ -84,6 +84,12 @@ ninja -j"$(nproc)"
 
 ninja install
 
+# HACK: Some projects fail to find compiler-rt when compiling for iOS due to
+# looking for darwin directory, work around by linking darwin to ios
+if [ "$OS_IPHONE" -ge 1 ]; then
+  ln -s ./ios "${LLVM_PATH}/lib/clang/17/lib/darwin"
+fi
+
 # Symlink clang_rt to arch specific names
 while IFS= read -r _lib; do
   _lib_name="$(basename "${_lib}" .a)"

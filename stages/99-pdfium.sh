@@ -1,10 +1,5 @@
 #!/usr/bin/env -S bash -euo pipefail
 
-if [ "$OS_IPHONE" -ge 1 ]; then
-  export UNSUPPORTED=1
-  exit 1
-fi
-
 echo "Download pdfium..."
 mkdir -p pdfium
 

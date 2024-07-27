@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+OS_IPHONE=${OS_IPHONE:-0}
+
 case "${TARGET:?TARGET envvar is required to be defined}" in
   x86_64-linux-musl | aarch64-linux-musl) ;;
   x86_64-linux-gnu* | aarch64-linux-gnu*)
@@ -9,11 +11,23 @@ case "${TARGET:?TARGET envvar is required to be defined}" in
     TARGET="${TARGET%%.*}.2.17"
     ;;
   x86_64-darwin-apple | x86_64-apple-darwin-macho)
-    SDKROOT="${MACOS_SDKROOT:?Missing macOS SDK}"
+    if [ "$OS_IPHONE" -eq 1 ]; then
+      export SDKROOT="${IOS_SDKROOT:?Missing iOS SDK}"
+    elif [ "$OS_IPHONE" -eq 2 ]; then
+      export SDKROOT="${IOS_SIMULATOR_SDKROOT:?Missing iOS simulator SDK}"
+    else
+      export SDKROOT="${MACOS_SDKROOT:?Missing macOS SDK}"
+    fi
     TARGET="x86_64-apple-darwin-macho"
     ;;
   aarch64-darwin-apple | arm64-apple-darwin-macho)
-    SDKROOT="${MACOS_SDKROOT:?Missing macOS SDK}"
+    if [ "$OS_IPHONE" -eq 1 ]; then
+      export SDKROOT="${IOS_SDKROOT:?Missing iOS SDK}"
+    elif [ "$OS_IPHONE" -eq 2 ]; then
+      export SDKROOT="${IOS_SIMULATOR_SDKROOT:?Missing iOS simulator SDK}"
+    else
+      export SDKROOT="${MACOS_SDKROOT:?Missing macOS SDK}"
+    fi
     TARGET="arm64-apple-darwin-macho"
     ;;
   x86_64-windows-gnu | aarch64-windows-gnu) ;;
@@ -418,10 +432,10 @@ case "$TARGET" in
     c_argv+=('-DTARGET_OS_MAC=1')
     if [ "$os_iphone" -eq 1 ]; then
       # FIX-ME: Will need to expand this if we ever support tvOS/visionOS/watchOS
-      c_argv+=('-DTARGET_OS_IPHONE=1' 'TARGET_OS_IOS=1')
+      c_argv+=('-DTARGET_OS_IPHONE=1' '-DTARGET_OS_IOS=1')
     elif [ "$os_iphone" -eq 2 ]; then
       # FIX-ME: Will need to expand this if we ever support tvOS/visionOS/watchOS simulators
-      c_argv+=('-DTARGET_OS_IPHONE=1' 'TARGET_OS_IOS=1' 'TARGET_OS_SIMULATOR=1')
+      c_argv+=('-DTARGET_OS_IPHONE=1' '-DTARGET_OS_IOS=1' '-DTARGET_OS_SIMULATOR=1')
     else
       c_argv+=('-DTARGET_OS_IPHONE=0')
     fi

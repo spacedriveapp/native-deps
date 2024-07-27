@@ -211,7 +211,7 @@ FROM layer-00 AS layer-10-compiler-rt
 
 RUN --mount=type=cache,target=/root/.cache `
 	--mount=type=bind,source=stages/10-compiler-rt.sh,target=/srv/stage.sh `
-	/srv/build.sh
+	env CRT_HACK=1 /srv/build.sh
 
 FROM layer-00 AS layer-10
 

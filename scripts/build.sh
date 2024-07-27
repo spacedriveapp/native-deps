@@ -101,20 +101,31 @@ case "$TARGET" in
 
     if [ "$OS_IPHONE" -eq 1 ]; then
       export SDKROOT="${IOS_SDKROOT:?Missing iOS SDK}"
-      CFLAGS="${CFLAGS} -mios-version-min=${IPHONEOS_DEPLOYMENT_TARGET} -miphoneos-version-min=${IPHONEOS_DEPLOYMENT_TARGET}"
+      if [ "${CRT_HACK:-0}" -ne 1 ]; then
+        CFLAGS="${CFLAGS} -mios-version-min=${IPHONEOS_DEPLOYMENT_TARGET} -miphoneos-version-min=${IPHONEOS_DEPLOYMENT_TARGET}"
+      fi
     elif [ "$OS_IPHONE" -eq 2 ]; then
       export SDKROOT="${IOS_SIMULATOR_SDKROOT:?Missing iOS simulator SDK}"
-      CFLAGS="${CFLAGS} -mios-simulator-version-min=${IPHONEOS_DEPLOYMENT_TARGET} -miphonesimulator-version-min=${IPHONEOS_DEPLOYMENT_TARGET}"
+      if [ "${CRT_HACK:-0}" -ne 1 ]; then
+        CFLAGS="${CFLAGS} -mios-simulator-version-min=${IPHONEOS_DEPLOYMENT_TARGET} -miphonesimulator-version-min=${IPHONEOS_DEPLOYMENT_TARGET}"
+      fi
     else
-      export SDKROOT="$MACOS_SDKROOT"
-      # https://github.com/tpoechtrager/osxcross/commit/3279f86
-      CFLAGS="${CFLAGS} -mmacos-version-min=${MACOSX_DEPLOYMENT_TARGET} -mmacosx-version-min=${MACOSX_DEPLOYMENT_TARGET}"
+      export SDKROOT="${MACOS_SDKROOT:?Missing macOS SDK}"
+      if [ "${CRT_HACK:-0}" -ne 1 ]; then
+        # https://github.com/tpoechtrager/osxcross/commit/3279f86
+        CFLAGS="${CFLAGS} -mmacos-version-min=${MACOSX_DEPLOYMENT_TARGET} -mmacosx-version-min=${MACOSX_DEPLOYMENT_TARGET}"
+        LDFLAGS="-L${SDKROOT}/usr/lib/system ${LDFLAGS}"
+      fi
     fi
 
     # Ugly workaround for apple linker not finding the SDK's Framework directory
     ln -fs "${SDKROOT}/System" '/System'
 
-    LDFLAGS="-fuse-ld=$(command -v "${APPLE_TARGET:?}-ld") -L${SDKROOT}/usr/lib -L${SDKROOT}/usr/lib/system -F${SDKROOT}/System/Library/Frameworks ${LDFLAGS}"
+    if [ "${CRT_HACK:-0}" -ne 1 ]; then
+      LDFLAGS="-L${SDKROOT}/usr/lib -F${SDKROOT}/System/Library/Frameworks -F${SDKROOT}/System/Cryptexes/OS/System/Library/Frameworks ${LDFLAGS}"
+    fi
+
+    LDFLAGS="-fuse-ld=$(command -v "${APPLE_TARGET:?}-ld") ${LDFLAGS}"
     ;;
   *windows*)
     # Zig doesn't support stack probing on Windows
