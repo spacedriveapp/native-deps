@@ -18,7 +18,7 @@ ARG IOS_SDK_VERSION='17.0'
 
 #--
 
-FROM debian:bookworm@sha256:45f2e735295654f13e3be10da2a6892c708f71a71be845818f6058982761a6d3 AS build-base
+FROM debian:bookworm@sha256:aadf411dc9ed5199bc7dab48b3e6ce18f8bbee4f170127f5ff1b75cd8035eb36 AS build-base
 
 SHELL ["bash", "-euxo", "pipefail", "-c"]
 
