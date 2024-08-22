@@ -1,11 +1,11 @@
 #!/usr/bin/env -S bash -euo pipefail
 
 case "$TARGET" in
-*darwin*) ;;
-*)
-  export UNSUPPORTED=1
-  exit 1
-  ;;
+  *darwin*) ;;
+  *)
+    export UNSUPPORTED=1
+    exit 1
+    ;;
 esac
 
 # LLVM install path
