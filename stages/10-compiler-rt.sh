@@ -63,26 +63,26 @@ if [ "$_arch" == 'aarch64' ]; then
     cmake_config+=(
       -DDARWIN_osx_ARCHS="arm64"
       -DDARWIN_osx_BUILTIN_ARCHS="arm64"
-      -DDARWIN_ios_ARCHS=""
-      -DDARWIN_ios_BUILTIN_ARCHS=""
-      -DDARWIN_iossim_ARCHS=""
-      -DDARWIN_iossim_BUILTIN_ARCHS=""
+      -DDARWIN_ios_ARCHS="-"
+      -DDARWIN_ios_BUILTIN_ARCHS="-"
+      -DDARWIN_iossim_ARCHS="-"
+      -DDARWIN_iossim_BUILTIN_ARCHS="-"
     )
   elif [ "$OS_IPHONE" -ge 1 ]; then
     cmake_config+=(
-      -DDARWIN_osx_ARCHS=""
-      -DDARWIN_osx_BUILTIN_ARCHS=""
+      -DDARWIN_osx_ARCHS="-"
+      -DDARWIN_osx_BUILTIN_ARCHS="-"
       -DDARWIN_ios_ARCHS="arm64"
       -DDARWIN_ios_BUILTIN_ARCHS="arm64"
-      -DDARWIN_iossim_ARCHS=""
-      -DDARWIN_iossim_BUILTIN_ARCHS=""
+      -DDARWIN_iossim_ARCHS="-"
+      -DDARWIN_iossim_BUILTIN_ARCHS="-"
     )
   elif [ "$OS_IPHONE" -ge 2 ]; then
     cmake_config+=(
-      -DDARWIN_osx_ARCHS=""
-      -DDARWIN_osx_BUILTIN_ARCHS=""
-      -DDARWIN_ios_ARCHS=""
-      -DDARWIN_ios_BUILTIN_ARCHS=""
+      -DDARWIN_osx_ARCHS="-"
+      -DDARWIN_osx_BUILTIN_ARCHS="-"
+      -DDARWIN_ios_ARCHS="-"
+      -DDARWIN_ios_BUILTIN_ARCHS="-"
       -DDARWIN_iossim_ARCHS="arm64"
       -DDARWIN_iossim_BUILTIN_ARCHS="arm64"
     )
@@ -92,20 +92,20 @@ else
     cmake_config+=(
       -DDARWIN_osx_ARCHS="$_arch"
       -DDARWIN_osx_BUILTIN_ARCHS="$_arch"
-      -DDARWIN_ios_ARCHS=""
-      -DDARWIN_ios_BUILTIN_ARCHS=""
-      -DDARWIN_iossim_ARCHS=""
-      -DDARWIN_iossim_BUILTIN_ARCHS=""
+      -DDARWIN_ios_ARCHS="-"
+      -DDARWIN_ios_BUILTIN_ARCHS="-"
+      -DDARWIN_iossim_ARCHS="-"
+      -DDARWIN_iossim_BUILTIN_ARCHS="-"
     )
   elif [ "$OS_IPHONE" -ge 1 ]; then
     echo "iOS don't support $_arch" >&2
     exit 1
   elif [ "$OS_IPHONE" -ge 2 ]; then
     cmake_config+=(
-      -DDARWIN_osx_ARCHS=""
-      -DDARWIN_osx_BUILTIN_ARCHS=""
-      -DDARWIN_ios_ARCHS=""
-      -DDARWIN_ios_BUILTIN_ARCHS=""
+      -DDARWIN_osx_ARCHS="-"
+      -DDARWIN_osx_BUILTIN_ARCHS="-"
+      -DDARWIN_ios_ARCHS="-"
+      -DDARWIN_ios_BUILTIN_ARCHS="-"
       -DDARWIN_iossim_ARCHS="$_arch"
       -DDARWIN_iossim_BUILTIN_ARCHS="$_arch"
     )
