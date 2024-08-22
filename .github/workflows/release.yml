@@ -29,6 +29,7 @@ jobs:
       matrix:
         settings:
           - target: x86_64-iossim-apple
+          - target: aarch64-iossim-apple
           - target: aarch64-ios-apple
           - target: x86_64-darwin-apple
           - target: aarch64-darwin-apple
@@ -64,6 +65,9 @@ jobs:
           OS_IPHONE=0
           if [ "$TARGET" = 'x86_64-iossim-apple' ]; then
             TARGET='x86_64-darwin-apple'
+            OS_IPHONE=2
+          elif [ "$TARGET" = 'aarch64-iossim-apple' ]; then
+            TARGET='aarch64-darwin-apple'
             OS_IPHONE=2
           elif [ "$TARGET" = 'aarch64-ios-apple' ]; then
             TARGET='aarch64-darwin-apple'

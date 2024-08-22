@@ -96,7 +96,7 @@ args=(
 case "$TARGET" in
   *darwin*)
     args+=(
-      -Donnxruntime_USE_COREML=On
+      -Donnxruntime_USE_COREML="$(if [ "$OS_IPHONE" -eq 2 ]; then echo "Off"; else echo "On"; fi)"
     )
     # Allow deprecated usage of ATOMIC_VAR_INIT by https://github.com/google/nsync
     # Allow deprecated usage of this capture by https://gitlab.com/libeigen/eigen
