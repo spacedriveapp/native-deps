@@ -176,6 +176,9 @@ cd /srv
 
   set -x
 
+  # Make sure license directory exists
+  mkdir -p "${PREFIX}/licenses/"
+
   # shellcheck disable=SC1091
   . /srv/stage.sh
 )
@@ -204,8 +207,6 @@ while IFS= read -r _license; do
       continue
       ;;
   esac
-
-  mkdir -p "${PREFIX}/licenses/"
 
   # Rename license files to include the package name
   cp "$_license" "${PREFIX}/licenses/$(dirname "${_license#/srv/}" | tr '/' '-').$(basename "$_license" .txt)"
