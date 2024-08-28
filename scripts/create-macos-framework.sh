@@ -3,7 +3,12 @@
 set -xeuo pipefail
 
 case "$TARGET" in
-  *darwin*) ;;
+  *darwin*)
+    if [ "$OS_IPHONE" -ne 0 ]; then
+      echo "iOS target uses another framework structure" >&2
+      exit 0
+    fi
+    ;;
   *)
     echo "Framework creation is only for macOS" >&2
     exit 0

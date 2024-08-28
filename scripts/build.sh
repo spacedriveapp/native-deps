@@ -176,6 +176,9 @@ cd /srv
 
   set -x
 
+  # Make sure license directory exists
+  mkdir -p "${PREFIX}/licenses/"
+
   # shellcheck disable=SC1091
   . /srv/stage.sh
 )
@@ -198,14 +201,14 @@ rm -rf "${PREFIX:?}"/{bin,etc,man,lib/*.{.la,.so*,.dll.a},share}
 # Copy licenses
 while IFS= read -r _license; do
   case "${_license}" in
-    # Ignore license for tests, examples, contrib, ..., as we are not compiling, running or distributing those
+    # Ignore license for tests, examples, contrib, ..., as we are not compiling, running or distributing those files
+    # Ignore GPLv2 licenses, because we opt for GPLv3 for all libraries
     *.sh | *.cfg | *.build | */test/* | */tests/* | */demos/* | */build/* | \
-      */utils/* | */contrib/* | */examples/* | */3rdparty/* | */third_party/*)
+      */utils/* | */contrib/* | */examples/* | */3rdparty/* | */third_party/* | \
+      *GPL2* | *GPLv2* | *gpl2* | *gplv2*)
       continue
       ;;
   esac
-
-  mkdir -p "${PREFIX}/licenses/"
 
   # Rename license files to include the package name
   cp "$_license" "${PREFIX}/licenses/$(dirname "${_license#/srv/}" | tr '/' '-').$(basename "$_license" .txt)"

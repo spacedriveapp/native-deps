@@ -25,17 +25,25 @@ case "$TARGET" in
     _name='linux-musl-arm64'
     ;;
   x86_64-darwin*)
-    if [ "$OS_IPHONE" -ge 1 ]; then
+    if [ "$OS_IPHONE" -eq 0 ]; then
+      _name='mac-x64'
+    elif [ "$OS_IPHONE" -eq 1 ]; then
       _name='ios-x64'
     else
-      _name='mac-x64'
+      echo "There is no libpdfium pre-built for iOS simulator" >&2
+      export UNSUPPORTED=1
+      exit 1
     fi
     ;;
   aarch64-darwin*)
-    if [ "$OS_IPHONE" -ge 1 ]; then
+    if [ "$OS_IPHONE" -eq 0 ]; then
+      _name='mac-arm64'
+    elif [ "$OS_IPHONE" -eq 1 ]; then
       _name='ios-arm64'
     else
-      _name='mac-arm64'
+      echo "There is no libpdfium pre-built for iOS simulator" >&2
+      export UNSUPPORTED=1
+      exit 1
     fi
     ;;
 esac
