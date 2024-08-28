@@ -92,4 +92,13 @@ while IFS= read -r _lib; do
 </dict>
 </plist>
 EOF
+
+  touch "${_framework}/LICENSE"
+  for _file in "${PREFIX}/licenses/"*; do
+    {
+      echo "License for $(basename "$_file" | sed -e 's/\.[^.]*$//')"
+      cat "$_file"
+      printf "======================\n\n"
+    } >>"${_framework}/LICENSE"
+  done
 done < <(find "${OUT}/lib" -type f -name '*.dylib')
