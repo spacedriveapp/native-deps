@@ -49,10 +49,11 @@ while IFS= read -r _lib; do
   fi
 
   # Copy library headers to Framework
+  mkdir -p "${_framework}/Headers"
   if [ -d "${OUT}/include/${_lib_name}" ]; then
-    cp -r "${OUT}/include/${_lib_name}" "${_framework}/Headers"
+    cp -r "${OUT}/include/${_lib_name}" "${_framework}/Headers/${_lib_name}"
   elif [ -d "${OUT}/include/lib${_lib_name}" ]; then
-    cp -r "${OUT}/include/lib${_lib_name}" "${_framework}/Headers"
+    cp -r "${OUT}/include/lib${_lib_name}" "${_framework}/Headers/lib${_lib_name}"
   fi
 
   # Create Info.plist
