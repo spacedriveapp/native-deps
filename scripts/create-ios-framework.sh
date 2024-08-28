@@ -21,7 +21,7 @@ fi
 
 while IFS= read -r _lib; do
   _lib_name="$(basename "$_lib" | awk -F'.' '{print $1}' | sed -e 's/^lib//')"
-  _framework="${OUT}/${_lib_name}.framework"
+  _framework="${OUT}/lib${_lib_name}.framework"
 
   mkdir -p "${_framework}"
 
@@ -34,7 +34,7 @@ while IFS= read -r _lib; do
       "${OUT}/lib/"*) # One of our built libraries
         # Change the dependency linker path so it loads it from the same directory as the library
         _dep_name="$(basename "$_dep" | awk -F'.' '{print $1}' | sed -e 's/^lib//')"
-        install_name_tool -change "$_dep" "@rpath/${_dep_name}.framework/lib${_dep_name}" "${_framework}/lib${_lib_name}"
+        install_name_tool -change "$_dep" "@rpath/lib${_dep_name}.framework/lib${_dep_name}" "${_framework}/lib${_lib_name}"
         ;;
       *) # Ignore system libraries
         continue
@@ -43,7 +43,7 @@ while IFS= read -r _lib; do
   done
 
   # Update the library's own id
-  if ! install_name_tool -id "@rpath/${_lib_name}.framework/lib${_lib_name}" "${_framework}/lib${_lib_name}"; then
+  if ! install_name_tool -id "@rpath/lib${_lib_name}.framework/lib${_lib_name}" "${_framework}/lib${_lib_name}"; then
     # Some libraries have a header pad too small, so use a relative path instead
     install_name_tool -id "./lib${_lib_name}" "$_lib"
   fi
