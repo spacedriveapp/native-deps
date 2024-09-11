@@ -55,7 +55,13 @@ args=(
   -DCMAKE_TLS_VERIFY=On
   -DBUILD_PKGCONFIG_FILES=Off
   -Donnxruntime_USE_XNNPACK=On
-  -Donnxruntime_BUILD_SHARED_LIB=On
+  -Donnxruntime_BUILD_SHARED_LIB="$(
+    if [ "$OS_IPHONE" -gt 0 ]; then
+      echo "Off"
+    else
+      echo "On"
+    fi
+  )"
   -Donnxruntime_CROSS_COMPILING=On
   -Donnxruntime_ENABLE_LTO="$([ "${LTO:-1}" -eq 1 ] && echo On || echo Off)"
   -DONNX_CUSTOM_PROTOC_EXECUTABLE=/usr/bin/protoc
@@ -121,3 +127,8 @@ esac
 ninja -j"$(nproc)"
 
 ninja install
+
+# Copy static libs for iOS
+if [ "$OS_IPHONE" -gt 0 ]; then
+  cp -r "$PREFIX"/lib/*.a "${OUT}/lib/"
+fi

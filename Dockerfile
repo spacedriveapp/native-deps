@@ -458,24 +458,10 @@ RUN --mount=type=cache,target=/root/.cache `
 	--mount=type=bind,source=stages/99-onnx.sh,target=/srv/stage.sh `
 	/srv/build.sh
 
-# Create iOS Frameworks from specific lib
-ARG VERSION
-ENV VERSION="${VERSION:-0.0.0}"
-RUN --mount=type=cache,target=/root/.cache `
-	--mount=type=bind,source=scripts/create-ios-framework.sh,target=/srv/stage.sh `
-	/srv/build.sh
-
 FROM layer-50 AS layer-99-ffmpeg
 
 RUN --mount=type=cache,target=/root/.cache `
 	--mount=type=bind,source=stages/99-ffmpeg.sh,target=/srv/stage.sh `
-	/srv/build.sh
-
-# Create iOS Frameworks from specific lib
-ARG VERSION
-ENV VERSION="${VERSION:-0.0.0}"
-RUN --mount=type=cache,target=/root/.cache `
-	--mount=type=bind,source=scripts/create-ios-framework.sh,target=/srv/stage.sh `
 	/srv/build.sh
 
 FROM layer-45 AS layer-99-heif
@@ -484,13 +470,6 @@ COPY --from=layer-99-ffmpeg "${OUT}/." "$PREFIX"
 
 RUN --mount=type=cache,target=/root/.cache `
 	--mount=type=bind,source=stages/99-heif.sh,target=/srv/stage.sh `
-	/srv/build.sh
-
-# Create iOS Frameworks from specific lib
-ARG VERSION
-ENV VERSION="${VERSION:-0.0.0}"
-RUN --mount=type=cache,target=/root/.cache `
-	--mount=type=bind,source=scripts/create-ios-framework.sh,target=/srv/stage.sh `
 	/srv/build.sh
 
 FROM layer-00 AS layer-99

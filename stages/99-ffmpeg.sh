@@ -81,7 +81,11 @@ case "$TARGET" in
     elif [ "$OS_IPHONE" -eq 2 ]; then
       env_specific_arg+=(--sysroot="${IOS_SIMULATOR_SDKROOT:?Missing iOS simulator SDK}")
     else
-      env_specific_arg+=(--sysroot="${MACOS_SDKROOT:?Missing macOS SDK}")
+      env_specific_arg+=(
+        --sysroot="${MACOS_SDKROOT:?Missing macOS SDK}"
+        --disable-static
+        --enable-shared
+      )
     fi
     env_specific_arg+=(
       # TODO: Metal suport is disabled because no open source compiler is available for it
@@ -102,6 +106,7 @@ case "$TARGET" in
     ;;
   *linux*)
     env_specific_arg+=(
+      --disable-static
       --disable-libdrm
       --disable-coreimage
       --disable-w32threads
@@ -114,12 +119,14 @@ case "$TARGET" in
       --enable-pthreads
       --enable-libshaderc
       --enable-libplacebo
+      --enable-shared
     )
     ;;
   *windows*)
     # TODO: Add support for mediafoundation on Windows (zig doesn't seem to have the necessary bindings to it yet)
     # FIX-ME: LTO isn't working on Windows rn
     env_specific_arg+=(
+      --disable-static
       --disable-pthreads
       --disable-coreimage
       --disable-videotoolbox
@@ -130,6 +137,7 @@ case "$TARGET" in
       --enable-w32threads
       --enable-libshaderc
       --enable-libplacebo
+      --enable-shared
     )
     ;;
 esac
@@ -180,7 +188,6 @@ if ! ./configure \
   --windres="windres" \
   --pkg-config=pkg-config \
   --pkg-config-flags="--static" \
-  --disable-static \
   --disable-debug \
   --disable-doc \
   --disable-htmlpages \
@@ -233,7 +240,6 @@ if ! ./configure \
   --enable-optimizations \
   --enable-pic \
   --enable-postproc \
-  --enable-shared \
   --enable-swscale \
   --enable-version3 \
   --enable-zlib \
@@ -269,3 +275,8 @@ case "$TARGET" in
       sh {} +
     ;;
 esac
+
+# Copy static libs for iOS
+if [ "$OS_IPHONE" -gt 0 ]; then
+  cp -r "$PREFIX"/lib/*.a "${OUT}/lib/"
+fi
