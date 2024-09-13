@@ -4,7 +4,7 @@ echo "Download x265..."
 mkdir -p x265
 
 # renovate: datasource=bitbucket-tags depName=multicoreware/x265_git versioning=semver-coerced
-_tag='3.6'
+_tag='4.0'
 
 # Need to use master, because the latest release doesn't support optmized aarch64 and it is from 2021
 curl_tar "https://bitbucket.org/multicoreware/x265_git/get/${_tag}.tar.gz" x265 1
