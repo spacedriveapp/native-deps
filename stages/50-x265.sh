@@ -4,7 +4,7 @@ echo "Download x265..."
 mkdir -p x265
 
 # renovate: datasource=bitbucket-tags depName=multicoreware/x265_git versioning=semver-coerced
-_tag='3.6'
+_tag='4.0'
 
 # Need to use master, because the latest release doesn't support optmized aarch64 and it is from 2021
 curl_tar "https://bitbucket.org/multicoreware/x265_git/get/${_tag}.tar.gz" x265 1
@@ -15,15 +15,16 @@ curl_tar "https://bitbucket.org/multicoreware/x265_git/get/${_tag}.tar.gz" x265 
 rm -rf x265/{doc,build}
 
 # Handbreak patches
-for patch in \
-  'https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/x265/A03-sei-length-crash-fix.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/9c9cf41/contrib/x265/A05-memory-leaks.patch'; do
-  curl "$patch" | patch -F5 -lp1 -d x265 -t
-done
 
-# Local patches
-for patch in "$PREFIX"/patches/*; do
-  patch -F5 -lp1 -d x265 -t <"$patch"
+for patch in \
+  'https://github.com/HandBrake/HandBrake/raw/65ec046/contrib/x265/A01-Do-not-set-thread-priority-on-Windows.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/65ec046/contrib/x265/A02-Apple-Silicon-tuning.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/65ec046/contrib/x265/A03-fix-crash-when-SEI-length-is-variable.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/65ec046/contrib/x265/A04-implement-ambient-viewing-environment-sei.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/65ec046/contrib/x265/A05-Fix-some-memory-leaks-and-improve-rpu-memory-managem.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/65ec046/contrib/x265/A06-Simplify-macOS-cross-compilation.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/65ec046/contrib/x265/A07-Port-ARM64-features-detection-code-from-SVT-AV1.patch'; do
+  curl "$patch" | patch -F5 -lp1 -d x265 -t
 done
 
 # Backup source
@@ -45,6 +46,16 @@ common_config=(
   -DENABLE_SVT_HEVC=Off
   -DCMAKE_ASM_NASM_FLAGS=-w-macro-params-legacy
 )
+
+case "$TARGET" in
+  aarch64*)
+    common_config+=(
+      -DCROSS_COMPILE_ARM64=ON
+      -DCROSS_COMPILE_NEON_I8MM=ON
+      -DCROSS_COMPILE_NEON_DOTPROD=ON
+    )
+    ;;
+esac
 
 mkdir 8bit 10bit 12bit
 
