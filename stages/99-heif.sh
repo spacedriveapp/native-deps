@@ -25,7 +25,13 @@ cd heif/build
 
 echo "Build heif..."
 
-env SHARED=On PREFIX="$OUT" cmake \
+env SHARED="$(
+  if [ "$OS_IPHONE" -gt 0 ]; then
+    echo "Off"
+  else
+    echo "On"
+  fi
+)" PREFIX="$OUT" cmake \
   -DWITH_DAV1D=On \
   -DWITH_LIBDE265=On \
   -DWITH_LIBSHARPYUV=On \
@@ -81,4 +87,9 @@ ninja install
 
 if [ -f "heif.lib" ]; then
   cp -at "${OUT}/lib/" heif.lib
+fi
+
+# Copy static libs for iOS
+if [ "$OS_IPHONE" -gt 0 ]; then
+  cp -r "$PREFIX"/lib/*.a "${OUT}/lib/"
 fi
