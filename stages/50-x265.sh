@@ -27,11 +27,6 @@ for patch in \
   curl "$patch" | patch -F5 -lp1 -d x265 -t
 done
 
-# Local patches
-for patch in "$PREFIX"/patches/*; do
-  patch -F5 -lp1 -d x265 -t <"$patch"
-done
-
 # Backup source
 bak_src 'x265'
 

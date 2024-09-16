@@ -404,7 +404,6 @@ RUN --mount=type=cache,target=/root/.cache `
 FROM layer-45 AS layer-50-x265
 
 RUN --mount=type=cache,target=/root/.cache `
-	--mount=type=bind,source=patches/50-x265,target="${PREFIX}/patches" `
 	--mount=type=bind,source=stages/50-x265.sh,target=/srv/stage.sh `
 	/srv/build.sh
 
