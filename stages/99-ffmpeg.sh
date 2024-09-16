@@ -33,7 +33,7 @@ for patch in \
   'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A24-qsvdec-allow-decoders-to-export-crop-information.patch' \
   'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A25-qsvdec-add-vvc-decoder.patch' \
   'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A26-qsvdec-add-vvc-mp4toannexb.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A27-vvc-dec-disable-experimental.patc'; do
+  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A27-vvc-dec-disable-experimental.patch'; do
   curl "$patch" | patch -F5 -lp1 -d ffmpeg -t
 done
 
