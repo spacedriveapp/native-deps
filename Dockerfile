@@ -461,6 +461,7 @@ FROM layer-50 AS layer-99-ffmpeg
 
 RUN --mount=type=cache,target=/root/.cache `
 	--mount=type=bind,source=stages/99-ffmpeg.sh,target=/srv/stage.sh `
+	--mount=type=bind,source=patches/99-ffmpeg,target="${PREFIX}/patches" `
 	/srv/build.sh
 
 FROM layer-45 AS layer-99-heif
