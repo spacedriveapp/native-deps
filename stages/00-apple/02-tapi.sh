@@ -25,7 +25,7 @@ echo "Download tapi ..."
 mkdir -p "tapi"
 
 # renovate: depName=git@github.com:tpoechtrager/apple-libtapi.git
-_commit='b8c5ac40267aa5f6004dd38cc2b2cd84f2d9d555'
+_commit='aa37c11ad1a817248c9d1578ac99e133875b4eb5'
 
 curl_tar "https://github.com/tpoechtrager/apple-libtapi/archive/${_commit}.tar.gz" 'tapi' 1
 
