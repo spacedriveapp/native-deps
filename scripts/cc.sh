@@ -352,14 +352,6 @@ fi
 
 # Compiler specific flags
 features=""
-case "${TARGET:-}" in
-  arm64* | aarch64*)
-    # Force enable i8mm for arm64, required by ffmpeg
-    # TODO: Check if A10 actually supports this
-    features="i8mm"
-    ;;
-esac
-
 for feature in "${cpu_features[@]}"; do
   case "$CMD" in
     clang*) ;;
