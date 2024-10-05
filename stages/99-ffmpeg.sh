@@ -83,6 +83,8 @@ case "$TARGET" in
       --x86asmexe=false
       --enable-vfp
       --enable-neon
+      # M1 Doesn't support i8mm
+      --disable-i8mm
     )
     ;;
 esac

@@ -51,7 +51,8 @@ case "$TARGET" in
   aarch64*)
     common_config+=(
       -DCROSS_COMPILE_ARM64=ON
-      -DCROSS_COMPILE_NEON_I8MM=ON
+      # M1 Doesn't support i8mm
+      -DCROSS_COMPILE_NEON_I8MM=OFF
       -DCROSS_COMPILE_NEON_DOTPROD=ON
     )
     ;;
