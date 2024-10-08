@@ -9,7 +9,7 @@ case "$TARGET" in
 esac
 
 # LLVM install path
-LLVM_PATH="/usr/lib/llvm-17"
+LLVM_PATH="/usr/lib/llvm-18"
 
 # Remove wrapper from PATH, because we need to call the original cmake
 PATH="$(echo "${PATH}" | awk -v RS=: -v ORS=: '/\/wrapper^/ {next} {print}')"
@@ -19,9 +19,9 @@ echo "Download llvm compiler_rt..."
 
 mkdir -p "${LLVM_PATH}/compiler_rt/build"
 
-curl_tar 'https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/cmake-17.0.6.src.tar.xz' \
+curl_tar 'https://github.com/llvm/llvm-project/releases/download/llvmorg-18.1.7/cmake-18.1.7.src.tar.xz' \
   "${LLVM_PATH}/cmake" 1
-curl_tar 'https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/compiler-rt-17.0.6.src.tar.xz' \
+curl_tar 'https://github.com/llvm/llvm-project/releases/download/llvmorg-18.1.7/compiler-rt-18.1.7.src.tar.xz' \
   "${LLVM_PATH}/compiler_rt" 1
 
 # Link cmake files to where compiler_rt expect to find them

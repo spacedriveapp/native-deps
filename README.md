@@ -60,13 +60,13 @@ This build system is losely base on:
 
 - https://github.com/BtbN/FFmpeg-Builds
 
-It uses Zig 0.12 as a C/C++ toolchain to build the Windows and Linux targets:
+It uses Zig 0.13 as a C/C++ toolchain to build the Windows and Linux targets:
 
 - https://github.com/ziglang/zig/tree/0.11.0
 
-It uses LLVM/Clang 17 with some tweaks from osxcross + Apple's cctools and linker to build the Darwin (macOS, iOS) targets:
+It uses LLVM/Clang 18 with some tweaks from osxcross + Apple's cctools and linker to build the Darwin (macOS, iOS) targets:
 
-- https://github.com/llvm/llvm-project/tree/llvmorg-17.0.6
+- https://github.com/llvm/llvm-project/tree/llvmorg-18.1.7
 - https://github.com/tpoechtrager/osxcross
 - https://github.com/tpoechtrager/cctools-port
 
