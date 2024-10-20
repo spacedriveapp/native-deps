@@ -25,10 +25,6 @@ esac
 
 mkdir -p "$2"
 
-if [ -n "${4:-}" ]; then
-  set -- "$1" "$2" "$3" "'$4'"
-fi
-
 _url="$1"
 _cache="/root/.cache/_curl_tar/$(md5sum - <<<"$_url" | awk '{ print $1 }')"
 
@@ -40,5 +36,18 @@ fi
 
 trap 'rm -rf "$_cache"' ERR
 
-echo "'$3'" -C "'$2'" "${4:-}" | xargs \
-  bsdtar -xf "$_cache" --no-acls --no-xattrs --no-same-owner --no-mac-metadata --no-same-permissions --strip-component
+if [ "$3" -eq 0 ]; then
+  if [ -n "${4:-}" ]; then
+    set -- -C "$2" "${4:-}"
+  else
+    set -- -C "$2"
+  fi
+else
+  if [ -n "${4:-}" ]; then
+    set -- --strip-component="$3" -C "$2" "${4:-}"
+  else
+    set -- --strip-component="$3" -C "$2"
+  fi
+fi
+
+bsdtar -xf "$_cache" --no-acls --no-xattrs --no-same-owner --no-mac-metadata --no-same-permissions "$@"

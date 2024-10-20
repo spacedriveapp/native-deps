@@ -56,7 +56,7 @@ args=(
   -DBUILD_PKGCONFIG_FILES=Off
   -Donnxruntime_USE_XNNPACK=On
   -Donnxruntime_BUILD_SHARED_LIB="$(
-    if [ "$OS_IPHONE" -gt 0 ]; then
+    if [ "$OS_IPHONE" -gt 0 ] || [ "$OS_ANDROID" -eq 1 ]; then
       echo "Off"
     else
       echo "On"
@@ -108,6 +108,11 @@ case "$TARGET" in
     # Allow deprecated usage of this capture by https://gitlab.com/libeigen/eigen
     export CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_DEPRECATION_WARNINGS -Wno-deprecated-this-capture"
     ;;
+  *android*)
+    args+=(
+      -Donnxruntime_USE_NNAPI_BUILTIN=On
+    )
+    ;;
 esac
 
 # WARNING: Must not set Shared Library to On, or else it will fail to build. This is already handled above by onnx custom argument.
@@ -128,7 +133,7 @@ ninja -j"$(nproc)"
 
 ninja install
 
-# Copy static libs for iOS
-if [ "$OS_IPHONE" -gt 0 ]; then
+# Copy static libs for iOS and android
+if [ "$OS_IPHONE" -gt 0 ] || [ "$OS_ANDROID" -eq 1 ]; then
   cp -r "$PREFIX"/lib/*.a "${OUT}/lib/"
 fi

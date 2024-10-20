@@ -33,12 +33,8 @@ echo "Build zimg..."
 ./configure \
   $(
     case "$TARGET" in
-      *linux*)
-        echo "--host=${TARGET%%-*}-linux-gnu"
-        ;;
-      *windows*)
-        # Always use gnu because mingw64 requires MSVC tools that we do not have
-        echo "--host=${TARGET%%-*}-windows-gnu"
+      *linux* | *windows*)
+        echo "--host=${TARGET}"
         ;;
       x86_64-darwin*)
         echo "--host=${APPLE_TARGET}"

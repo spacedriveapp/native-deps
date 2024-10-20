@@ -1,6 +1,6 @@
 #!/usr/bin/env -S bash -euo pipefail
 
-if [ "$OS_IPHONE" -ge 1 ]; then
+if [ "$OS_ANDROID" -eq 1 ] || [ "$OS_IPHONE" -ge 1 ]; then
   export UNSUPPORTED=1
   exit 1
 fi

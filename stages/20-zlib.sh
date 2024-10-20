@@ -1,8 +1,8 @@
 #!/usr/bin/env -S bash -euo pipefail
 
 case "$TARGET" in
-  *darwin*)
-    # MacOS SDK ships zlib
+  *darwin* | *android*)
+    # MacOS SDK and Android NDK ships zlib
     export UNSUPPORTED=1
     exit 1
     ;;

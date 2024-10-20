@@ -39,6 +39,8 @@ jobs:
           - target: aarch64-linux-gnu
           - target: x86_64-linux-musl
           - target: aarch64-linux-musl
+          - target: x86_64-linux-android
+          - target: aarch64-linux-android
     name: Build native-deps ${{ matrix.settings.target }}
     runs-on: ubuntu-latest
     defaults:

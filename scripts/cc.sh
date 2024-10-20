@@ -10,6 +10,9 @@ case "${TARGET:?TARGET envvar is required to be defined}" in
     # Set the glibc minimum version, RHEL-7.9 and CentOS 7
     TARGET="${TARGET%%.*}.2.17"
     ;;
+  x86_64-linux-android | aarch64-linux-android)
+    export SDKROOT="${NDK_SDKROOT:?Missing ndk sysroot}"
+  ;;
   x86_64-darwin-apple | x86_64-apple-darwin-macho)
     if [ "$OS_IPHONE" -eq 1 ]; then
       export SDKROOT="${IOS_SDKROOT:?Missing iOS SDK}"
@@ -39,19 +42,19 @@ esac
 
 is_cpp=0
 case "$(basename "$0")" in
-  cc)
+  cc | android-gcc)
     case "$TARGET" in
-      *darwin*)
+      *darwin* | *android*)
         # Use clang instead of zig for darwin targets
         CMD='clang-17'
         ;;
       *) CMD='zig cc' ;;
     esac
     ;;
-  c++)
+  c++ | android-g++)
     is_cpp=1
     case "$TARGET" in
-      *darwin*)
+      *darwin* | *android*)
         # Use clang instead of zig for darwin targets
         CMD='clang++-17'
         ;;
@@ -109,6 +112,9 @@ while [ "$#" -gt 0 ]; do
     true
   elif (case "$1" in --debug=* | -gdwarf*) exit 0 ;; *) exit 1 ;; esac) then
     true
+  elif [ "$1" = "-fuse-ld=gold" ]; then
+    # spirv-tools tries to use gold linker for some reason, but we don't support it
+    true
   elif [ "$1" = '-' ]; then
     stdin=1
   elif [ "$1" = '-lgcc_s' ]; then
@@ -134,6 +140,7 @@ while [ "$#" -gt 0 ]; do
     shift 2
     continue
   elif (case "$1" in --target=*) exit 0 ;; *) exit 1 ;; esac) then
+    # Drop target flag, we handle that ourself
     true
   elif (case "$1" in -O* | --optimize*) exit 0 ;; *) exit 1 ;; esac) then
     # Drop optmize flags, we force -Os below
@@ -155,7 +162,11 @@ while [ "$#" -gt 0 ]; do
     IFS='+' read -ra _features <<<"$1"
     unset "_features[0]"
     cpu_features+=("${_features[@]}")
-    true
+  elif [ "$1" = '--sysroot' ]; then
+    sysroot="${2:?Sysroot argument not passed}"
+    shift
+  elif (case "$1" in --sysroot=*) exit 0 ;; *) exit 1 ;; esac) then
+    sysroot="$(echo "$1" | cut -d "=" -f 2-)"
   else
     case "$TARGET" in
       *darwin*)
@@ -201,7 +212,7 @@ while [ "$#" -gt 0 ]; do
 
   if [ "$1" = '-E' ]; then
     preprocessor=1
-  elif [ "$1" = '--help' ] || [ "$1" = '--version' ]; then
+  elif [ "$1" = '--help' ] || [ "$1" = '--version' ] || [ "$1" = '-dumpversion' ]; then
     exec $CMD "${c_argv[@]}" "$1"
   elif (case "$1" in *.S) exit 0 ;; *) exit 1 ;; esac) then
     assembler_file=1
@@ -209,11 +220,6 @@ while [ "$#" -gt 0 ]; do
     argv+=("$2")
     has_undefined_dynamic_lookup=1
     shift
-  elif [ "$1" = '--sysroot' ]; then
-    sysroot="${2:?Sysroot argument not passed}"
-    shift
-  elif (case "$1" in --sysroot=*) exit 0 ;; *) exit 1 ;; esac) then
-    sysroot="$(echo "$1" | cut -d "=" -f 2-)"
   fi
 
   shift
@@ -402,7 +408,14 @@ case "${TARGET:-}" in
           ;;
         *)
           # Raspberry Pi 3
-          c_argv+=("-mcpu=cortex_a53${features}")
+          case "$CMD" in
+            clang*)
+              c_argv+=("-mcpu=cortex-a53${features}")
+              ;;
+            *)
+              c_argv+=("-mcpu=cortex_a53${features}")
+              ;;
+          esac
           ;;
       esac
     fi
@@ -412,14 +425,14 @@ esac
 # Like -O2, but with extra optimizations to reduce code size
 c_argv+=(-Os)
 
-# Resolve sysroot arguments per target
+# If a SDK is defined resolve its absolute path
+if [ -z "$sysroot" ] && [ -d "${SDKROOT:-}" ]; then
+  sysroot="$(CDPATH='' cd -- "$SDKROOT" && pwd -P)"
+fi
+
+# Configure the propert target between macOS and iOS
 case "$TARGET" in
   *darwin*)
-    # If a SDK is defined resolve its absolute path
-    if [ -z "$sysroot" ] && [ -d "${SDKROOT:-}" ]; then
-      sysroot="$(CDPATH='' cd -- "$SDKROOT" && pwd -P)"
-    fi
-
     # https://stackoverflow.com/a/49560690
     c_argv+=('-DTARGET_OS_MAC=1')
     if [ "$os_iphone" -eq 1 ]; then
@@ -431,26 +444,30 @@ case "$TARGET" in
     else
       c_argv+=('-DTARGET_OS_IPHONE=0')
     fi
-
-    if [ -n "$sysroot" ]; then
-      c_argv+=(
-        "--sysroot=${sysroot}"
-        '-isysroot' "$sysroot"
-      )
-
-      if [ $is_cpp -eq 1 ]; then
-        c_argv+=('-isystem' "${sysroot}/usr/include/c++/v1")
-      fi
-
-      c_argv+=('-isystem' "${sysroot}/usr/include")
-    fi
-    ;;
-  *)
-    if [ -n "$sysroot" ]; then
-      c_argv+=("--sysroot=${sysroot}" '-isysroot' "$sysroot")
-    fi
     ;;
 esac
+
+# Add sysroot to the include path
+if [ -n "$sysroot" ]; then
+  c_argv+=(
+    "--sysroot=${sysroot}"
+    '-isysroot' "$sysroot"
+  )
+
+  if [ $is_cpp -eq 1 ]; then
+    c_argv+=('-isystem' "${sysroot}/usr/include/c++/v1")
+  fi
+
+  c_argv+=('-isystem' "${sysroot}/usr/include")
+
+  if [ -d "${sysroot}/usr/include/android" ]; then
+    c_argv+=('-isystem' "${sysroot}/usr/include/android")
+  fi
+
+  if [ -d "${sysroot}/usr/include/${TARGET}" ]; then
+    c_argv+=('-isystem' "${sysroot}/usr/include/${TARGET}")
+  fi
+fi
 
 # Add linker args back
 for arg in "${l_args[@]}"; do

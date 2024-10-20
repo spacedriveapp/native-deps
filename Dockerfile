@@ -15,6 +15,7 @@ ARG CMAKE_VERSION='3.30.5'
 ARG PATCHELF_VERSION='0.18.0'
 ARG MACOS_SDK_VERSION='14.0'
 ARG IOS_SDK_VERSION='17.0'
+ARG ANDROID_API_LEVEL='28'
 
 #--
 
@@ -49,6 +50,7 @@ RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/
 	make `
 	patch `
 	rsync `
+	lld-17 `
 	libtool `
 	python3 `
 	gettext `
@@ -116,6 +118,11 @@ RUN cd "${SYSROOT}/lib/libc/mingw/lib-common" `
 
 FROM build-base AS base-layer
 
+# Configure android ndk sysroot
+ENV NDK_SDKROOT="${SYSROOT}/sysroot"
+ARG ANDROID_API_LEVEL
+ENV ANDROID_API_LEVEL="${ANDROID_API_LEVEL:?}"
+
 # Configure macOS SDK for darwin targets
 ARG MACOS_SDK_VERSION
 ENV MACOS_SDK_VERSION="${MACOS_SDK_VERSION:?}"
@@ -137,8 +144,7 @@ RUN echo "Building: ${TARGET}$(case "$TARGET" in *darwin*) echo " (macOS SDK: ${
 # Script wrapper for some common build tools. Auto choose between llvm, zig or apple specific versions
 COPY --chmod=0750 ./scripts/tool-wrapper.sh "${SYSROOT}/bin/tool-wrapper.sh"
 RUN for tool in `
-	ar nm lib lipo size otool strip ranlib readelf libtool objdump dlltool `
-	objcopy strings bitcode-strip install_name_tool; `
+	ar nm lib lipo size otool strip ranlib readelf libtool objdump dlltool objcopy strings bitcode-strip install_name_tool; `
 	do ln -s "$(command -v tool-wrapper.sh)" "${SYSROOT}/bin/${tool}"; done
 
 # Custom llvm rc wrapper script with some pre-configurations
@@ -178,13 +184,20 @@ RUN --mount=type=cache,target=/root/.cache `
 	--mount=type=bind,source=stages/00-apple/05-ldid.sh,target=/srv/05-ldid.sh `
 	/srv/05-ldid.sh
 
+# Download NDK sysroot
+RUN --mount=type=cache,target=/root/.cache `
+	--mount=type=bind,source=stages/00-ndk.sh,target=/srv/00-ndk.sh `
+	/srv/00-ndk.sh
+
 # Ensure no one tries to call the native system linker
 RUN ln -s '/usr/bin/false' "${SYSROOT}/bin/ld"
 
 # Add wrapper script for zig compilers, we need to ensure that they are called with the correct arguments
 COPY --chmod=0750 ./scripts/cc.sh "${SYSROOT}/bin/cc"
 RUN ln -s 'cc' "${SYSROOT}/bin/c++"
-RUN chmod +x "${SYSROOT}/bin/cc" "${SYSROOT}/bin/c++"
+# Hack for cmake to work when compiling android targets
+RUN ln -s 'cc' "${SYSROOT}/bin/android-gcc"
+RUN ln -s 'cc' "${SYSROOT}/bin/android-g++"
 
 # Create cmake and meson toolchain files
 RUN --mount=type=bind,rw,source=scripts/toolchain.sh,target=/srv/toolchain.sh /srv/toolchain.sh
@@ -270,11 +283,18 @@ RUN --mount=type=cache,target=/root/.cache `
 	--mount=type=bind,source=stages/25-ogg.sh,target=/srv/stage.sh `
 	/srv/build.sh
 
+FROM layer-20 AS layer-25-pciaccess
+
+RUN --mount=type=cache,target=/root/.cache `
+	--mount=type=bind,source=stages/25-pciaccess.sh,target=/srv/stage.sh `
+	/srv/build.sh
+
 FROM layer-20 AS layer-25
 
 COPY --from=layer-25-lcms "${PREFIX}/." "$PREFIX"
 COPY --from=layer-25-lzma "${PREFIX}/." "$PREFIX"
 COPY --from=layer-25-ogg "${PREFIX}/." "$PREFIX"
+COPY --from=layer-25-pciaccess "${PREFIX}/." "$PREFIX"
 
 #--
 
@@ -289,6 +309,12 @@ FROM layer-25 AS layer-45-de265
 RUN --mount=type=cache,target=/root/.cache `
 	--mount=type=bind,source=stages/45-de265.sh,target=/srv/stage.sh `
 	--mount=type=bind,source=patches/45-de265,target="${PREFIX}/patches" `
+	/srv/build.sh
+
+FROM layer-25 AS layer-45-drm
+
+RUN --mount=type=cache,target=/root/.cache `
+	--mount=type=bind,source=stages/45-drm.sh,target=/srv/stage.sh `
 	/srv/build.sh
 
 FROM layer-25 AS layer-45-opencl
@@ -317,6 +343,7 @@ FROM layer-25 AS layer-45
 
 COPY --from=layer-45-dav1d "${PREFIX}/." "$PREFIX"
 COPY --from=layer-45-de265 "${PREFIX}/." "$PREFIX"
+COPY --from=layer-45-drm "${PREFIX}/." "$PREFIX"
 COPY --from=layer-45-opencl "${PREFIX}/." "$PREFIX"
 COPY --from=layer-45-sharpyuv "${PREFIX}/." "$PREFIX"
 COPY --from=layer-45-vorbis "${PREFIX}/." "$PREFIX"
@@ -372,6 +399,12 @@ RUN --mount=type=cache,target=/root/.cache `
 	--mount=type=bind,source=stages/50-theora.sh,target=/srv/stage.sh `
 	/srv/build.sh
 
+FROM layer-45 AS layer-50-va
+
+RUN --mount=type=cache,target=/root/.cache `
+	--mount=type=bind,source=stages/50-va.sh,target=/srv/stage.sh `
+	/srv/build.sh
+
 FROM layer-45 AS layer-50-vpx
 
 RUN --mount=type=cache,target=/root/.cache `
@@ -421,6 +454,7 @@ COPY --from=layer-50-opus "${PREFIX}/." "$PREFIX"
 COPY --from=layer-50-soxr "${PREFIX}/." "$PREFIX"
 COPY --from=layer-50-svt-av1 "${PREFIX}/." "$PREFIX"
 COPY --from=layer-50-theora "${PREFIX}/." "$PREFIX"
+COPY --from=layer-50-va "${PREFIX}/." "$PREFIX"
 COPY --from=layer-50-vpx "${PREFIX}/." "$PREFIX"
 COPY --from=layer-50-vulkan "${PREFIX}/." "$PREFIX"
 COPY --from=layer-50-x264 "${PREFIX}/." "$PREFIX"

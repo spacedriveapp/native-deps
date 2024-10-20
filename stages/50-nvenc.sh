@@ -1,7 +1,7 @@
 #!/usr/bin/env -S bash -euo pipefail
 
 if ! {
-  [ "$(uname -m)" = "${TARGET%%-*}" ] && (case "$TARGET" in *linux* | x86_64-windows*) exit 0 ;; *) exit 1 ;; esac)
+  [ "$(uname -m)" = "${TARGET%%-*}" ] && (case "$TARGET" in *android*) exit 1 ;; *linux* | x86_64-windows*) exit 0 ;; *) exit 1 ;; esac)
 } then
   export UNSUPPORTED=1
   exit 1

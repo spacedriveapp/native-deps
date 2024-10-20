@@ -66,6 +66,15 @@ case "$TARGET" in
       *musl)
         CFLAGS="${CFLAGS} -D_LARGEFILE64_SOURCE=1"
         ;;
+      *android*)
+        export SDKROOT="${NDK_SDKROOT:?Missing ndk sysroot}"
+        CFLAGS="${CFLAGS} -D__ANDROID_API__=${ANDROID_API_LEVEL:?Missing android api level}"
+        LDFLAGS="-fuse-ld=$(command -v ld.lld-17) -B${SDKROOT}/usr/lib/${TARGET}/${ANDROID_API_LEVEL:?} -L${SDKROOT}/usr/lib/${TARGET}/${ANDROID_API_LEVEL:?} -L${SDKROOT}/usr/lib/${TARGET} -lm ${LDFLAGS}"
+        ;;& # Resume switch/case matching from this point forward
+      aarch64-linux-android*)
+        # VERY UGLY HACK, no ideia why clang is not picking this up automatically
+        LDFLAGS="-L/usr/lib/llvm-17/lib/clang/17/lib/baremetal -lclang_rt.builtins-aarch64 ${LDFLAGS}"
+        ;;
     esac
     ;;
   *darwin*)
@@ -178,6 +187,9 @@ cd /srv
 
   # Make sure license directory exists
   mkdir -p "${PREFIX}/licenses/"
+
+  OS_ANDROID="$(case "${TARGET##*-}" in android*) echo 1 ;; *) echo 0 ;; esac)"
+  export OS_ANDROID
 
   # shellcheck disable=SC1091
   . /srv/stage.sh
