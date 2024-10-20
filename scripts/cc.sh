@@ -388,7 +388,14 @@ case "${TARGET:-}" in
         c_argv+=("-march=ivybridge${features}")
         ;;
       *)
-        c_argv+=("-march=x86_64_v2${features}")
+        case "$CMD" in
+          clang*)
+            c_argv+=("-march=x86-64-v2${features}")
+            ;;
+          *)
+            c_argv+=("-march=x86_64_v2${features}")
+            ;;
+        esac
         ;;
     esac
     ;;
