@@ -27,7 +27,8 @@ cd drm/build
 configs=()
 
 case "$TARGET" in
-  *android*) configs+=(-Dudev=false -Dfreedreno-kgsl=true) ;;
+  android) configs+=(-Dudev=false) ;;&
+  aarch64-linux-android) configs+=(-Dfreedreno-kgsl=true) ;;
   *) configs+=(-Dudev=true) ;;
 esac
 
