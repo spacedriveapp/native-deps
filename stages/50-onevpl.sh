@@ -1,7 +1,7 @@
 #!/usr/bin/env -S bash -euo pipefail
 
 case "$TARGET" in
-  *darwin* | aarch64-windows*)
+  *darwin* | *android* | aarch64-windows*)
     export UNSUPPORTED=1
     exit 1
     ;;
@@ -10,7 +10,7 @@ esac
 echo "Download oneVPL..."
 mkdir -p oneVPL
 
-# FIX-ME: Renovate breaks due to intel using a year-based versioning scheme earlier
+# renovate: datasource=github-releases depName=intel/libvpl
 _tag='2.12.0'
 
 curl_tar "https://github.com/intel/libvpl/archive/refs/tags/v${_tag}.tar.gz" oneVPL 1

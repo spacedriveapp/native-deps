@@ -24,6 +24,12 @@ case "$TARGET" in
   aarch64-linux-musl)
     _name='linux-musl-arm64'
     ;;
+  x86_64-linux-android)
+    _name='android-x64'
+    ;;
+  aarch64-linux-android)
+    _name='android-arm64'
+    ;;
   x86_64-darwin*)
     if [ "$OS_IPHONE" -eq 0 ]; then
       _name='mac-x64'

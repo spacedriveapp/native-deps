@@ -51,7 +51,8 @@ echo "Build ffmpeg..."
 
 env_specific_arg=()
 
-if [ "$(uname -m)" = "${TARGET%%-*}" ] && (case "$TARGET" in *linux* | x86_64-windows*) exit 0 ;; *) exit 1 ;; esac) then
+# CUDA and NVENC
+if [ "$(uname -m)" = "${TARGET%%-*}" ] && (case "$TARGET" in *android*) exit 1 ;; *linux* | x86_64-windows*) exit 0 ;; *) exit 1 ;; esac) then
   # zig cc doesn't support compiling cuda code yet, so we use the host clang for it
   # Unfortunatly that means we only suport cuda in the same architecture as the host system
   # https://github.com/ziglang/zig/pull/10704#issuecomment-1023616464
@@ -71,6 +72,7 @@ else
   )
 fi
 
+# Architecture specific flags
 case "$TARGET" in
   x86_64*)
     env_specific_arg+=(
@@ -121,25 +123,30 @@ case "$TARGET" in
     ;;
   *linux*)
     env_specific_arg+=(
-      --disable-static
-      --disable-libdrm
       --disable-coreimage
       --disable-w32threads
       --disable-videotoolbox
       --disable-avfoundation
       --disable-audiotoolbox
       --disable-mediafoundation
-      --enable-lto
+      --enable-vaapi
+      --enable-libdrm
       --enable-vulkan
       --enable-pthreads
       --enable-libshaderc
       --enable-libplacebo
-      --enable-shared
     )
+
+    if [ "$OS_ANDROID" -ne 1 ]; then
+      env_specific_arg+=(
+        --disable-static
+        --enable-shared
+      )
+    fi
     ;;
   *windows*)
-    # TODO: Add support for mediafoundation on Windows (zig doesn't seem to have the necessary bindings to it yet)
-    # FIX-ME: LTO isn't working on Windows rn
+    # FIX-ME: LTO breaks ffmpeg linking on windows target for some reason
+    export LTO=0
     env_specific_arg+=(
       --disable-static
       --disable-pthreads
@@ -147,20 +154,27 @@ case "$TARGET" in
       --disable-videotoolbox
       --disable-avfoundation
       --disable-audiotoolbox
-      --disable-mediafoundation
       --enable-vulkan
       --enable-w32threads
       --enable-libshaderc
       --enable-libplacebo
+      --enable-mediafoundation
       --enable-shared
     )
     ;;
 esac
 
+# Enable hardware acceleration
 case "$TARGET" in
   *darwin* | aarch64-windows*) ;;
     # Apple only support its own APIs for hardware (de/en)coding on macOS
     # Windows on ARM doesn't have external GPU support yet
+  *android*)
+    env_specific_arg+=(
+      --enable-jni
+      --enable-mediacodec
+    )
+    ;;
   *)
     env_specific_arg+=(
       --enable-amf
@@ -176,12 +190,19 @@ case "$TARGET" in
     ;;
 esac
 
+if [ "${LTO:-1}" -eq 1 ]; then
+  env_specific_arg+=(--enable-lto=thin)
+fi
+
 if ! ./configure \
   --cpu="$_arch" \
   --arch="$_arch" \
   --prefix="$OUT" \
   --target-os="$(
     case "$TARGET" in
+      *android*)
+        echo "android"
+        ;;
       *linux*)
         echo "linux"
         ;;
@@ -292,6 +313,6 @@ case "$TARGET" in
 esac
 
 # Copy static libs for iOS
-if [ "$OS_IPHONE" -gt 0 ]; then
+if [ "$OS_IPHONE" -gt 0 ] || [ "$OS_ANDROID" -eq 1 ]; then
   cp -r "$PREFIX"/lib/*.a "${OUT}/lib/"
 fi

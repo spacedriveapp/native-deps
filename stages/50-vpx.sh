@@ -16,15 +16,30 @@ sed -i "/xcrun_exe = find_program('xcrun', required: true)/d" vpx/meson.build
 # Remove some superfluous files
 rm -rf vpx/{third_party/googletest,build_debug,test,tools,examples,examples.mk,configure,*.dox,.gitlab*}
 
+case "$TARGET" in
+  *android*)
+    mkdir -p vpx/cpu_features
+    curl_tar 'https://github.com/spacedriveapp/ndk-sysroot/releases/download/2024.10.20/cpufeatures.tar.xz' vpx/cpu_features 0
+    ;;
+esac
+
 # Backup source
 bak_src 'vpx'
 
 mkdir -p vpx/build
 cd vpx/build
 
+configs=()
+
+case "$TARGET" in
+  *android*) configs+=(-Dcpu_features_path=cpu_features) ;;
+  *) ;;
+esac
+
 echo "Build vpx..."
 
 meson \
+  "${configs[@]}" \
   -Dvp8=enabled \
   -Dvp9=enabled \
   -Dlibs=enabled \

@@ -1,15 +1,21 @@
 #!/usr/bin/env -S bash -euo pipefail
 
+# LLVM install path
+LLVM_PATH="/usr/lib/llvm-17"
+
 case "$TARGET" in
   *darwin*) ;;
+  *android*)
+    echo "Download llvm compiler_rt..."
+    curl_tar 'https://github.com/spacedriveapp/ndk-sysroot/releases/download/2024.10.20/android_compiler-rt.tar.xz' \
+      "${LLVM_PATH}/lib/clang/17/lib" 0
+    exit 0
+  ;;
   *)
     export UNSUPPORTED=1
     exit 1
     ;;
 esac
-
-# LLVM install path
-LLVM_PATH="/usr/lib/llvm-17"
 
 # Remove wrapper from PATH, because we need to call the original cmake
 PATH="$(echo "${PATH}" | awk -v RS=: -v ORS=: '/\/wrapper^/ {next} {print}')"

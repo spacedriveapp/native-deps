@@ -30,6 +30,9 @@ SYSTEM_PROCESSOR="${TARGET%%-*}"
 # Wheter to build iOS versions instead of macOS
 OS_IPHONE="${OS_IPHONE:-0}"
 
+# Check if target last part (*-*-last) is android
+OS_ANDROID="$(case "${TARGET##*-}" in android*) echo 1 ;; *) echo 0 ;; esac)"
+
 case "$SYSTEM_NAME" in
   windows)
     KERNEL="nt"
@@ -66,8 +69,16 @@ case "$SYSTEM_NAME" in
     ;;
   linux)
     KERNEL="linux"
-    SUBSYSTEM="linux"
-    SYSTEM_VERSION="3.10.0"
+    if [ "$OS_ANDROID" -eq 1 ]; then
+      SDKROOT="${NDK_SDKROOT:?Missing ndk sysroot}"
+      SUBSYSTEM="android"
+      SYSTEM_NAME="android"
+      SYSTEM_VERSION="${ANDROID_API_LEVEL:?Missing android api level}"
+    else
+      SUBSYSTEM="linux"
+      # Linux kernel shipped with CentOS 7
+      SYSTEM_VERSION="3.10.0"
+    fi
     ;;
 esac
 
@@ -89,7 +100,6 @@ readelf = ['readelf']
 cmake_defaults = false
 pkg_config_libdir = ['${PREFIX}/lib/pkgconfig', '${PREFIX}/share/pkgconfig']
 cmake_toolchain_file = '/srv/toolchain.cmake'
-$(if [ -n "${SDKROOT:-}" ]; then echo "sys_root = '${SDKROOT}'"; fi)
 
 [host_machine]
 cpu = '${SYSTEM_PROCESSOR}'
@@ -120,7 +130,23 @@ $(
     aarch64-darwin*)
       echo 'set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "")'
       ;;
+    x86_64-linux-android)
+      echo 'set(CMAKE_ANDROID_ARCH_ABI x86_64)'
+      ;;
+    aarch64-linux-android)
+      echo 'set(CMAKE_ANDROID_ARCH_ABI arm64-v8a)'
+      ;;
   esac
+)
+
+$(
+  if [ "$OS_ANDROID" -eq 1 ]; then
+    echo 'set(CMAKE_ANDROID_STL_TYPE c++-fexceptions)'
+    echo 'set(CMAKE_ANDROID_RTTI TRUE)'
+    echo 'set(CMAKE_ANDROID_EXCEPTIONS TRUE)'
+    echo "set(ANDROID_PLATFORM android-${SYSTEM_VERSION})"
+    echo "set(CMAKE_ANDROID_STANDALONE_TOOLCHAIN ${SYSROOT})"
+  fi
 )
 
 $(if [ -n "${SDKROOT:-}" ]; then echo "set(CMAKE_SYSROOT ${SDKROOT})"; fi)

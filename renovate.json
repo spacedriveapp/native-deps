@@ -91,6 +91,22 @@
     {
       "packageNames": ["bblanchon/pdfium-binaries"],
       "extractVersion": "^chromium/(?<version>.+)$"
+    },
+    {
+      "packageNames": ["intel/libva"],
+      "extractVersion": "^(?<version>\\d+\\.\\d+\\.\\d+)$"
+    },
+    {
+      "packageNames": ["intel/libvpl"],
+      "extractVersion": "^v(?<version>\\d+\\.\\d+\\.\\d+)$"
+    },
+    {
+      "packageNames": ["drm/libdrm"],
+      "extractVersion": "^libdrm-(?<version>.+)$"
+    },
+    {
+      "packageNames": ["xorg/lib/libpciaccess"],
+      "extractVersion": "^libpciaccess-(?<version>.+)$"
     }
   ]
 }

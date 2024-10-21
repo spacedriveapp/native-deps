@@ -26,7 +26,7 @@ cd heif/build
 echo "Build heif..."
 
 env SHARED="$(
-  if [ "$OS_IPHONE" -gt 0 ]; then
+  if [ "$OS_IPHONE" -gt 0 ] || [ "$OS_ANDROID" -eq 1 ]; then
     echo "Off"
   else
     echo "On"
@@ -90,6 +90,6 @@ if [ -f "heif.lib" ]; then
 fi
 
 # Copy static libs for iOS
-if [ "$OS_IPHONE" -gt 0 ]; then
+if [ "$OS_IPHONE" -gt 0 ] || [ "$OS_ANDROID" -eq 1 ]; then
   cp -r "$PREFIX"/lib/*.a "${OUT}/lib/"
 fi
