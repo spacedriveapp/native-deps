@@ -31,7 +31,7 @@ SYSTEM_PROCESSOR="${TARGET%%-*}"
 OS_IPHONE="${OS_IPHONE:-0}"
 
 # Check if target last part (*-*-last) is android
-OS_ANDROID="$( case "${TARGET##*-}" in android*) echo 1 ;; *) echo 0 ;; esac )"
+OS_ANDROID="$(case "${TARGET##*-}" in android*) echo 1 ;; *) echo 0 ;; esac)"
 
 case "$SYSTEM_NAME" in
   windows)

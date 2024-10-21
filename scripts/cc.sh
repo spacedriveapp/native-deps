@@ -12,7 +12,7 @@ case "${TARGET:?TARGET envvar is required to be defined}" in
     ;;
   x86_64-linux-android | aarch64-linux-android)
     export SDKROOT="${NDK_SDKROOT:?Missing ndk sysroot}"
-  ;;
+    ;;
   x86_64-darwin-apple | x86_64-apple-darwin-macho)
     if [ "$OS_IPHONE" -eq 1 ]; then
       export SDKROOT="${IOS_SDKROOT:?Missing iOS SDK}"

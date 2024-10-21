@@ -59,6 +59,7 @@ case "$TARGET" in
         ;;
     esac
 
+    LLVM_BUILTIN='/usr/lib/llvm-17/lib/clang/17/lib'
     case "$TARGET" in
       *gnu)
         CFLAGS="${CFLAGS} -D_GLIBCXX_ASSERTIONS=1"
@@ -68,12 +69,17 @@ case "$TARGET" in
         ;;
       *android*)
         export SDKROOT="${NDK_SDKROOT:?Missing ndk sysroot}"
+        ANDROID_LIB="${SDKROOT}/usr/lib/${TARGET}"
         CFLAGS="${CFLAGS} -D__ANDROID_API__=${ANDROID_API_LEVEL:?Missing android api level}"
-        LDFLAGS="-fuse-ld=$(command -v ld.lld-17) -B${SDKROOT}/usr/lib/${TARGET}/${ANDROID_API_LEVEL:?} -L${SDKROOT}/usr/lib/${TARGET}/${ANDROID_API_LEVEL:?} -L${SDKROOT}/usr/lib/${TARGET} -lm ${LDFLAGS}"
+        LDFLAGS="-fuse-ld=$(command -v ld.lld-17) -B${ANDROID_LIB}/${ANDROID_API_LEVEL:?} -L${ANDROID_LIB}/${ANDROID_API_LEVEL:?} -L${ANDROID_LIB} -lm ${LDFLAGS}"
         ;;& # Resume switch/case matching from this point forward
+      x86_64-linux-android*)
+        # VERY UGLY HACK, no ideia why clang is not picking this up automatically
+        LDFLAGS="-L${LLVM_BUILTIN}/linux -lclang_rt.builtins-x86_64-android ${LDFLAGS}"
+        ;;
       aarch64-linux-android*)
         # VERY UGLY HACK, no ideia why clang is not picking this up automatically
-        LDFLAGS="-L/usr/lib/llvm-17/lib/clang/17/lib/baremetal -lclang_rt.builtins-aarch64 ${LDFLAGS}"
+        LDFLAGS="-L${LLVM_BUILTIN}/baremetal -L${LLVM_BUILTIN}/linux -lclang_rt.builtins-aarch64-android -lclang_rt.builtins-aarch64 ${LDFLAGS}"
         ;;
     esac
     ;;
