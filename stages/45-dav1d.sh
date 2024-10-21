@@ -6,7 +6,7 @@ mkdir -p dav1d
 # renovate: datasource=gitlab-releases depName=videolan/dav1d registryUrl=https://code.videolan.org
 _tag='1.5.0'
 
-curl_tar "https://code.videolan.org/videolan/dav1d/-/archive/${_tag}/dav1d-${_tag}.tar.bz2" dav1d 1
+curl_tar "https://downloads.videolan.org/pub/videolan/dav1d/${_tag}/dav1d-${_tag}.tar.xz" dav1d 1
 
 sed -i "/subdir('doc')/d" dav1d/meson.build
 sed -i "/subdir('tools')/d" dav1d/meson.build

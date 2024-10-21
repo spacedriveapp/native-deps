@@ -11,6 +11,8 @@ case "$TARGET" in
     # We just download the MS pre-compiled binaries which include the DirectML backend and are most likely better optimized than what we can build
     curl_tar "https://www.nuget.org/api/v2/package/Microsoft.ML.OnnxRuntime.DirectML/${_tag}" onnx 0
 
+    # No src to backup here because we are downloading pre-compiled binaries
+
     mkdir -p "$OUT"/{bin,lib,include}
 
     mv onnx/build/native/include "${OUT}/include/onnxruntime"
