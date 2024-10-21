@@ -8,7 +8,7 @@ ARG OS_IPHONE='0'
 # renovate: datasource=github-releases depName=ziglang/zig
 ARG ZIG_VERSION='0.12.1'
 # renovate: datasource=github-releases depName=mesonbuild/meson
-ARG MESON_VERSION='1.5.2'
+ARG MESON_VERSION='1.6.0'
 # renovate: datasource=github-releases depName=Kitware/CMake
 ARG CMAKE_VERSION='3.30.5'
 # renovate: datasource=github-releases depName=NixOS/patchelf
@@ -92,9 +92,7 @@ RUN --mount=type=cache,target=/root/.cache `
 ARG MESON_VERSION
 RUN --mount=type=cache,target=/root/.cache `
 	curl_tar "https://github.com/mesonbuild/meson/archive/refs/tags/${MESON_VERSION:?}.tar.gz" /srv/meson 1
-ADD 'https://github.com/mesonbuild/meson/pull/12293.patch' /srv/meson/12293.patch
 RUN cd /srv/meson `
-	&& patch -F5 -lp1 -d /srv/meson -t < 12293.patch `
 	&& packaging/create_zipapp.py --outfile "${SYSROOT}/bin/meson" --compress `
 	&& rm -rf /srv/meson
 
