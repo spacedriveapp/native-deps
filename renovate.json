@@ -98,7 +98,8 @@
     },
     {
       "packageNames": ["intel/libvpl"],
-      "extractVersion": "^v(?<version>\\d+\\.\\d+\\.\\d+)$"
+      "extractVersion": "^v(?<version>\\d+\\.\\d+\\.\\d+)$",
+      "allowedVersions": "!/^v202(0|1|2|3)\\..*$/"
     },
     {
       "packageNames": ["drm/libdrm"],
