@@ -11,7 +11,7 @@ esac
 echo "Download drm..."
 mkdir -p drm
 
-# renovate: datasource=git-tags depName=drm/libdrm registryUrl=https://cgit.freedesktop.org
+# renovate: datasource=gitlab-tags depName=mesa/drm registryUrl=https://gitlab.freedesktop.org
 _tag='2.4.123'
 
 curl_tar "https://dri.freedesktop.org/libdrm/libdrm-${_tag}.tar.xz" drm 1

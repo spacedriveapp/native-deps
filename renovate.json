@@ -102,7 +102,7 @@
       "allowedVersions": "!/^v202(0|1|2|3)(.\\d+)*$/"
     },
     {
-      "packageNames": ["drm/libdrm"],
+      "packageNames": ["mesa/drm"],
       "extractVersion": "^libdrm-(?<version>.+)$"
     },
     {
