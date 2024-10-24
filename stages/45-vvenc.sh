@@ -27,6 +27,7 @@ bak_src 'vvenc'
 mkdir -p vvenc/build
 cd vvenc/build
 
+export CXXFLAGS="${CXXFLAGS:-} -Wno-macro-redefined"
 echo "Build vvenc..."
 cmake \
   -DVVENC_ENABLE_INSTALL=On \
