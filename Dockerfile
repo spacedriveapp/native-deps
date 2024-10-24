@@ -339,6 +339,12 @@ RUN --mount=type=cache,target=/root/.cache `
 	--mount=type=bind,source=stages/45-vorbis.sh,target=/srv/stage.sh `
 	/srv/build.sh
 
+FROM layer-25 AS layer-45-vvenc
+
+RUN --mount=type=cache,target=/root/.cache `
+	--mount=type=bind,source=stages/45-vvenc.sh,target=/srv/stage.sh `
+	/srv/build.sh
+
 FROM layer-25 AS layer-45
 
 COPY --from=layer-45-dav1d "${PREFIX}/." "$PREFIX"
@@ -347,6 +353,7 @@ COPY --from=layer-45-drm "${PREFIX}/." "$PREFIX"
 COPY --from=layer-45-opencl "${PREFIX}/." "$PREFIX"
 COPY --from=layer-45-sharpyuv "${PREFIX}/." "$PREFIX"
 COPY --from=layer-45-vorbis "${PREFIX}/." "$PREFIX"
+COPY --from=layer-45-vvenc "${PREFIX}/." "$PREFIX"
 
 #--
 

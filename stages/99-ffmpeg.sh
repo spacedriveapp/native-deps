@@ -3,37 +3,30 @@
 echo "Download ffmpeg..."
 mkdir -p ffmpeg
 
-curl_tar 'https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n7.0.2.tar.gz' ffmpeg 1
+curl_tar 'https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n7.1.tar.gz' ffmpeg 1
 
 # Handbreak patches
 for patch in \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A01-mov-read-name-track-tag-written-by-movenc.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A02-movenc-write-3gpp-track-titl-tag.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A03-mov-read-3gpp-udta-tags.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A04-movenc-write-3gpp-track-names-tags-for-all-available.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A05-dvdsubdec-fix-processing-of-partial-packets.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A06-dvdsubdec-return-number-of-bytes-used.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A07-dvdsubdec-use-pts-of-initial-packet.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A08-dvdsubdec-do-not-discard-zero-sized-rects.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A09-ccaption_dec-fix-pts-in-real_time-mode.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A10-matroskaenc-aac-extradata-updated.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A11-videotoolbox-disable-H.264-10-bit-on-Intel-macOS.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A12-libswscale-fix-yuv420p-to-p01xle-color-conversion-bu.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A13-qsv-fix-decode-10bit-hdr.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A14-amfenc-Add-support-for-pict_type-field.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A15-amfenc-Fixes-the-color-information-in-the-ou.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A16-amfenc-HDR-metadata.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A17-av1dec-dovi-rpu.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A18-avformat-mov-add-support-audio-fallback-track-ref.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A19-qsvdec-use-ffmpeg-default-125-framerate.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A20-qsvdec-use-coded_wh.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A21-qsvdec-update-hdr-side-data-on-output-avframe.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A22-qsvdec-require-dynamic-frame-pool.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A23-qsvdec-fix-keyframes.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A24-qsvdec-allow-decoders-to-export-crop-information.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A25-qsvdec-add-vvc-decoder.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A26-qsvdec-add-vvc-mp4toannexb.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/f80fcdb/contrib/ffmpeg/A27-vvc-dec-disable-experimental.patch'; do
+  'https://github.com/HandBrake/HandBrake/raw/ff801f7/contrib/ffmpeg/A01-mov-read-name-track-tag-written-by-movenc.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/ff801f7/contrib/ffmpeg/A02-movenc-write-3gpp-track-titl-tag.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/ff801f7/contrib/ffmpeg/A03-mov-read-3gpp-udta-tags.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/ff801f7/contrib/ffmpeg/A04-movenc-write-3gpp-track-names-tags-for-all-available.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/ff801f7/contrib/ffmpeg/A05-avformat-mov-add-support-audio-fallback-track-ref.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/ff801f7/contrib/ffmpeg/A06-dvdsubdec-fix-processing-of-partial-packets.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/ff801f7/contrib/ffmpeg/A07-dvdsubdec-return-number-of-bytes-used.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/ff801f7/contrib/ffmpeg/A08-dvdsubdec-use-pts-of-initial-packet.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/ff801f7/contrib/ffmpeg/A09-dvdsubdec-add-an-option-to-output-subtitles-with-emp.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/ff801f7/contrib/ffmpeg/A10-ccaption_dec-fix-pts-in-real_time-mode.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/ff801f7/contrib/ffmpeg/A11-avformat-matroskaenc-return-error-if-aac-extradata-c.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/ff801f7/contrib/ffmpeg/A12-videotoolbox-disable-H.264-10-bit-on-Intel-macOS-it-.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/ff801f7/contrib/ffmpeg/A13-libswscale-fix-yuv420p-to-p01xle-color-conversion-bu.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/ff801f7/contrib/ffmpeg/A14-hevc_mp4toannexb.c-fix-qsv-decode-of-10bit-hdr.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/ff801f7/contrib/ffmpeg/A15-Expose-the-unmodified-Dolby-Vision-RPU-T35-buffers.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/ff801f7/contrib/ffmpeg/A16-avcodec-amfenc-Add-support-for-on-demand-key-frames.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/ff801f7/contrib/ffmpeg/A17-avcodec-amfenc-properly-set-primaries-transfer-and-m.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/ff801f7/contrib/ffmpeg/A18-Revert-avcodec-amfenc-GPU-driver-version-check.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/ff801f7/contrib/ffmpeg/A19-lavc-pgssubdec-Add-graphic-plane-and-cropping.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/ff801f7/contrib/ffmpeg/A28-enable-av1_mf-encoder.patch'; do
   curl "$patch" | patch -F5 -lp1 -d ffmpeg -t
 done
 
@@ -269,6 +262,7 @@ if ! ./configure \
   --enable-libtheora \
   --enable-libvorbis \
   --enable-libvpx \
+  --enable-libvvenc \
   --enable-libx264 \
   --enable-libx265 \
   --enable-libzimg \
