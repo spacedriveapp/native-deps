@@ -116,6 +116,7 @@ case "$TARGET" in
     ;;
   *linux*)
     env_specific_arg+=(
+      --disable-dotprod
       --disable-coreimage
       --disable-w32threads
       --disable-videotoolbox
@@ -142,6 +143,7 @@ case "$TARGET" in
     export LTO=0
     env_specific_arg+=(
       --disable-static
+      --disable-dotprod
       --disable-pthreads
       --disable-coreimage
       --disable-videotoolbox
