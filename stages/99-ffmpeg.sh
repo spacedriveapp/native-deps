@@ -279,6 +279,8 @@ if ! ./configure \
     # OpenCL is only available on iOS through a private framework
     if [ "$OS_IPHONE" -ge 1 ]; then
       echo '--disable-opencl'
+      # A12 Bionic, which is the CPU for our lowest supported iOS device (iPhone XS/XR) doesn't support dotprod
+      echo '--disable-dotprod'
     else
       echo '--enable-opencl'
     fi
