@@ -275,7 +275,7 @@ if ! ./configure \
   --enable-swscale \
   --enable-version3 \
   --enable-zlib \
-  "$(
+  $(
     # OpenCL is only available on iOS through a private framework
     if [ "$OS_IPHONE" -ge 1 ]; then
       echo '--disable-opencl'
@@ -284,7 +284,7 @@ if ! ./configure \
     else
       echo '--enable-opencl'
     fi
-  )" \
+  ) \
   "${env_specific_arg[@]}"; then
   cat ffbuild/config.log >&2
   exit 1
