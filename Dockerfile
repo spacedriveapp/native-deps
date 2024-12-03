@@ -19,7 +19,7 @@ ARG ANDROID_API_LEVEL='28'
 
 #--
 
-FROM debian:bookworm@sha256:10901ccd8d249047f9761845b4594f121edef079cfd8224edebd9ea726f0a7f6 AS build-base
+FROM debian:bookworm@sha256:17122fe3d66916e55c0cbd5bbf54bb3f87b3582f4d86a755a0fd3498d360f91b AS build-base
 
 SHELL ["bash", "-euxo", "pipefail", "-c"]
 
