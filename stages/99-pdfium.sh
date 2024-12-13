@@ -4,7 +4,7 @@ echo "Download pdfium..."
 mkdir -p pdfium
 
 # renovate: datasource=github-releases depName=bblanchon/pdfium-binaries versioning=semver-coerced
-_tag='6858'
+_tag='6886'
 case "$TARGET" in
   x86_64-windows*)
     _name='win-x64'
@@ -34,20 +34,20 @@ case "$TARGET" in
     if [ "$OS_IPHONE" -eq 0 ]; then
       _name='mac-x64'
     elif [ "$OS_IPHONE" -eq 1 ]; then
-      _name='ios-x64'
-    else
-      echo "There is no libpdfium pre-built for iOS simulator" >&2
+      echo "There is no libpdfium pre-built for iOS x64" >&2
       export UNSUPPORTED=1
       exit 1
+    else
+      _name='ios-simulator-x64'
     fi
     ;;
   aarch64-darwin*)
     if [ "$OS_IPHONE" -eq 0 ]; then
       _name='mac-arm64'
     elif [ "$OS_IPHONE" -eq 1 ]; then
-      _name='ios-arm64'
+      _name='ios-device-arm64'
     else
-      echo "There is no libpdfium pre-built for iOS simulator" >&2
+      echo "There is no libpdfium pre-built for iOS simulator arm64" >&2
       export UNSUPPORTED=1
       exit 1
     fi
