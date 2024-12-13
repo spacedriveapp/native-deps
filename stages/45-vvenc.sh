@@ -4,7 +4,7 @@ echo "Download vvenc..."
 mkdir -p vvenc
 
 # renovate: datasource=github-releases depName=fraunhoferhhi/vvenc
-_tag='1.12.1'
+_tag='1.13.0'
 
 curl_tar "https://github.com/fraunhoferhhi/vvenc/archive/refs/tags/v${_tag}.tar.gz" 'vvenc' 1
 
