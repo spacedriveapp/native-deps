@@ -17,13 +17,13 @@ rm -rf x265/{doc,build}
 # Handbreak patches
 
 for patch in \
-  'https://github.com/HandBrake/HandBrake/raw/65ec046/contrib/x265/A01-Do-not-set-thread-priority-on-Windows.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/65ec046/contrib/x265/A02-Apple-Silicon-tuning.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/65ec046/contrib/x265/A03-fix-crash-when-SEI-length-is-variable.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/65ec046/contrib/x265/A04-implement-ambient-viewing-environment-sei.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/65ec046/contrib/x265/A05-Fix-some-memory-leaks-and-improve-rpu-memory-managem.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/65ec046/contrib/x265/A06-Simplify-macOS-cross-compilation.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/65ec046/contrib/x265/A07-Port-ARM64-features-detection-code-from-SVT-AV1.patch'; do
+  'https://github.com/HandBrake/HandBrake/raw/2848a38/contrib/x265/A01-Do-not-set-thread-priority-on-Windows.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/2848a38/contrib/x265/A02-Apple-Silicon-tuning.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/2848a38/contrib/x265/A03-fix-crash-when-SEI-length-is-variable.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/2848a38/contrib/x265/A04-implement-ambient-viewing-environment-sei.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/2848a38/contrib/x265/A05-Fix-Dolby-Vision-RPU-memory-management.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/2848a38/contrib/x265/A06-Simplify-macOS-cross-compilation.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/2848a38/contrib/x265/A07-add-new-matrix-coefficients-from-H.273-v3.patch'; do
   curl "$patch" | patch -F5 -lp1 -d x265 -t
 done
 
