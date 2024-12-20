@@ -4,7 +4,7 @@ echo "Download x265..."
 mkdir -p x265
 
 # renovate: datasource=bitbucket-tags depName=multicoreware/x265_git versioning=semver-coerced
-_tag='4.0'
+_tag='4.1'
 
 # Need to use master, because the latest release doesn't support optmized aarch64 and it is from 2021
 curl_tar "https://bitbucket.org/multicoreware/x265_git/get/${_tag}.tar.gz" x265 1
@@ -12,18 +12,17 @@ curl_tar "https://bitbucket.org/multicoreware/x265_git/get/${_tag}.tar.gz" x265 
 #  82ff02e  ad1a30a
 
 # Remove some superfluous files
-rm -rf x265/{doc,build}
+rm -rf x265/build
 
 # Handbreak patches
-
 for patch in \
-  'https://github.com/HandBrake/HandBrake/raw/65ec046/contrib/x265/A01-Do-not-set-thread-priority-on-Windows.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/65ec046/contrib/x265/A02-Apple-Silicon-tuning.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/65ec046/contrib/x265/A03-fix-crash-when-SEI-length-is-variable.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/65ec046/contrib/x265/A04-implement-ambient-viewing-environment-sei.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/65ec046/contrib/x265/A05-Fix-some-memory-leaks-and-improve-rpu-memory-managem.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/65ec046/contrib/x265/A06-Simplify-macOS-cross-compilation.patch' \
-  'https://github.com/HandBrake/HandBrake/raw/65ec046/contrib/x265/A07-Port-ARM64-features-detection-code-from-SVT-AV1.patch'; do
+  'https://github.com/HandBrake/HandBrake/raw/2848a38/contrib/x265/A01-Do-not-set-thread-priority-on-Windows.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/2848a38/contrib/x265/A02-Apple-Silicon-tuning.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/2848a38/contrib/x265/A03-fix-crash-when-SEI-length-is-variable.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/2848a38/contrib/x265/A04-implement-ambient-viewing-environment-sei.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/2848a38/contrib/x265/A05-Fix-Dolby-Vision-RPU-memory-management.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/2848a38/contrib/x265/A06-Simplify-macOS-cross-compilation.patch' \
+  'https://github.com/HandBrake/HandBrake/raw/2848a38/contrib/x265/A07-add-new-matrix-coefficients-from-H.273-v3.patch'; do
   curl "$patch" | patch -F5 -lp1 -d x265 -t
 done
 
