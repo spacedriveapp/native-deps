@@ -12,10 +12,9 @@ curl_tar "https://bitbucket.org/multicoreware/x265_git/get/${_tag}.tar.gz" x265 
 #  82ff02e  ad1a30a
 
 # Remove some superfluous files
-rm -rf x265/{doc,build}
+rm -rf x265/build
 
 # Handbreak patches
-
 for patch in \
   'https://github.com/HandBrake/HandBrake/raw/2848a38/contrib/x265/A01-Do-not-set-thread-priority-on-Windows.patch' \
   'https://github.com/HandBrake/HandBrake/raw/2848a38/contrib/x265/A02-Apple-Silicon-tuning.patch' \
