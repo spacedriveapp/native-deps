@@ -13,6 +13,7 @@ sed -i '/add_subdirectory( "source\/App\/vvencFFapp" )/d' vvenc/CMakeLists.txt
 sed -i '/add_subdirectory( "test\/vvenclibtest" )/d' vvenc/CMakeLists.txt
 sed -i '/add_subdirectory( "test\/vvencinterfacetest" )/d' vvenc/CMakeLists.txt
 sed -i '/if( NOT BUILD_SHARED_LIBS )/,/endif()/d' vvenc/CMakeLists.txt
+sed -i '/# set _WIN32_WINNT/,/endif()/d' vvenc/CMakeLists.txt
 sed -i '/include( cmake\/modules\/vvencTests.cmake )/d' vvenc/CMakeLists.txt
 
 case "$TARGET" in
