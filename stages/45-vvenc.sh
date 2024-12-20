@@ -30,6 +30,7 @@ cd vvenc/build
 export CXXFLAGS="${CXXFLAGS:-} -Wno-macro-redefined"
 echo "Build vvenc..."
 cmake \
+  -DVVENC_LIBRARY_ONLY=On \
   -DVVENC_ENABLE_INSTALL=On \
   -DVVENC_ENABLE_TRACING=Off \
   -DVVENC_ENABLE_LINK_TIME_OPT="$([ "${LTO:-1}" -eq 1 ] && echo On || echo Off)" \
