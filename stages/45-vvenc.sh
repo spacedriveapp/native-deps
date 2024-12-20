@@ -4,7 +4,7 @@ echo "Download vvenc..."
 mkdir -p vvenc
 
 # renovate: datasource=github-releases depName=fraunhoferhhi/vvenc
-_tag='1.12.1'
+_tag='1.13.0'
 
 curl_tar "https://github.com/fraunhoferhhi/vvenc/archive/refs/tags/v${_tag}.tar.gz" 'vvenc' 1
 
@@ -30,6 +30,7 @@ cd vvenc/build
 export CXXFLAGS="${CXXFLAGS:-} -Wno-macro-redefined"
 echo "Build vvenc..."
 cmake \
+  -DVVENC_LIBRARY_ONLY=On \
   -DVVENC_ENABLE_INSTALL=On \
   -DVVENC_ENABLE_TRACING=Off \
   -DVVENC_ENABLE_LINK_TIME_OPT="$([ "${LTO:-1}" -eq 1 ] && echo On || echo Off)" \
