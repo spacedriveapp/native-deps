@@ -15,6 +15,12 @@ sed -i '/add_subdirectory( "test\/vvencinterfacetest" )/d' vvenc/CMakeLists.txt
 sed -i '/if( NOT BUILD_SHARED_LIBS )/,/endif()/d' vvenc/CMakeLists.txt
 sed -i '/include( cmake\/modules\/vvencTests.cmake )/d' vvenc/CMakeLists.txt
 
+case "$TARGET" in
+  aarch64*)
+    sed -i '/int src8tOff = cStride;/d' vvenc/source/Lib/CommonLib/arm/neon/InterpolationFilter_neon.cpp
+    ;;
+esac
+
 # Remove some superfluous files
 rm -rf vvenc/{.*,cfg,test,source/App}
 
@@ -24,7 +30,6 @@ bak_src 'vvenc'
 mkdir -p vvenc/build
 cd vvenc/build
 
-export CXXFLAGS="${CXXFLAGS:-} -Wno-macro-redefined"
 echo "Build vvenc..."
 cmake \
   -DVVENC_LIBRARY_ONLY=On \
@@ -35,6 +40,7 @@ cmake \
   -DVVENC_ENABLE_THIRDPARTY_JSON=Off \
   -DVVENC_INSTALL_FULLFEATURE_APP=Off \
   -DVVENC_ENABLE_BUILD_TYPE_POSTFIX=Off \
+  -DVVENC_ENABLE_X86_SIMD="$(case "$TARGET" in x86_64*) echo 'On' ;; aarch64*) echo 'Off' ;; esac)" \
   ..
 
 ninja -j"$(nproc)"
