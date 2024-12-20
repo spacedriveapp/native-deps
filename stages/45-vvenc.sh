@@ -12,11 +12,8 @@ sed -i '/add_subdirectory( "source\/App\/vvencapp" )/d' vvenc/CMakeLists.txt
 sed -i '/add_subdirectory( "source\/App\/vvencFFapp" )/d' vvenc/CMakeLists.txt
 sed -i '/add_subdirectory( "test\/vvenclibtest" )/d' vvenc/CMakeLists.txt
 sed -i '/add_subdirectory( "test\/vvencinterfacetest" )/d' vvenc/CMakeLists.txt
+sed -i '/if( NOT BUILD_SHARED_LIBS )/,/endif()/d' vvenc/CMakeLists.txt
 sed -i '/include( cmake\/modules\/vvencTests.cmake )/d' vvenc/CMakeLists.txt
-sed -i '/  if( VVENC_INSTALL_FULLFEATURE_APP )/,/  endif()/d' vvenc/cmake/modules/vvencInstall.cmake
-
-# Add install_targets( MinSizeRel ) after install_targets( Release )
-sed -i '/install_targets( Release )/a install_targets( MinSizeRel )' vvenc/cmake/modules/vvencInstall.cmake
 
 # Remove some superfluous files
 rm -rf vvenc/{.*,cfg,test,source/App}
