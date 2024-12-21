@@ -45,6 +45,7 @@ RUN echo "deb https://apt.llvm.org/bookworm/ llvm-toolchain-bookworm-17 main" `
 # Install build dependencies
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt `
 	apt-get update && apt-get install `
+	git `
 	nasm `
 	curl `
 	make `
