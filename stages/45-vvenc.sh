@@ -48,4 +48,4 @@ ninja -j"$(nproc)"
 
 ninja install
 
-sed -ri 's/^(Libs.private:.*)$/\1-lstdc++/' "${PREFIX}/lib/pkgconfig/libvvenc.pc"
+sed -ri 's/^(Libs.private:.*)$/\1 -lstdc++/' "${PREFIX}/lib/pkgconfig/libvvenc.pc"
