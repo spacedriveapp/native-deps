@@ -13,7 +13,7 @@ echo "Download sse2neon..."
 mkdir -p sse2neon
 
 # renovate: datasource=github-releases depName=DLTcollab/sse2neon
-_tag='1.7.0'
+_tag='1.8.0'
 
 curl_tar "https://github.com/DLTcollab/sse2neon/archive/refs/tags/v${_tag}.tar.gz" 'sse2neon' 1
 
