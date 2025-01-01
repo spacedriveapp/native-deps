@@ -12,7 +12,7 @@ echo "Download zlib..."
 mkdir -p zlib
 
 # renovate: datasource=github-releases depName=zlib-ng/zlib-ng
-_tag='2.2.2'
+_tag='2.2.3'
 
 curl_tar "https://github.com/zlib-ng/zlib-ng/archive/refs/tags/${_tag}.tar.gz" zlib 1
 
