@@ -12,7 +12,7 @@ mkdir -p nvenv
 
 # FIX-ME: https://github.com/renovatebot/renovate/issues/27510
 # renovate: datasource=github-releases depName=FFmpeg/nv-codec-headers versioning=loose
-_tag='12.2.72.0'
+_tag='13.0.19.0'
 
 curl_tar "https://github.com/FFmpeg/nv-codec-headers/releases/download/n${_tag}/nv-codec-headers-${_tag}.tar.gz" nvenv 1
 
