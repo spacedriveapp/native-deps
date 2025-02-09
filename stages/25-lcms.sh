@@ -4,7 +4,7 @@ echo "Download lcms..."
 mkdir -p lcms
 
 # renovate: datasource=github-releases depName=mm2/Little-CMS versioning=semver-coerced
-_tag='2.16'
+_tag='2.17'
 
 curl_tar "https://github.com/mm2/Little-CMS/releases/download/lcms${_tag}/lcms2-${_tag}.tar.gz" lcms 1
 
