@@ -3,8 +3,7 @@
 echo "Download ffmpeg..."
 mkdir -p ffmpeg
 
-# Can't upgrade to 7.1 due to issues with libvautil on any Ubuntu version under the latest in-dev version, due to usage of vaMapBuffer2
-curl_tar 'https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n7.0.2.tar.gz' ffmpeg 1
+curl_tar 'https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n7.1.tar.gz' ffmpeg 1
 
 # Handbreak patches
 for patch in \
@@ -36,6 +35,14 @@ if [ "$OS_IPHONE" -gt 0 ]; then
   # Patch to remove ffmpeg using non public API on iOS
   patch -F5 -lp1 -d ffmpeg -t <"$PREFIX"/patches/remove_lzma_apple_non_public_api.patch
 fi
+
+case "$TARGET" in
+  *linux*)
+    # Remove the usage of vaMapBuffer2 for mapping image due to incompatible with older libva
+    # https://github.com/BtbN/FFmpeg-Builds/issues/457
+    patch -R -F5 -lp1 -d ffmpeg -t <"$PREFIX"/patches/use-vaMapBuffer2-for-mapping-image.patch
+    ;;
+esac
 
 # Backup source
 bak_src 'ffmpeg'
