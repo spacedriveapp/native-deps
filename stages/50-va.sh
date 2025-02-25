@@ -12,7 +12,7 @@ echo "Download va..."
 mkdir -p va
 
 # renovate: datasource=github-releases depName=intel/libva
-_tag='2.22.0'
+_tag='2.20.0'
 
 curl_tar "https://github.com/intel/libva/releases/download/${_tag}/libva-${_tag}.tar.bz2" va 1
 
