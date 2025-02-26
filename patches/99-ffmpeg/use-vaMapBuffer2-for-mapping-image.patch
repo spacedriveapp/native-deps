@@ -1,0 +1,43 @@
+From 1e2ac489a475198460e424fd4a3d166bb3f424a4 Mon Sep 17 00:00:00 2001
+From: David Rosca <nowrep@gmail.com>
+Date: Fri, 27 Oct 2023 22:25:50 +0200
+Subject: [PATCH] lavu/hwcontext_vaapi: Use vaMapBuffer2 for mapping image
+ buffers
+
+This allows some optimizations in driver, such as not having to read
+back the data if write-only mapping is requested.
+---
+ libavutil/hwcontext_vaapi.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/libavutil/hwcontext_vaapi.c b/libavutil/hwcontext_vaapi.c
+index 56d03aa4cdd3a..4cb25dd03212e 100644
+--- a/libavutil/hwcontext_vaapi.c
++++ b/libavutil/hwcontext_vaapi.c
+@@ -809,6 +809,9 @@ static int vaapi_map_frame(AVHWFramesContext *hwfc,
+     VAStatus vas;
+     void *address = NULL;
+     int err, i;
++#if VA_CHECK_VERSION(1, 21, 0)
++    uint32_t vaflags = 0;
++#endif
+ 
+     surface_id = (VASurfaceID)(uintptr_t)src->data[3];
+     av_log(hwfc, AV_LOG_DEBUG, "Map surface %#x.\n", surface_id);
+@@ -892,7 +895,16 @@ static int vaapi_map_frame(AVHWFramesContext *hwfc,
+         }
+     }
+ 
++#if VA_CHECK_VERSION(1, 21, 0)
++    if (flags & AV_HWFRAME_MAP_READ)
++        vaflags |= VA_MAPBUFFER_FLAG_READ;
++    if (flags & AV_HWFRAME_MAP_WRITE)
++        vaflags |= VA_MAPBUFFER_FLAG_WRITE;
++    // On drivers not implementing vaMapBuffer2 libva calls vaMapBuffer instead.
++    vas = vaMapBuffer2(hwctx->display, map->image.buf, &address, vaflags);
++#else
+     vas = vaMapBuffer(hwctx->display, map->image.buf, &address);
++#endif
+     if (vas != VA_STATUS_SUCCESS) {
+         av_log(hwfc, AV_LOG_ERROR, "Failed to map image from surface "
+                "%#x: %d (%s).\n", surface_id, vas, vaErrorStr(vas));
