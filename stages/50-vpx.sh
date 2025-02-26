@@ -4,7 +4,7 @@ echo "Download vpx..."
 mkdir -p vpx
 
 # renovate: depName=https://gitlab.freedesktop.org/gstreamer/meson-ports/libvpx.git
-_commit='6f80ad7c656f3b0373afaf5fac8698c794b084f2'
+_commit='ca06d4d4007685ea8e45c48d0ad3c6c704cdfde2'
 
 curl_tar "https://gitlab.freedesktop.org/gstreamer/meson-ports/libvpx/-/archive/${_commit}/libvpx.tar.gz" vpx 1
 
