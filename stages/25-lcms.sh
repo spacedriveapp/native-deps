@@ -15,7 +15,6 @@ case "$TARGET" in
     ;;
 esac
 
-sed -i "/subdir('testbed')/d" lcms/meson.build
 sed -i "/subdir('testbed')/d" lcms/plugins/threaded/meson.build
 sed -i "/subdir('testbed')/d" lcms/plugins/fast_float/meson.build
 
@@ -32,7 +31,7 @@ echo "Build lcms..."
 meson \
   --errorlogs \
   -Dutils=false \
-  -Dsamples=false \
+  -Dtests=false \
   -Dthreaded="$(
     case "$TARGET" in
       *windows*)
