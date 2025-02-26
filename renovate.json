@@ -132,7 +132,7 @@
         "intel/libvpl"
       ],
       "extractVersion": "^v(?<version>\\d+\\.\\d+\\.\\d+)$",
-      "allowedVersions": "!/^v202(0|1|2|3)$/"
+      "allowedVersions": "!/^v20[0-9]{6}$/"
     },
     {
       "matchPackageNames": [
