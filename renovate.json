@@ -1,14 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base",
-
+    "config:recommended",
     ":label(type/renovate)",
-
     ":docker",
     "docker:enableMajor",
     "docker:pinDigests",
-
     ":disableRateLimiting",
     ":ignoreUnstable",
     ":pinVersions",
@@ -17,32 +14,54 @@
     ":automergeRequireAllStatusChecks",
     ":automergeAll",
     ":semanticCommits",
-
     ":enableVulnerabilityAlerts",
     ":enableVulnerabilityAlertsWithLabel(security)"
   ],
-
   "rebaseWhen": "conflicted",
   "platformAutomerge": true,
   "rebaseLabel": "renovate/rebase",
   "stopUpdatingLabel": "renovate/stop-updating",
-
-  "major": { "labels": ["bump/major"] },
-  "minor": { "labels": ["bump/minor"] },
-  "patch": { "labels": ["bump/patch"] },
-  "pin": { "labels": ["bump/pin"] },
-  "digest": { "labels": ["bump/digest"] },
-
-  "regexManagers": [
+  "major": {
+    "labels": [
+      "bump/major"
+    ]
+  },
+  "minor": {
+    "labels": [
+      "bump/minor"
+    ]
+  },
+  "patch": {
+    "labels": [
+      "bump/patch"
+    ]
+  },
+  "pin": {
+    "labels": [
+      "bump/pin"
+    ]
+  },
+  "digest": {
+    "labels": [
+      "bump/digest"
+    ]
+  },
+  "customManagers": [
     {
-      "fileMatch": ["^stages/.*\\.sh$"],
+      "customType": "regex",
+      "fileMatch": [
+        "^stages/.*\\.sh$"
+      ],
       "matchStrings": [
         "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( registryUrl=(?<registryUrl>.*?))?\\n_tag='(?<currentValue>.*)'\\s"
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     },
     {
-      "fileMatch": ["^stages/.*\\.sh$"],
+      "customType": "regex",
+      "fileMatch": [
+        "^stages/.*\\.sh$"
+      ],
       "matchStrings": [
         "#\\s*renovate:\\s*depName=(?<depName>.*?)\\n_commit='(?<currentValue>)(?<currentDigest>.*?)'"
       ],
@@ -50,17 +69,19 @@
       "datasourceTemplate": "git-refs"
     },
     {
-      "fileMatch": ["^Dockerfile$"],
+      "customType": "regex",
+      "fileMatch": [
+        "^Dockerfile$"
+      ],
       "matchStrings": [
         "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( registryUrl=(?<registryUrl>.*?))?\\n(ENV|ARG) .*?_VERSION='(?<currentValue>.*)'\\s"
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     }
   ],
-
   "packageRules": [
     {
-      "packageNames": [
+      "matchPackageNames": [
         "Kitware/CMake",
         "DLTcollab/sse2neon",
         "tukaani-project/xz",
@@ -77,36 +98,52 @@
       "extractVersion": "^v(?<version>.+)$"
     },
     {
-      "packageNames": ["mm2/Little-CMS"],
+      "matchPackageNames": [
+        "mm2/Little-CMS"
+      ],
       "extractVersion": "^lcms(?<version>.+)$"
     },
     {
-      "packageNames": ["FFmpeg/nv-codec-headers"],
+      "matchPackageNames": [
+        "FFmpeg/nv-codec-headers"
+      ],
       "extractVersion": "^n(?<version>.+)$"
     },
     {
-      "packageNames": ["sekrit-twc/zimg"],
+      "matchPackageNames": [
+        "sekrit-twc/zimg"
+      ],
       "extractVersion": "^release-(?<version>.+)$"
     },
     {
-      "packageNames": ["bblanchon/pdfium-binaries"],
+      "matchPackageNames": [
+        "bblanchon/pdfium-binaries"
+      ],
       "extractVersion": "^chromium/(?<version>.+)$"
     },
     {
-      "packageNames": ["intel/libva"],
+      "matchPackageNames": [
+        "intel/libva"
+      ],
       "extractVersion": "^(?<version>\\d+\\.\\d+\\.\\d+)$"
     },
     {
-      "packageNames": ["intel/libvpl"],
+      "matchPackageNames": [
+        "intel/libvpl"
+      ],
       "extractVersion": "^v(?<version>\\d+\\.\\d+\\.\\d+)$",
-      "allowedVersions": "!/^v202(0|1|2|3)$/"
+      "allowedVersions": "!/^v20[0-9]{6}$/"
     },
     {
-      "packageNames": ["mesa/drm"],
+      "matchPackageNames": [
+        "mesa/drm"
+      ],
       "extractVersion": "^libdrm-(?<version>.+)$"
     },
     {
-      "packageNames": ["xorg/lib/libpciaccess"],
+      "matchPackageNames": [
+        "xorg/lib/libpciaccess"
+      ],
       "extractVersion": "^libpciaccess-(?<version>.+)$"
     }
   ]
