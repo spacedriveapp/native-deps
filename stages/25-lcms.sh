@@ -31,7 +31,7 @@ echo "Build lcms..."
 meson \
   --errorlogs \
   -Dutils=false \
-  -Dtests=false \
+  -Dtests=disabled \
   -Dthreaded="$(
     case "$TARGET" in
       *windows*)
