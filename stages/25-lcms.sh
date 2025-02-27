@@ -4,7 +4,7 @@ echo "Download lcms..."
 mkdir -p lcms
 
 # renovate: datasource=github-releases depName=mm2/Little-CMS versioning=semver-coerced
-_tag='2.16'
+_tag='2.17'
 
 curl_tar "https://github.com/mm2/Little-CMS/releases/download/lcms${_tag}/lcms2-${_tag}.tar.gz" lcms 1
 
@@ -15,7 +15,6 @@ case "$TARGET" in
     ;;
 esac
 
-sed -i "/subdir('testbed')/d" lcms/meson.build
 sed -i "/subdir('testbed')/d" lcms/plugins/threaded/meson.build
 sed -i "/subdir('testbed')/d" lcms/plugins/fast_float/meson.build
 
@@ -32,7 +31,7 @@ echo "Build lcms..."
 meson \
   --errorlogs \
   -Dutils=false \
-  -Dsamples=false \
+  -Dtests=disabled \
   -Dthreaded="$(
     case "$TARGET" in
       *windows*)
