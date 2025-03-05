@@ -9,7 +9,7 @@ echo "Download protobuf..."
 mkdir -p protobuf
 
 # renovate: datasource=github-releases depName=protocolbuffers/protobuf versioning=semver-coerced
-_tag='29.3'
+_tag='30.0'
 case "$TARGET" in
   x86_64-windows*)
     _suffix='win64'
