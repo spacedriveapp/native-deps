@@ -31,6 +31,9 @@ for patch in \
   curl "$patch" | patch -F5 -lp1 -d ffmpeg -t
 done
 
+# Fix FFmpeg compilation with latest SVT-AV1
+patch -F5 -lp1 -d ffmpeg -t <"$PREFIX"/patches/unbreak-build-with-latest-svtav1.patch
+
 if [ "$OS_IPHONE" -gt 0 ]; then
   # Patch to remove ffmpeg using non public API on iOS
   patch -F5 -lp1 -d ffmpeg -t <"$PREFIX"/patches/remove_lzma_apple_non_public_api.patch
