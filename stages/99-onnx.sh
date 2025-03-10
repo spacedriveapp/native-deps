@@ -4,7 +4,7 @@ echo "Download onnx..."
 mkdir -p onnx
 
 # renovate: datasource=github-releases depName=microsoft/onnxruntime
-_tag='1.19.2'
+_tag='1.20.0'
 
 case "$TARGET" in
   *windows*)
