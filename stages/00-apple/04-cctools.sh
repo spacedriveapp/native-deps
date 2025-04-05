@@ -35,7 +35,7 @@ echo "Download cctools ..."
 mkdir -p "cctools"
 
 # renovate: depName=git@github.com:tpoechtrager/cctools-port.git
-_commit='81f205e8ca6bbf2fdbcb6948132454fd1f97839e'
+_commit='93ffa47ee2139aba177deb07de9b6626486037ae'
 
 curl_tar "https://github.com/tpoechtrager/cctools-port/archive/${_commit}.tar.gz" 'cctools' 1
 
